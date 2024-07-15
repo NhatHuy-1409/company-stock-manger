@@ -11,7 +11,7 @@ import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import React, { useEffect, useState } from "react"
-import { getItemsType } from "../../../api/stock-manager"
+import { getElectricItemsType, getItemsType } from "../../../api/stock-manager"
 import "./ItemsTypeManager.scss"
 import DialogAddNewItemType from "./components/DialogAddNewItemType"
 import DialogEditItemType from "./components/DialogEditItemType"
@@ -39,7 +39,7 @@ const SORT_ORDER_OPTIONS = [
   { value: "DESC", label: "Giảm dần" },
 ]
 
-function ItemsTypeManager(props) {
+function ElectricItemsTypeManager(props) {
   const [list, setList] = useState([])
   const classes = useStyles()
   const [selectedItem, setSelectedItem] = useState(null)
@@ -61,7 +61,7 @@ function ItemsTypeManager(props) {
   }
 
   const getData = async (sortProperty, sortOrder) => {
-    const data = await getItemsType(sortProperty, sortOrder)
+    const data = await getElectricItemsType(sortProperty, sortOrder)
     console.log(data)
     setList(data)
   }
@@ -205,4 +205,4 @@ function ItemsTypeManager(props) {
   )
 }
 
-export default ItemsTypeManager
+export default ElectricItemsTypeManager

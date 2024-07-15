@@ -41,6 +41,8 @@ stockDB.userLogin = ({ email, password }) => {
   })
 }
 
+// items
+
 stockDB.getAllItems = (orderby, sort_order) => {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -216,6 +218,23 @@ stockDB.getAllItemsType = (sort_property, sort_order) => {
     )
   })
 }
+stockDB.getAllElectricItemsType = (sort_property, sort_order) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT it.id, it.name, c.name AS category,c.id AS category_id,unit,it.description
+        FROM electric_item_types it 
+		    LEFT JOIN electric_categories c 
+			    ON it.category = c.id
+        ORDER BY ${sort_property || ""} ${sort_order}`,
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
 
 stockDB.getAllStaffRequest = (sort_property, sort_order) => {
   console.log(sort_property, sort_order)
@@ -247,6 +266,17 @@ stockDB.getAllStaffRequest = (sort_property, sort_order) => {
 stockDB.getAllCategories = () => {
   return new Promise((resolve, reject) => {
     pool.query(`SELECT * FROM categories`, (err, result) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(result)
+    })
+  })
+}
+
+stockDB.getAllElectricCategories = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT * FROM electric_categories`, (err, result) => {
       if (err) {
         return reject(err)
       }

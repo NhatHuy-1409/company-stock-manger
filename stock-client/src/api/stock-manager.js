@@ -84,11 +84,37 @@ export const getItemsType = (sortProperty, sortOrder) => {
       })
   })
 }
+export const getElectricItemsType = (sortProperty, sortOrder) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .get(
+        `electric-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
+      )
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const getCategories = () => {
   return new Promise((resolve, reject) => {
     apiInstance
       .get("categories")
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const getElectricCategories = () => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .get("electric-categories")
       .then((response) => {
         resolve(response.data)
       })

@@ -1,71 +1,74 @@
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import React, { useEffect, useState } from "react";
-import { getCategories } from "../../../api/stock-manager";
-import "./CategoriesManager.scss";
-import DialogAddNewCategory from "./components/DialogAddNewCategory";
-import DialogEditCategory from "./components/DialogEditCategory";
-import DialogRemoveCategory from "./components/DialogRemoveCategory";
+import Button from "@material-ui/core/Button"
+import Paper from "@material-ui/core/Paper"
+import { makeStyles } from "@material-ui/core/styles"
+import Table from "@material-ui/core/Table"
+import TableBody from "@material-ui/core/TableBody"
+import TableCell from "@material-ui/core/TableCell"
+import TableContainer from "@material-ui/core/TableContainer"
+import TableHead from "@material-ui/core/TableHead"
+import TableRow from "@material-ui/core/TableRow"
+import DeleteIcon from "@material-ui/icons/Delete"
+import EditIcon from "@material-ui/icons/Edit"
+import React, { useEffect, useState } from "react"
+import {
+  getCategories,
+  getElectricCategories,
+} from "../../../api/stock-manager"
+import "./CategoriesManager.scss"
+import DialogAddNewCategory from "./components/DialogAddNewCategory"
+import DialogEditCategory from "./components/DialogEditCategory"
+import DialogRemoveCategory from "./components/DialogRemoveCategory"
 
 function createData(id, name, description) {
-  return { id, name, description };
+  return { id, name, description }
 }
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
-});
+})
 
-function CategoriesManager(props) {
-  const [list, setList] = useState([]);
-  const classes = useStyles();
-  const [selectedItem, setSelectedItem] = useState(null);
+function ElectricCategoriesManager(props) {
+  const [list, setList] = useState([])
+  const classes = useStyles()
+  const [selectedItem, setSelectedItem] = useState(null)
 
-  const [openEditItem, setOpenEditItem] = useState(false);
-  const [openAddNewCategory, setOpenAddNewCategory] = useState(false);
-  const [openAlertRemove, setOpenAlertRemove] = useState(false);
+  const [openEditItem, setOpenEditItem] = useState(false)
+  const [openAddNewCategory, setOpenAddNewCategory] = useState(false)
+  const [openAlertRemove, setOpenAlertRemove] = useState(false)
 
   const getData = async () => {
-    const data = await getCategories();
-    setList(data);
-  };
+    const data = await getElectricCategories()
+    setList(data)
+  }
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData()
+  }, [])
 
   const rows = [
     ...list.map((item) => createData(item.id, item.name, item.description)),
-  ];
+  ]
 
   const handleAddNewSuccess = () => {
-    getData();
-  };
+    getData()
+  }
 
   const handleClickOpen = (category) => {
-    setOpenEditItem(true);
-    setSelectedItem(category);
-  };
+    setOpenEditItem(true)
+    setSelectedItem(category)
+  }
 
   const handleDeleteItem = (category) => {
-    setSelectedItem(category);
-    setOpenAlertRemove(true);
-  };
+    setSelectedItem(category)
+    setOpenAlertRemove(true)
+  }
 
   const handleClose = () => {
-    setOpenEditItem(false);
-    setSelectedItem(null);
-  };
+    setOpenEditItem(false)
+    setSelectedItem(null)
+  }
 
   const dialogAddNewCategory = openAddNewCategory ? (
     <DialogAddNewCategory
@@ -73,7 +76,7 @@ function CategoriesManager(props) {
       handleClose={() => setOpenAddNewCategory(false)}
       onAddNewSuccess={handleAddNewSuccess}
     />
-  ) : null;
+  ) : null
 
   const dialogEditCategory = openEditItem ? (
     <DialogEditCategory
@@ -82,7 +85,7 @@ function CategoriesManager(props) {
       selectedItem={selectedItem}
       onUpdateSuccess={handleAddNewSuccess}
     />
-  ) : null;
+  ) : null
 
   const dialogAlertRemove = openAlertRemove ? (
     <DialogRemoveCategory
@@ -91,7 +94,7 @@ function CategoriesManager(props) {
       selectedItem={selectedItem}
       onSuccess={() => getData()}
     />
-  ) : null;
+  ) : null
 
   const actionsBlock = (item) => {
     return (
@@ -99,8 +102,8 @@ function CategoriesManager(props) {
         <EditIcon onClick={() => handleClickOpen(item)} />
         <DeleteIcon onClick={() => handleDeleteItem(item)} />
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div className="categoriesManager">
@@ -135,7 +138,7 @@ function CategoriesManager(props) {
       {dialogEditCategory}
       {dialogAlertRemove}
     </div>
-  );
+  )
 }
 
-export default CategoriesManager;
+export default ElectricCategoriesManager

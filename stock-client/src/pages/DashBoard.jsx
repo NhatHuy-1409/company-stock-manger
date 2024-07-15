@@ -10,13 +10,19 @@ import { connect } from "react-redux"
 import { useHistory } from "react-router-dom"
 import { useEffect } from "react"
 import ElectricItemsManager from "../components/dashboard/electric-items-manager/ElectricItemsManager"
+import ElectricItemsTypeManager from "../components/dashboard/electric-items-type-manager/ElectricItemsTypeManager"
+import ElectricCategoriesManager from "../components/dashboard/electric-categories-manager/ElectricCategoriesManager"
 
 const COMPONENTS = {
   ItemsManager: <ItemsManager />,
-  ElectricItemsManager: <ElectricItemsManager />,
   ItemsTypeManager: <ItemsTypeManager />,
-  UsersManager: <UsersManager />,
   CategoriesManager: <CategoriesManager />,
+
+  ElectricItemsManager: <ElectricItemsManager />,
+  ElectricItemsTypeManager: <ElectricItemsTypeManager />,
+  ElectricCategoriesManager: <ElectricCategoriesManager />,
+
+  UsersManager: <UsersManager />,
   RequestsBrowsingManager: <RequestsBrowsingManager />,
 }
 

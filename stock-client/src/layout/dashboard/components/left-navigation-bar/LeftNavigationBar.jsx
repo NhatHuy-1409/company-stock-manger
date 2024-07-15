@@ -37,12 +37,12 @@ const NAV_ELECTRIC_ITEM = [
   },
   {
     name: "Loại thiết bị",
-    component: "ItemsTypeManager",
+    component: "ElectricItemsTypeManager",
     accessRights: ["user", "admin"],
   },
   {
     name: "Danh mục thiết bị",
-    component: "CategoriesManager",
+    component: "ElectricCategoriesManager",
     accessRights: ["user", "admin"],
   },
   // {
