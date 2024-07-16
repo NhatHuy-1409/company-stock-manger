@@ -129,13 +129,14 @@ DROP TABLE IF EXISTS `electric_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `electric_items` (
-  `id` int NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` int DEFAULT NULL,
   `input_time` datetime DEFAULT NULL,
   `quantity` int DEFAULT NULL,
-  `description` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `description` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,7 +145,7 @@ CREATE TABLE `electric_items` (
 
 LOCK TABLES `electric_items` WRITE;
 /*!40000 ALTER TABLE `electric_items` DISABLE KEYS */;
-INSERT INTO `electric_items` VALUES (1,'IC101','2024-07-12 00:00:00',1,'mạch'),(2,'IC102','2024-07-10 00:00:00',3,'mạch');
+INSERT INTO `electric_items` VALUES (1,1,'2024-07-12 00:00:00',1,'mạch'),(2,2,'2024-07-10 00:00:00',3,'mạch'),(3,1,'2024-07-16 14:30:00',24,'Haiphong');
 /*!40000 ALTER TABLE `electric_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,7 +194,7 @@ CREATE TABLE `items` (
   `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,7 +203,7 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
-INSERT INTO `items` VALUES (1,1,'2021-01-01 00:00:00','2021-08-23 00:00:00','2021-12-11 00:00:00',5,1,'mô tả 1'),(31,1,'2021-08-28 00:00:00',NULL,'2021-08-29 00:00:00',1,1,''),(33,2,'2021-09-01 00:00:00',NULL,'2021-09-02 00:00:00',1,1,'ống nước'),(34,13,'2024-07-08 00:00:00',NULL,NULL,3,1,'Beaglebone 1'),(36,13,'2024-07-10 00:00:00',NULL,NULL,1,1,'Beaglebone 2\n'),(37,13,'2024-07-10 00:00:00',NULL,NULL,4,1,''),(38,1,'2024-07-12 00:00:00',NULL,NULL,1,1,''),(42,1,'2024-07-15 00:00:00',NULL,NULL,2,1,'');
+INSERT INTO `items` VALUES (33,2,'2021-09-01 00:00:00',NULL,'2021-09-02 00:00:00',1,1,'ống nước'),(34,13,'2024-07-08 00:00:00',NULL,NULL,3,1,'Beaglebone 1'),(44,3,'2024-07-16 00:00:00',NULL,NULL,1,1,''),(45,2,'2024-07-16 00:00:00',NULL,NULL,1,1,''),(46,1,'2024-07-16 00:00:00',NULL,NULL,1,1,''),(48,17,'2024-07-16 00:00:00',NULL,NULL,1,1,''),(54,14,'2024-07-16 00:00:00',NULL,NULL,1,1,''),(55,15,'2024-07-16 00:00:00',NULL,NULL,1,1,'');
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,4 +380,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-15 16:31:48
+-- Dump completed on 2024-07-16 16:00:30
