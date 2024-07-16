@@ -188,6 +188,18 @@ export const addItem = (payload) => {
       })
   })
 }
+export const addElectricItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const getItemsByExpiryTime = (payload) => {
   return new Promise((resolve, reject) => {

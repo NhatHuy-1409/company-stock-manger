@@ -70,11 +70,15 @@ stockDB.getAllItems = (orderby, sort_order) => {
     )
   })
 }
+
 stockDB.getAllElectricItems = (orderby, sort_order) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT id, name, input_time, quantity, description
-        FROM electric_items 
+      `SELECT ei.id, eit.name, quantity, ei.description,
+        eit.id AS type_id,
+        FROM electric_items ei
+        LEFT JOIN electric_item_types eit
+          ON ei.type = eit.id
         ORDER BY ${orderby} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -401,7 +405,7 @@ stockDB.addItem = ({
   })
 }
 stockDB.addElectricItem = ({
-  type,
+  // type,
   name,
   input_time,
   quantity,
@@ -413,9 +417,9 @@ stockDB.addElectricItem = ({
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO items (type,name, input_time,quantity, description) 
-        VALUES (?, ? , ? , ?, ?, ?, ?)`,
-      [type, name, input_time, quantity, description],
+      `INSERT INTO electric_items (name, input_time, quantity, description) 
+        VALUES ( ?, ?, ?, ?)`,
+      [name, input_time, quantity, description],
       (err, result) => {
         if (err) {
           return reject(err)
@@ -505,11 +509,56 @@ stockDB.addItemType = ({ name, category, unit, description }) => {
     )
   })
 }
+stockDB.addElectricItemType = ({ name, category, unit, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `INSERT INTO elctric_item_types (name, category, unit, description) 
+        VALUES (?, ? , ? , ?)`,
+      [name, category, unit, description],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "add success",
+          },
+        })
+      }
+    )
+  })
+}
 
 stockDB.updateItemType = ({ id, name, category, unit, description }) => {
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE item_types
+              SET name = ?, category = ?, unit = ?, description = ?
+              WHERE id = ?`,
+      [name, category, unit, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateElectricItemType = ({
+  id,
+  name,
+  category,
+  unit,
+  description,
+}) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE electric_item_types
               SET name = ?, category = ?, unit = ?, description = ?
               WHERE id = ?`,
       [name, category, unit, description, id],
@@ -539,6 +588,24 @@ stockDB.deleteItemType = ({ id }) => {
         },
       })
     })
+  })
+}
+stockDB.deleteElectricItemType = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM electric_item_types WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
   })
 }
 

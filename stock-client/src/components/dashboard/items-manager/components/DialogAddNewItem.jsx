@@ -1,22 +1,22 @@
-import DateFnsUtils from "@date-io/date-fns";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Grid from "@material-ui/core/Grid";
-import Select from "@material-ui/core/Select";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import DateFnsUtils from "@date-io/date-fns"
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import Grid from "@material-ui/core/Grid"
+import Select from "@material-ui/core/Select"
+import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
-import { format } from "date-fns";
-import React, { useEffect, useState } from "react";
-import { addItem } from "../../../../api/stock-manager";
-import { getItemTypes } from "../../../../meta-data/item-types";
-import { statuses } from "../../../../meta-data/statuses";
-import { stocks } from "../../../../meta-data/stocks";
+} from "@material-ui/pickers"
+import { format } from "date-fns"
+import React, { useEffect, useState } from "react"
+import { addItem } from "../../../../api/stock-manager"
+import { getItemTypes } from "../../../../meta-data/item-types"
+import { statuses } from "../../../../meta-data/statuses"
+import { stocks } from "../../../../meta-data/stocks"
 
 export default function DialogAddNewItem({
   open,
@@ -24,52 +24,52 @@ export default function DialogAddNewItem({
   onUpdateSuccess,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState("1");
-  const [statusId, setStatusId] = useState("1");
-  const [stockId, setStockId] = useState("1");
-  const [description, setDescription] = useState("");
-  const [inputTime, setInputTime] = useState(new Date());
-  const [expiryTime, setExpiryTime] = useState(null);
-  const [outputTime, setOutputTime] = useState(null);
+  const [typeId, setTypeId] = useState("1")
+  const [statusId, setStatusId] = useState("1")
+  const [stockId, setStockId] = useState("1")
+  const [description, setDescription] = useState("")
+  const [inputTime, setInputTime] = useState(new Date())
+  const [expiryTime, setExpiryTime] = useState(null)
+  const [outputTime, setOutputTime] = useState(null)
 
   // list options
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [stockOptions, setStockOptions] = useState([]);
-  const [itemTypes, setItemTypes] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([])
+  const [stockOptions, setStockOptions] = useState([])
+  const [itemTypes, setItemTypes] = useState([])
 
   useEffect(() => {
     const getStatuses = async () => {
-      const listStt = await statuses();
-      setStatusOptions(listStt);
-    };
+      const listStt = await statuses()
+      setStatusOptions(listStt)
+    }
     const getStocks = async () => {
-      const listStocks = await stocks();
-      setStockOptions(listStocks);
-    };
+      const listStocks = await stocks()
+      setStockOptions(listStocks)
+    }
     const getListItemTypes = async () => {
-      const itemTypes = await getItemTypes();
-      setItemTypes(itemTypes);
-    };
+      const itemTypes = await getItemTypes()
+      setItemTypes(itemTypes)
+    }
 
-    getStatuses();
-    getStocks();
-    getListItemTypes();
-  }, []);
+    getStatuses()
+    getStocks()
+    getListItemTypes()
+  }, [])
 
   const handleStatusChange = (event) => {
-    const { value } = event.target;
-    setStatusId(value);
-  };
+    const { value } = event.target
+    setStatusId(value)
+  }
 
   const handleStockChange = (event) => {
-    const { value } = event.target;
-    setStockId(value);
-  };
+    const { value } = event.target
+    setStockId(value)
+  }
 
   const handleTypeIdChange = (event) => {
-    const { value } = event.target;
-    setTypeId(value);
-  };
+    const { value } = event.target
+    setTypeId(value)
+  }
 
   const handleSubmitForm = () => {
     const payload = {
@@ -80,18 +80,18 @@ export default function DialogAddNewItem({
       status: statusId,
       stock_id: stockId,
       description: description,
-    };
-    console.log(payload);
+    }
+    console.log(payload)
     addItem(payload)
       .then((res) => {
-        console.log("pl: ", payload);
-        onUpdateSuccess();
-        handleClose();
+        console.log("pl: ", payload)
+        onUpdateSuccess()
+        handleClose()
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
   return (
     <div className="dialogEditItem">
@@ -206,5 +206,5 @@ export default function DialogAddNewItem({
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

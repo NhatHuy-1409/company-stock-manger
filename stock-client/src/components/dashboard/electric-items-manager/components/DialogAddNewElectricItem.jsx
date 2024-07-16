@@ -13,8 +13,8 @@ import {
 } from "@material-ui/pickers"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { addItem, getElectricItems } from "../../../../api/stock-manager"
-import { getItemTypes } from "../../../../meta-data/item-types"
+import { addElectricItem } from "../../../../api/stock-manager"
+import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
 
@@ -36,7 +36,7 @@ export default function DialogAddNewElectricItem({
   const [statusOptions, setStatusOptions] = useState([])
   const [stockOptions, setStockOptions] = useState([])
   const [itemTypes, setItemTypes] = useState([])
-  const [electricItems, setElectricItems] = useState([])
+  const [electricItemsTypes, setElectricItemsTypes] = useState([])
 
   useEffect(() => {
     // const getStatuses = async () => {
@@ -55,13 +55,12 @@ export default function DialogAddNewElectricItem({
     // getStocks()
     // getListItemTypes()
 
-    const getListElectricItems = async () => {
-      const electricItems = await getElectricItems()
-      setElectricItems(electricItems)
+    const getListElectricItemsTypes = async () => {
+      const electricItemsType = await getElectricItemTypes()
+      setElectricItemsTypes(electricItemsType)
     }
-    getListElectricItems()
+    getListElectricItemsTypes()
   }, [])
-  console.log({ electricItems })
 
   const handleStatusChange = (event) => {
     const { value } = event.target
@@ -82,14 +81,16 @@ export default function DialogAddNewElectricItem({
     const payload = {
       type: typeId,
       input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-      output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
-      expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
-      status: statusId,
-      stock_id: stockId,
+      // output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
+      // expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
+      // status: statusId,
+      // stock_id: stockId,
+      name: typeId,
+      quantity: 1,
       description: description,
     }
     console.log(payload)
-    addItem(payload)
+    addElectricItem(payload)
       .then((res) => {
         console.log("pl: ", payload)
         onUpdateSuccess()
@@ -119,7 +120,7 @@ export default function DialogAddNewElectricItem({
               value={typeId}
               onChange={handleTypeIdChange}
             >
-              {electricItems.map((item) => (
+              {electricItemsTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>

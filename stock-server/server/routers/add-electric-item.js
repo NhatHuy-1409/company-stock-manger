@@ -7,7 +7,7 @@
 // router.post("/", async (req, res, next) => {
 //   try {
 //     const payload = req.body
-//     let results = await dbLogin.addItem(payload)
+//     let results = await dbLogin.addElectricItem(payload)
 //     res.json(results)
 //   } catch (error) {
 //     console.log(error)

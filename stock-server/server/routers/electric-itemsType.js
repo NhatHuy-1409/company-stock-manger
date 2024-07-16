@@ -23,7 +23,7 @@ router.post("/update", async (req, res, next) => {
   try {
     const payload = req.body
     console.log(payload)
-    let results = await dbLogin.updateItemType(payload)
+    let results = await dbLogin.updateElectricItemType(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -34,7 +34,7 @@ router.post("/update", async (req, res, next) => {
 router.post("/add", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.addItemType(payload)
+    let results = await dbLogin.addElectricItemType(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -45,7 +45,7 @@ router.post("/add", async (req, res, next) => {
 router.post("/delete", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.deleteItemType(payload)
+    let results = await dbLogin.deleteElectricItemType(payload)
     res.json(results)
     // sendDeleteEmail();
   } catch (error) {

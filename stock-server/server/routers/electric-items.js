@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params
-    let results = await dbLogin.getItem(id)
+    let results = await dbLogin.getElectricItem(id)
     res.json(results[0])
   } catch (err) {
     console.log(err)
@@ -52,6 +52,7 @@ router.post("/update", async (req, res, next) => {
 router.post("/add", async (req, res, next) => {
   try {
     const payload = req.body
+    console.log({ payload })
     let results = await dbLogin.addElectricItem(payload)
     res.json(results)
   } catch (error) {
