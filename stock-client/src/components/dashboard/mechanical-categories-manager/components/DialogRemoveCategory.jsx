@@ -5,7 +5,7 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
-import { deleteElectricItem } from "../../../../api/stock-manager"
+import { deleteMechanicalCategory } from "../../../../api/stock-manager"
 
 export default function DialogAlertRemove({
   open,
@@ -18,7 +18,7 @@ export default function DialogAlertRemove({
       id: selectedItem.id,
     }
     console.log(payload)
-    deleteElectricItem(payload)
+    deleteMechanicalCategory(payload)
       .then((res) => {
         console.log(res)
         handleClose()

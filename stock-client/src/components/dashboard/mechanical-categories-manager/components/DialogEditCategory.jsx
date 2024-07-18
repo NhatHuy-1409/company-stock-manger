@@ -6,7 +6,7 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
 import React, { useState } from "react"
-import { updateElectricCategory } from "../../../../api/stock-manager"
+import { updateMechanicalCategory } from "../../../../api/stock-manager"
 import "./DialogAddNewCategory.scss"
 
 export default function DialogAddNewCategory({
@@ -43,7 +43,7 @@ export default function DialogAddNewCategory({
       description,
     }
 
-    updateElectricCategory(payload)
+    updateMechanicalCategory(payload)
       .then((res) => {
         console.log(res)
         onUpdateSuccess()

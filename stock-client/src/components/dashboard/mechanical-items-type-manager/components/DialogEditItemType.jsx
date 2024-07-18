@@ -3,25 +3,41 @@ import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
+import Select from "@material-ui/core/Select"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
-import React, { useState } from "react"
-import { updateElectricCategory } from "../../../../api/stock-manager"
-import "./DialogAddNewCategory.scss"
+import React, { useEffect, useState } from "react"
+import { updateMechanicalItemType } from "../../../../api/stock-manager"
+import { getListMechanicalCategories } from "../../../../meta-data/mechanical-categories"
+import "./DialogEditItemType.scss"
 
-export default function DialogAddNewCategory({
+export default function DialogAddNewItemType({
   open,
   handleClose,
-  onUpdateSuccess,
   selectedItem,
+  onEditSuccess,
 }) {
   // modal value
   const [name, setName] = useState(selectedItem.name)
+  const [category, setCategory] = useState(selectedItem.category_id)
+  const [unit, setUnit] = useState(selectedItem.unit)
   const [description, setDescription] = useState(selectedItem.description)
+
+  // list options
+  const [categories, setCategories] = useState([])
 
   // error state
 
   const [nameErr, setNameErr] = useState(null)
+
+  useEffect(() => {
+    const getCategories = async () => {
+      const categories = await getListMechanicalCategories()
+      setCategories(categories)
+    }
+
+    getCategories()
+  }, [])
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -36,18 +52,31 @@ export default function DialogAddNewCategory({
     setNameErr(null)
   }
 
+  const handleCategoryChange = (event) => {
+    const { value } = event.target
+    setCategory(value)
+  }
+
+  const handleUnitChange = (event) => {
+    const { value } = event.target
+    setUnit(value)
+  }
+
   const handleSubmitForm = () => {
     const payload = {
       id: selectedItem.id,
       name,
+      category,
+      unit,
       description,
     }
 
-    updateElectricCategory(payload)
+    console.log(payload)
+
+    updateMechanicalItemType(payload)
       .then((res) => {
         console.log(res)
-        onUpdateSuccess()
-        handleClose()
+        onEditSuccess()
       })
       .catch((err) => {
         console.log(err)
@@ -63,17 +92,36 @@ export default function DialogAddNewCategory({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Thêm danh mục</DialogTitle>
+        <DialogTitle id="form-dialog-title">Thêm loại thiết bị</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField
               fullWidth
-              label="Tên danh mục"
+              label="Tên thiết bị"
               value={name}
               onChange={handleNameChange}
               onBlur={handleCheckValidateName}
               error={nameErr}
               helperText={nameErr}
+            />
+            <Select
+              native
+              fullWidth
+              label="Danh mục"
+              value={category}
+              onChange={handleCategoryChange}
+            >
+              {categories.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </Select>
+            <TextField
+              fullWidth
+              label="Đơn vị"
+              value={unit}
+              onChange={handleUnitChange}
             />
             <TextareaAutosize
               value={description}

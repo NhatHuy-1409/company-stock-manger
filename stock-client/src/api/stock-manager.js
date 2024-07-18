@@ -45,6 +45,18 @@ export const getElectricItems = (orderby, sort_order) => {
       })
   })
 }
+export const getMechanicalItems = (orderby, sort_order) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .get(`mechanical-items?orderby=${orderby}&sort_order=${sort_order}`)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const getItem = (id) => {
   return new Promise((resolve, reject) => {
@@ -98,6 +110,20 @@ export const getElectricItemsType = (sortProperty, sortOrder) => {
       })
   })
 }
+export const getMechanicalItemsType = (sortProperty, sortOrder) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .get(
+        `mechanical-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
+      )
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const getCategories = () => {
   return new Promise((resolve, reject) => {
@@ -115,6 +141,18 @@ export const getElectricCategories = () => {
   return new Promise((resolve, reject) => {
     apiInstance
       .get("electric-categories")
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const getMechanicalCategories = () => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .get("mechanical-categories")
       .then((response) => {
         resolve(response.data)
       })
@@ -175,6 +213,30 @@ export const updateItem = (payload) => {
       })
   })
 }
+export const updateElectricItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const updateMechanicalItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const addItem = (payload) => {
   return new Promise((resolve, reject) => {
@@ -192,6 +254,18 @@ export const addElectricItem = (payload) => {
   return new Promise((resolve, reject) => {
     apiInstance
       .post("electric-items/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const addMechanicalItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items/add", payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -226,11 +300,59 @@ export const deleteItem = (payload) => {
       })
   })
 }
+export const deleteElectricItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const deleteMechanicalItem = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const addItemType = (payload) => {
   return new Promise((resolve, reject) => {
     apiInstance
       .post("items-type/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const addElectricItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items-type/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const addMechanicalItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items-type/add", payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -252,11 +374,59 @@ export const updateItemType = (payload) => {
       })
   })
 }
+export const updateElectricItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items-type/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const updateMechanicalItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items-type/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const deleteItemType = (payload) => {
   return new Promise((resolve, reject) => {
     apiInstance
       .post("items-type/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const deleteElectricItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-items-type/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const deleteMechanicalItemType = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-items-type/delete", payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -278,6 +448,30 @@ export const addCategory = (payload) => {
       })
   })
 }
+export const addElectricCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-categories/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const addMechanicalCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-categories/add", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const updateCategory = (payload) => {
   return new Promise((resolve, reject) => {
@@ -291,11 +485,59 @@ export const updateCategory = (payload) => {
       })
   })
 }
+export const updateElectricCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-categories/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const updateMechanicalCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-categories/update", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
 export const deleteCategory = (payload) => {
   return new Promise((resolve, reject) => {
     apiInstance
       .post("categories/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const deleteElectricCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("electric-categories/delete", payload)
+      .then((response) => {
+        resolve(response.data)
+      })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+export const deleteMechanicalCategory = (payload) => {
+  return new Promise((resolve, reject) => {
+    apiInstance
+      .post("mechanical-categories/delete", payload)
       .then((response) => {
         resolve(response.data)
       })

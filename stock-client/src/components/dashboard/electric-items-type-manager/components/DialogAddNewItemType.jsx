@@ -1,15 +1,15 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Select from "@material-ui/core/Select";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import TextField from "@material-ui/core/TextField";
-import React, { useEffect, useState } from "react";
-import { addItemType } from "../../../../api/stock-manager";
-import { getListCategories } from "../../../../meta-data/categories";
-import "./DialogEditItemType.scss";
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import Select from "@material-ui/core/Select"
+import TextareaAutosize from "@material-ui/core/TextareaAutosize"
+import TextField from "@material-ui/core/TextField"
+import React, { useEffect, useState } from "react"
+import { addElectricItemType } from "../../../../api/stock-manager"
+import { getListElectricCategories } from "../../../../meta-data/electric-categories"
+import "./DialogEditItemType.scss"
 
 export default function DialogAddNewItemType({
   open,
@@ -17,49 +17,49 @@ export default function DialogAddNewItemType({
   onAddNewSuccess,
 }) {
   // modal value
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("1");
-  const [unit, setUnit] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState("")
+  const [category, setCategory] = useState("1")
+  const [unit, setUnit] = useState("")
+  const [description, setDescription] = useState("")
 
   // list options
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([])
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null);
+  const [nameErr, setNameErr] = useState(null)
 
   useEffect(() => {
     const getCategories = async () => {
-      const categories = await getListCategories();
-      setCategories(categories);
-    };
+      const categories = await getListElectricCategories()
+      setCategories(categories)
+    }
 
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
 
   const handleNameChange = (event) => {
-    const { value } = event.target;
-    setName(value);
-  };
+    const { value } = event.target
+    setName(value)
+  }
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên");
-      return;
+      setNameErr("Không được bỏ trống tên")
+      return
     }
-    setNameErr(null);
-  };
+    setNameErr(null)
+  }
 
   const handleCategoryChange = (event) => {
-    const { value } = event.target;
-    setCategory(value);
-  };
+    const { value } = event.target
+    setCategory(value)
+  }
 
   const handleUnitChange = (event) => {
-    const { value } = event.target;
-    setUnit(value);
-  };
+    const { value } = event.target
+    setUnit(value)
+  }
 
   const handleSubmitForm = () => {
     const payload = {
@@ -67,17 +67,17 @@ export default function DialogAddNewItemType({
       category,
       unit,
       description,
-    };
+    }
 
-    addItemType(payload)
+    addElectricItemType(payload)
       .then((res) => {
-        console.log(res);
-        onAddNewSuccess();
+        console.log(res)
+        onAddNewSuccess()
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
   return (
     <div className="dialogAddNewItemType">
@@ -139,5 +139,5 @@ export default function DialogAddNewItemType({
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

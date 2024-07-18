@@ -7,30 +7,11 @@ const router = express.Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    const { orderby, sort_order } = req.query
-    let results = await dbLogin.getAllElectricItems(orderby, sort_order)
-    res.json(results)
-  } catch (err) {
-    console.log(err)
-    res.sendStatus(500)
-  }
-})
-
-router.get("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params
-    let results = await dbLogin.getElectricItem(id)
-    res.json(results[0])
-  } catch (err) {
-    console.log(err)
-    res.sendStatus(500)
-  }
-})
-
-router.get("/type/:type_id", async (req, res, next) => {
-  try {
-    const { type_id } = req.params
-    let results = await dbLogin.getElectricItemByTypeId(type_id)
+    const { sort_property, sort_order } = req.query
+    let results = await dbLogin.getAllMechanicalItemsType(
+      sort_property,
+      sort_order
+    )
     res.json(results)
   } catch (err) {
     console.log(err)
@@ -41,7 +22,8 @@ router.get("/type/:type_id", async (req, res, next) => {
 router.post("/update", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.updateElectricItem(payload)
+    console.log(payload)
+    let results = await dbLogin.updateMechanicalItemType(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -52,8 +34,7 @@ router.post("/update", async (req, res, next) => {
 router.post("/add", async (req, res, next) => {
   try {
     const payload = req.body
-    console.log({ payload })
-    let results = await dbLogin.addElectricItem(payload)
+    let results = await dbLogin.addMechanicalItemType(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -64,8 +45,9 @@ router.post("/add", async (req, res, next) => {
 router.post("/delete", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.deleteElectricItem(payload)
+    let results = await dbLogin.deleteMechanicalItemType(payload)
     res.json(results)
+    // sendDeleteEmail();
   } catch (error) {
     console.log(error)
     res.sendStatus(500)

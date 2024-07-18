@@ -1,12 +1,12 @@
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import MenuIcon from "@material-ui/icons/Menu";
-import React from "react";
-import { useHistory } from "react-router-dom";
+import AppBar from "@material-ui/core/AppBar"
+import Button from "@material-ui/core/Button"
+import IconButton from "@material-ui/core/IconButton"
+import { makeStyles } from "@material-ui/core/styles"
+import Toolbar from "@material-ui/core/Toolbar"
+import Typography from "@material-ui/core/Typography"
+import MenuIcon from "@material-ui/icons/Menu"
+import React from "react"
+import { useHistory } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,19 +19,19 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     cursor: "pointer",
   },
-}));
+}))
 
 export default function ButtonAppBar() {
-  const classes = useStyles();
-  const history = useHistory();
+  const classes = useStyles()
+  const history = useHistory()
 
   const onLoginBtnClick = () => {
-    history.push("/login");
-  };
+    history.push("/login")
+  }
 
   const onLogoClick = () => {
-    history.push("/");
-  };
+    history.push("/")
+  }
 
   return (
     <div className={classes.root}>
@@ -50,7 +50,7 @@ export default function ButtonAppBar() {
             className={classes.title}
             onClick={onLogoClick}
           >
-            Stock Manager
+            Pyramid Technical Vietnam Stock Manager
           </Typography>
           <Button onClick={onLoginBtnClick}>
             <span style={{ color: "#fff" }}>Login</span>
@@ -58,5 +58,5 @@ export default function ButtonAppBar() {
         </Toolbar>
       </AppBar>
     </div>
-  );
+  )
 }

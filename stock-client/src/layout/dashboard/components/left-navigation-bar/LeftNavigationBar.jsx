@@ -45,16 +45,23 @@ const NAV_ELECTRIC_ITEM = [
     component: "ElectricCategoriesManager",
     accessRights: ["user", "admin"],
   },
-  // {
-  //   name: "Quản lý user",
-  //   component: "UsersManager",
-  //   accessRights: ["admin"],
-  // },
-  // {
-  //   name: "Yêu cầu duyệt",
-  //   component: "RequestsBrowsingManager",
-  //   accessRights: ["user", "admin"],
-  // },
+]
+const NAV_MECHANICAL_ITEM = [
+  {
+    name: "Danh sách thiết bị",
+    component: "MechanicalItemsManager",
+    accessRights: ["user", "admin"],
+  },
+  {
+    name: "Loại thiết bị",
+    component: "MechanicalItemsTypeManager",
+    accessRights: ["user", "admin"],
+  },
+  {
+    name: "Danh mục thiết bị",
+    component: "MechanicalCategoriesManager",
+    accessRights: ["user", "admin"],
+  },
 ]
 
 const NAV_MENU = [
@@ -65,6 +72,10 @@ const NAV_MENU = [
   {
     title: "Quản lý kho điện tử",
     items: NAV_ELECTRIC_ITEM,
+  },
+  {
+    title: "Quản lý kho cơ khí",
+    items: NAV_MECHANICAL_ITEM,
   },
 ]
 

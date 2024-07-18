@@ -1,11 +1,11 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import React from "react";
-import { deleteItemType } from "../../../../api/stock-manager";
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import React from "react"
+import { deleteElectricItemType } from "../../../../api/stock-manager"
 
 export default function DialogAlertRemoveItemType({
   open,
@@ -16,18 +16,18 @@ export default function DialogAlertRemoveItemType({
   const handleSubmitForm = () => {
     const payload = {
       id: selectedItem.id,
-    };
-    console.log(payload);
-    deleteItemType(payload)
+    }
+    console.log(payload)
+    deleteElectricItemType(payload)
       .then((res) => {
-        console.log(res);
-        handleClose();
-        onSuccess();
+        console.log(res)
+        handleClose()
+        onSuccess()
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
   return (
     <div>
       <Dialog
@@ -55,5 +55,5 @@ export default function DialogAlertRemoveItemType({
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

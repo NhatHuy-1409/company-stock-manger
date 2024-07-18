@@ -74,11 +74,29 @@ stockDB.getAllItems = (orderby, sort_order) => {
 stockDB.getAllElectricItems = (orderby, sort_order) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT ei.id, eit.name, quantity, ei.description,
-        eit.id AS type_id,
+      `SELECT ei.id, eit.name,input_time, quantity, ei.description,
+        eit.id AS type_id
         FROM electric_items ei
         LEFT JOIN electric_item_types eit
           ON ei.type = eit.id
+        ORDER BY ${orderby} ${sort_order}`,
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
+stockDB.getAllMechanicalItems = (orderby, sort_order) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT mi.id, mit.name,input_time, quantity, mi.description,
+        mit.id AS type_id
+        FROM mechanical_items mi
+        LEFT JOIN mechanical_item_types mit
+          ON mi.type = mit.id
         ORDER BY ${orderby} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -150,21 +168,31 @@ stockDB.getItem = (id) => {
 stockDB.getElectricItem = (id) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT i.id, it.name, input_time, output_time, expiry_time, i.description,
-            // it.id AS type_id,
-            // s.name AS status, s.id AS status_id,
-            // st.name AS stock, st.id AS stock_id,
-            // stp.name AS stock_type, stp.id AS stock_type_id
-      FROM items i
-      LEFT JOIN item_types it
-        ON i.type = it.id
-      LEFT JOIN statuses s
-        ON i.status = s.id
-      LEFT JOIN stocks st
-        ON i.stock_id = st.id
-      LEFT JOIN stock_types stp
-        ON st.type = stp.id
+      `SELECT ei.id, eit.name, input_time, ei.description,
+            eit.id AS type_id
+      FROM electric_items ei
+      LEFT JOIN electric_item_types eit
+        ON ei.type = eit.id
       WHERE i.id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
+stockDB.getMechanicalItem = (id) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT mi.id, mit.name, input_time, mi.description,
+            mit.id AS type_id
+      FROM mechanical_items mi
+      LEFT JOIN mechanical_item_types mit
+        ON mi.type = mit.id
+      WHERE mi.id = ?`,
       [id],
       (err, result) => {
         if (err) {
@@ -204,6 +232,44 @@ stockDB.getItemByTypeId = (type_id) => {
     )
   })
 }
+stockDB.getElectricItemByTypeId = (type_id) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT ei.id, eit.name, input_time, ei.description,
+            eit.id AS type_id
+      FROM electric_items ei
+      LEFT JOIN electric_item_types eit
+        ON ei.type = eit.id
+      WHERE ei.type = ?`,
+      [type_id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
+stockDB.getMechanicalItemByTypeId = (type_id) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT mi.id, mit.name, input_time, mi.description,
+            mit.id AS type_id
+      FROM mechanical_items ei
+      LEFT JOIN mechanical_item_types mit
+        ON mi.type = mit.id
+      WHERE mi.type = ?`,
+      [type_id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
 
 stockDB.getAllItemsType = (sort_property, sort_order) => {
   return new Promise((resolve, reject) => {
@@ -222,13 +288,32 @@ stockDB.getAllItemsType = (sort_property, sort_order) => {
     )
   })
 }
+
 stockDB.getAllElectricItemsType = (sort_property, sort_order) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT it.id, it.name, c.name AS category,c.id AS category_id,unit,it.description
-        FROM electric_item_types it 
-		    LEFT JOIN electric_categories c 
-			    ON it.category = c.id
+      `SELECT eit.id, eit.name, ec.name AS category,ec.id AS category_id,unit,eit.description
+        FROM electric_item_types eit 
+		    LEFT JOIN electric_categories ec 
+			    ON eit.category = ec.id
+        ORDER BY ${sort_property || ""} ${sort_order}`,
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
+
+stockDB.getAllMechanicalItemsType = (sort_property, sort_order) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT mit.id, mit.name, mc.name AS category,mc.id AS category_id,unit,mit.description
+        FROM mechanical_item_types mit 
+		    LEFT JOIN mechanical_categories mc 
+			    ON mit.category = mc.id
         ORDER BY ${sort_property || ""} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -281,6 +366,16 @@ stockDB.getAllCategories = () => {
 stockDB.getAllElectricCategories = () => {
   return new Promise((resolve, reject) => {
     pool.query(`SELECT * FROM electric_categories`, (err, result) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve(result)
+    })
+  })
+}
+stockDB.getAllMechanicalCategories = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(`SELECT * FROM mechanical_categories`, (err, result) => {
       if (err) {
         return reject(err)
       }
@@ -368,6 +463,58 @@ stockDB.updateItem = ({
     )
   })
 }
+stockDB.updateElectricItem = ({
+  id,
+  type,
+  input_time,
+  quantity,
+  description,
+}) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE electric_items
+              SET type = ?, input_time = ?, quantity = ?, description = ?
+              WHERE id = ?`,
+      [type, input_time, quantity, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateMechanicalItem = ({
+  id,
+  type,
+  input_time,
+  quantity,
+  description,
+}) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE mechanical_items
+              SET type = ?, input_time = ?, quantity = ?, description = ?
+              WHERE id = ?`,
+      [type, input_time, quantity, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
 
 stockDB.addItem = ({
   type,
@@ -404,22 +551,31 @@ stockDB.addItem = ({
     )
   })
 }
-stockDB.addElectricItem = ({
-  // type,
-  name,
-  input_time,
-  quantity,
-  // output_time,
-  // expiry_time,
-  // status,
-  // stock_id,
-  description,
-}) => {
+stockDB.addMechanicalItem = ({ type, input_time, quantity, description }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO electric_items (name, input_time, quantity, description) 
+      `INSERT INTO mechanical_items (type, input_time, quantity, description) 
         VALUES ( ?, ?, ?, ?)`,
-      [name, input_time, quantity, description],
+      [type, input_time, quantity, description],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.addElectricItem = ({ type, input_time, quantity, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `INSERT INTO electric_items (type, input_time, quantity, description) 
+        VALUES ( ?, ?, ?, ?)`,
+      [type, input_time, quantity, description],
       (err, result) => {
         if (err) {
           return reject(err)
@@ -490,6 +646,45 @@ stockDB.deleteItem = ({ id }) => {
   })
 }
 
+stockDB.deleteElectricItem = ({ id }) => {
+  console.log({ id })
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM electric_items WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.deleteMechanicalItem = ({ id }) => {
+  console.log({ id })
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM mechanical_items WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
+  })
+}
+
 stockDB.addItemType = ({ name, category, unit, description }) => {
   return new Promise((resolve, reject) => {
     pool.query(
@@ -509,10 +704,30 @@ stockDB.addItemType = ({ name, category, unit, description }) => {
     )
   })
 }
+
 stockDB.addElectricItemType = ({ name, category, unit, description }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO elctric_item_types (name, category, unit, description) 
+      `INSERT INTO electric_item_types (name, category, unit, description) 
+        VALUES (?, ? , ? , ?)`,
+      [name, category, unit, description],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "add success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.addMechanicalItemType = ({ name, category, unit, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `INSERT INTO mechanical_item_types (name, category, unit, description) 
         VALUES (?, ? , ? , ?)`,
       [name, category, unit, description],
       (err, result) => {
@@ -549,6 +764,7 @@ stockDB.updateItemType = ({ id, name, category, unit, description }) => {
     )
   })
 }
+
 stockDB.updateElectricItemType = ({
   id,
   name,
@@ -559,6 +775,32 @@ stockDB.updateElectricItemType = ({
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE electric_item_types
+              SET name = ?, category = ?, unit = ?, description = ?
+              WHERE id = ?`,
+      [name, category, unit, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateMechanicalItemType = ({
+  id,
+  name,
+  category,
+  unit,
+  description,
+}) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE mechanical_item_types
               SET name = ?, category = ?, unit = ?, description = ?
               WHERE id = ?`,
       [name, category, unit, description, id],
@@ -608,11 +850,69 @@ stockDB.deleteElectricItemType = ({ id }) => {
     )
   })
 }
+stockDB.deleteMechanicalItemType = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM mechanical_item_types WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
+  })
+}
 
 stockDB.updateCategory = ({ id, name, description }) => {
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE categories
+              SET name = ?, description = ?
+              WHERE id = ?`,
+      [name, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateElectricCategory = ({ id, name, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE electric_categories
+              SET name = ?, description = ?
+              WHERE id = ?`,
+      [name, description, id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateMechanicalCategory = ({ id, name, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `UPDATE mechanical_categories
               SET name = ?, description = ?
               WHERE id = ?`,
       [name, description, id],
@@ -649,6 +949,44 @@ stockDB.addCategory = ({ name, description }) => {
     )
   })
 }
+stockDB.addElectricCategory = ({ name, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `INSERT INTO electric_categories (name, description) 
+        VALUES (?, ?)`,
+      [name, description],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "add success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.addMechanicalCategory = ({ name, description }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `INSERT INTO mechanical_categories (name, description) 
+        VALUES (?, ?)`,
+      [name, description],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "add success",
+          },
+        })
+      }
+    )
+  })
+}
 
 stockDB.deleteCategory = ({ id }) => {
   return new Promise((resolve, reject) => {
@@ -662,6 +1000,42 @@ stockDB.deleteCategory = ({ id }) => {
         },
       })
     })
+  })
+}
+stockDB.deleteElectricCategory = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM electric_categories WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.deleteMechanicalCategory = ({ id }) => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `DELETE FROM mechanical_categories WHERE id = ?`,
+      [id],
+      (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "delete success",
+          },
+        })
+      }
+    )
   })
 }
 

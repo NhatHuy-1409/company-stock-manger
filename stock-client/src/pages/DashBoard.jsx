@@ -12,6 +12,9 @@ import { useEffect } from "react"
 import ElectricItemsManager from "../components/dashboard/electric-items-manager/ElectricItemsManager"
 import ElectricItemsTypeManager from "../components/dashboard/electric-items-type-manager/ElectricItemsTypeManager"
 import ElectricCategoriesManager from "../components/dashboard/electric-categories-manager/ElectricCategoriesManager"
+import MechanicalItemsManager from "../components/dashboard/mechanical-items-manager/MechanicalItemsManager"
+import MechanicalItemsTypeManager from "../components/dashboard/mechanical-items-type-manager/MechanicalItemsTypeManager"
+import MechanicalCategoriesManager from "../components/dashboard/mechanical-categories-manager/MechanicalCategoriesManager"
 
 const COMPONENTS = {
   ItemsManager: <ItemsManager />,
@@ -21,6 +24,10 @@ const COMPONENTS = {
   ElectricItemsManager: <ElectricItemsManager />,
   ElectricItemsTypeManager: <ElectricItemsTypeManager />,
   ElectricCategoriesManager: <ElectricCategoriesManager />,
+
+  MechanicalItemsManager: <MechanicalItemsManager />,
+  MechanicalItemsTypeManager: <MechanicalItemsTypeManager />,
+  MechanicalCategoriesManager: <MechanicalCategoriesManager />,
 
   UsersManager: <UsersManager />,
   RequestsBrowsingManager: <RequestsBrowsingManager />,

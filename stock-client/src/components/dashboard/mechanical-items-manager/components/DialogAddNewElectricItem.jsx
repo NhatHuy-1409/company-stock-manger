@@ -13,8 +13,8 @@ import {
 } from "@material-ui/pickers"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { addElectricItem } from "../../../../api/stock-manager"
-import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
+import { addMechanicalItem } from "../../../../api/stock-manager"
+import { getMechanicalItemTypes } from "../../../../meta-data/mechanical-item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
 
@@ -36,7 +36,7 @@ export default function DialogAddNewElectricItem({
   const [statusOptions, setStatusOptions] = useState([])
   const [stockOptions, setStockOptions] = useState([])
   const [itemTypes, setItemTypes] = useState([])
-  const [electricItemsTypes, setElectricItemsTypes] = useState([])
+  const [mechanicalItemsTypes, setMechanicalItemsTypes] = useState([])
 
   useEffect(() => {
     // const getStatuses = async () => {
@@ -55,11 +55,11 @@ export default function DialogAddNewElectricItem({
     // getStocks()
     // getListItemTypes()
 
-    const getListElectricItemsTypes = async () => {
-      const electricItemsType = await getElectricItemTypes()
-      setElectricItemsTypes(electricItemsType)
+    const getListMechanicalItemsTypes = async () => {
+      const electricItemsType = await getMechanicalItemTypes()
+      setMechanicalItemsTypes(electricItemsType)
     }
-    getListElectricItemsTypes()
+    getListMechanicalItemsTypes()
   }, [])
 
   const handleStatusChange = (event) => {
@@ -87,7 +87,7 @@ export default function DialogAddNewElectricItem({
       description: description,
     }
     console.log(payload)
-    addElectricItem(payload)
+    addMechanicalItem(payload)
       .then((res) => {
         console.log("pl: ", payload)
         onUpdateSuccess()
@@ -117,7 +117,7 @@ export default function DialogAddNewElectricItem({
               value={typeId}
               onChange={handleTypeIdChange}
             >
-              {electricItemsTypes.map((item) => (
+              {mechanicalItemsTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>

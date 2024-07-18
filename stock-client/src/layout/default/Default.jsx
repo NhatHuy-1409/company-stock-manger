@@ -1,5 +1,5 @@
-import React from "react";
-import Header from "./components/header/Header";
+import React from "react"
+import Header from "./components/header/Header"
 // import Footer from "./components/footer/Footer";
 
 function Default({ children }) {
@@ -9,7 +9,7 @@ function Default({ children }) {
       {children}
       {/* <Footer /> */}
     </div>
-  );
+  )
 }
 
-export default Default;
+export default Default

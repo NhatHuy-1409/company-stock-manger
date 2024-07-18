@@ -159,31 +159,6 @@ export default function DialogAddNewItem({
                     "aria-label": "change date",
                   }}
                 />
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="dd/MM/yyyy"
-                  margin="normal"
-                  label="Ngày hết hạn"
-                  value={expiryTime}
-                  onChange={(val) => setExpiryTime(val)}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-                <KeyboardDatePicker
-                  disabled
-                  disableToolbar
-                  variant="inline"
-                  format="dd/MM/yyyy"
-                  margin="normal"
-                  label="Ngày xuất"
-                  value={outputTime}
-                  onChange={(val) => setOutputTime(val)}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
               </Grid>
             </MuiPickersUtilsProvider>
             <TextareaAutosize

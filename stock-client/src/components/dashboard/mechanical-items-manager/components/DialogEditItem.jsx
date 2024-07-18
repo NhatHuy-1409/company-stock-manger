@@ -11,36 +11,48 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers"
-import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { addElectricItem } from "../../../../api/stock-manager"
-import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
+import { getMechanicalItemTypes } from "../../../../meta-data/mechanical-item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
+import "./DialogEditItem.scss"
+import { format } from "date-fns"
+import { updateMechanicalItem } from "../../../../api/stock-manager"
+import FormControl from "@material-ui/core/FormControl"
+import InputLabel from "@material-ui/core/InputLabel"
+import { connect } from "react-redux"
 
-export default function DialogAddNewElectricItem({
+function DialogEditItem({
   open,
   handleClose,
+  selectedItem,
   onUpdateSuccess,
+  user,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState("1")
-  const [statusId, setStatusId] = useState("1")
-  const [stockId, setStockId] = useState("1")
-  const [description, setDescription] = useState("")
-  const [inputTime, setInputTime] = useState(new Date())
-  const [expiryTime, setExpiryTime] = useState(null)
-  const [outputTime, setOutputTime] = useState(null)
+  const [typeId, setTypeId] = useState(selectedItem.type_id)
+  const [statusId, setStatusId] = useState(selectedItem.status_id)
+  const [stockId, setStockId] = useState(selectedItem.stock_id)
+  const [description, setDescription] = useState(selectedItem.description || "")
+  const [inputTime, setInputTime] = useState(
+    selectedItem.input_time ? new Date(selectedItem.input_time) : null
+  )
+  const [expiryTime, setExpiryTime] = useState(
+    selectedItem.expiry_time ? new Date(selectedItem.expiry_time) : null
+  )
+  const [outputTime, setOutputTime] = useState(
+    selectedItem.output_time ? new Date(selectedItem.output_time) : null
+  )
 
   // list options
   const [statusOptions, setStatusOptions] = useState([])
   const [stockOptions, setStockOptions] = useState([])
-  const [itemTypes, setItemTypes] = useState([])
-  const [electricItemsTypes, setElectricItemsTypes] = useState([])
+  const [mechanicalItemsTypes, setMechanicalItemsTypes] = useState([])
 
   useEffect(() => {
     // const getStatuses = async () => {
     //   const listStt = await statuses()
+    //   console.log(listStt)
     //   setStatusOptions(listStt)
     // }
     // const getStocks = async () => {
@@ -51,15 +63,16 @@ export default function DialogAddNewElectricItem({
     //   const itemTypes = await getItemTypes()
     //   setItemTypes(itemTypes)
     // }
+
     // getStatuses()
     // getStocks()
     // getListItemTypes()
 
-    const getListElectricItemsTypes = async () => {
-      const electricItemsType = await getElectricItemTypes()
-      setElectricItemsTypes(electricItemsType)
+    const getListMechanicalItemsTypes = async () => {
+      const mechanicalItemsType = await getMechanicalItemTypes()
+      setMechanicalItemsTypes(mechanicalItemsType)
     }
-    getListElectricItemsTypes()
+    getListMechanicalItemsTypes()
   }, [])
 
   const handleStatusChange = (event) => {
@@ -79,19 +92,20 @@ export default function DialogAddNewElectricItem({
 
   const handleSubmitForm = () => {
     const payload = {
+      id: selectedItem.id,
       type: typeId,
       input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-
-      name: typeId,
+      // output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
+      // expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
+      // status: statusId,
+      // stock_id: stockId,
       quantity: 1,
       description: description,
     }
-    console.log(payload)
-    addElectricItem(payload)
+    updateMechanicalItem(payload)
       .then((res) => {
         console.log("pl: ", payload)
         onUpdateSuccess()
-        handleClose()
       })
       .catch((err) => {
         console.log(err)
@@ -117,7 +131,7 @@ export default function DialogAddNewElectricItem({
               value={typeId}
               onChange={handleTypeIdChange}
             >
-              {electricItemsTypes.map((item) => (
+              {mechanicalItemsTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>
@@ -162,3 +176,11 @@ export default function DialogAddNewElectricItem({
     </div>
   )
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user,
+  }
+}
+
+export default connect(mapStateToProps, null)(DialogEditItem)

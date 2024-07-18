@@ -6,18 +6,17 @@ import DialogTitle from "@material-ui/core/DialogTitle"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
 import React, { useState } from "react"
-import { updateElectricCategory } from "../../../../api/stock-manager"
+import { addMechanicalCategory } from "../../../../api/stock-manager"
 import "./DialogAddNewCategory.scss"
 
 export default function DialogAddNewCategory({
   open,
   handleClose,
-  onUpdateSuccess,
-  selectedItem,
+  onAddNewSuccess,
 }) {
   // modal value
-  const [name, setName] = useState(selectedItem.name)
-  const [description, setDescription] = useState(selectedItem.description)
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
 
   // error state
 
@@ -38,16 +37,14 @@ export default function DialogAddNewCategory({
 
   const handleSubmitForm = () => {
     const payload = {
-      id: selectedItem.id,
       name,
       description,
     }
 
-    updateElectricCategory(payload)
+    addMechanicalCategory(payload)
       .then((res) => {
         console.log(res)
-        onUpdateSuccess()
-        handleClose()
+        onAddNewSuccess()
       })
       .catch((err) => {
         console.log(err)

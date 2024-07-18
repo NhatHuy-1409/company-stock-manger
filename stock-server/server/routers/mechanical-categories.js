@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    let results = await dbLogin.getAllElectricCategories()
+    let results = await dbLogin.getAllMechanicalCategories()
     res.json(results)
   } catch (err) {
     console.log(err)
@@ -17,7 +17,7 @@ router.get("/", async (req, res, next) => {
 router.post("/add", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.addElectricCategory(payload)
+    let results = await dbLogin.addMechanicalCategory(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -29,7 +29,7 @@ router.post("/update", async (req, res, next) => {
   try {
     const payload = req.body
     console.log(payload)
-    let results = await dbLogin.updateElectricCategory(payload)
+    let results = await dbLogin.updateMechanicalCategory(payload)
     res.json(results)
   } catch (error) {
     console.log(error)
@@ -40,7 +40,7 @@ router.post("/update", async (req, res, next) => {
 router.post("/delete", async (req, res, next) => {
   try {
     const payload = req.body
-    let results = await dbLogin.deleteElectricCategory(payload)
+    let results = await dbLogin.deleteMechanicalCategory(payload)
     res.json(results)
   } catch (error) {
     console.log(error)

@@ -13,13 +13,13 @@ import Select from "@material-ui/core/Select"
 import ButtonGroup from "@material-ui/core/ButtonGroup"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { getItems } from "../../../api/stock-manager"
-import DialogAddNewItem from "./components/DialogAddNewItem"
+import { getMechanicalItems } from "../../../api/stock-manager"
 import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
 import DialogSendEmail from "./components/DialogSendEmail"
 import "./ItemsManager.scss"
 import { TextField } from "@material-ui/core"
+import DialogAddNewElectricItem from "./components/DialogAddNewElectricItem"
 
 const useStyles = makeStyles({
   table: {},
@@ -28,10 +28,8 @@ const useStyles = makeStyles({
 const SORT_OPTIONS = [
   { value: "id", label: "Mã" },
   { value: "name", label: "Tên" },
-  { value: "status_id", label: "Trạng thái" },
   { value: "input_time", label: "Ngày nhập" },
-  // { value: "output_time", label: "Ngày xuất" },
-  // { value: "expiry_time", label: "Ngày hết hạn" },
+  { value: "quantity", label: "Số lượng" },
 ]
 
 const SORT_ORDER_OPTIONS = [
@@ -39,7 +37,7 @@ const SORT_ORDER_OPTIONS = [
   { value: "DESC", label: "Giảm dần" },
 ]
 
-function ItemsManager(props) {
+function MechanicalItemsManager(props) {
   const classes = useStyles()
   const [list, setList] = useState([])
   const [selectedItem, setSelectedItem] = useState(null)
@@ -63,7 +61,7 @@ function ItemsManager(props) {
   }
 
   const getData = async (sortProperty, sortOrder) => {
-    const data = await getItems(sortProperty, sortOrder)
+    const data = await getMechanicalItems(sortProperty, sortOrder)
     setList(data)
   }
 
@@ -87,21 +85,12 @@ function ItemsManager(props) {
         item.id,
         item.name,
         item.input_time,
-        // item.output_time,
-        // item.expiry_time,
-        item.status,
-        item.stock,
-        item.stock_type,
-        item.status_id,
-        item.stock_id,
-        item.stock_type_id,
+        item.quantity,
         item.description,
         item.type_id
       )
     ),
   ]
-
-  console.log({ rows })
 
   const actionsBlock = (item) => {
     return (
@@ -122,7 +111,7 @@ function ItemsManager(props) {
   ) : null
 
   const dialogAddNewItem = openAddNewItem ? (
-    <DialogAddNewItem
+    <DialogAddNewElectricItem
       open={openAddNewItem}
       handleClose={() => setOpenAddNewItem(false)}
       selectedItem={selectedItem}
@@ -190,7 +179,6 @@ function ItemsManager(props) {
       </Select>
     </div>
   )
-
   return (
     <div className="itemsManager">
       <ButtonGroup>
@@ -205,10 +193,9 @@ function ItemsManager(props) {
             <TableRow>
               <TableCell>Mã</TableCell>
               <TableCell>Tên</TableCell>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>Bộ phận</TableCell>
-              <TableCell>Ngày bàn giao</TableCell>
-              <TableCell>Thời gian sử dụng</TableCell>
+              {/* <TableCell>Vị trí</TableCell> */}
+              <TableCell>Ngày nhập</TableCell>
+              <TableCell>Số lượng</TableCell>
               <TableCell>Mô tả</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -220,10 +207,9 @@ function ItemsManager(props) {
                   {row.id}
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{`${row.stock} `}</TableCell>
+                {/* <TableCell>{`${row.stock} (${row.stock_type})`}</TableCell> */}
                 <TableCell>{getDate(row.input_time)}</TableCell>
-                <TableCell>{}</TableCell>
+                <TableCell>{getDate(row.quantity)}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{actionsBlock(row)}</TableCell>
               </TableRow>
@@ -245,36 +231,15 @@ const getDate = (stringDate) => {
   return format(cvDate, "dd/MM/yyyy")
 }
 
-const createData = (
-  id,
-  name,
-  input_time,
-  // output_time,
-  // expiry_time,
-  status,
-  stock,
-  stock_type,
-  status_id,
-  stock_id,
-  stock_type_id,
-  description,
-  type_id
-) => {
+const createData = (id, name, input_time, quantity, description, type_id) => {
   return {
     id,
     name,
     input_time,
-    // output_time,
-    // expiry_time,
-    status,
-    stock,
-    stock_type,
-    status_id,
-    stock_id,
-    stock_type_id,
+    quantity,
     description,
     type_id,
   }
 }
 
-export default ItemsManager
+export default MechanicalItemsManager

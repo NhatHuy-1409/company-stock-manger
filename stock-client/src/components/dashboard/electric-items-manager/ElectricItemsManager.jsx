@@ -13,8 +13,7 @@ import Select from "@material-ui/core/Select"
 import ButtonGroup from "@material-ui/core/ButtonGroup"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { getItems, getElectricItems } from "../../../api/stock-manager"
-import DialogAddNewItem from "./components/DialogAddNewItem"
+import { getElectricItems } from "../../../api/stock-manager"
 import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
 import DialogSendEmail from "./components/DialogSendEmail"
@@ -29,11 +28,8 @@ const useStyles = makeStyles({
 const SORT_OPTIONS = [
   { value: "id", label: "Mã" },
   { value: "name", label: "Tên" },
-  // { value: "status_id", label: "Trạng thái" },
   { value: "input_time", label: "Ngày nhập" },
   { value: "quantity", label: "Số lượng" },
-  // { value: "output_time", label: "Ngày xuất" },
-  // { value: "expiry_time", label: "Ngày hết hạn" },
 ]
 
 const SORT_ORDER_OPTIONS = [
@@ -89,22 +85,12 @@ function ElectricItemsManager(props) {
         item.id,
         item.name,
         item.input_time,
-        // item.output_time,
-        // item.expiry_time,
-        // item.status,
-        // item.stock,
-        // item.stock_type,
-        // item.status_id,
-        // item.stock_id,
-        // item.stock_type_id,
         item.quantity,
-        item.description
-        // item.type_id
+        item.description,
+        item.type_id
       )
     ),
   ]
-
-  console.log({ rows })
 
   const actionsBlock = (item) => {
     return (
@@ -193,15 +179,11 @@ function ElectricItemsManager(props) {
       </Select>
     </div>
   )
-  console.log({ rows })
   return (
     <div className="itemsManager">
       <ButtonGroup>
         <Button color="primary" onClick={() => setOpenAddNewItem(true)}>
           Thêm thiết bị
-        </Button>
-        <Button color="primary" onClick={() => setOpenDialogAlertEmail(true)}>
-          Thông báo thiết bị gần hết hạn
         </Button>
       </ButtonGroup>
       {selectSort}
@@ -227,7 +209,8 @@ function ElectricItemsManager(props) {
                 <TableCell>{row.name}</TableCell>
                 {/* <TableCell>{`${row.stock} (${row.stock_type})`}</TableCell> */}
                 <TableCell>{getDate(row.input_time)}</TableCell>
-                <TableCell>{getDate(row.quantity)}</TableCell>
+                <TableCell>1</TableCell>
+                {/* <TableCell>{getDate(row.quantity)}</TableCell> */}
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{actionsBlock(row)}</TableCell>
               </TableRow>
@@ -249,34 +232,11 @@ const getDate = (stringDate) => {
   return format(cvDate, "dd/MM/yyyy")
 }
 
-const createData = (
-  id,
-  name,
-  input_time,
-  // output_time,
-  // expiry_time,
-  // status,
-  // stock,
-  // stock_type,
-  // status_id,
-  // stock_id,
-  // stock_type_id,
-  quantity,
-  description,
-  type_id
-) => {
+const createData = (id, name, input_time, quantity, description, type_id) => {
   return {
     id,
     name,
     input_time,
-    // output_time,
-    // expiry_time,
-    // status,
-    // stock,
-    // stock_type,
-    // status_id,
-    // stock_id,
-    // stock_type_id,
     quantity,
     description,
     type_id,
