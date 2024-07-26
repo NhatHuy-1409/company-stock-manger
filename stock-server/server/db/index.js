@@ -43,11 +43,25 @@ stockDB.userLogin = ({ email, password }) => {
 
 // items
 
-stockDB.getAllItems = (orderby, sort_order) => {
+stockDB.getAllItems = (orderby, sort_order, type, status, stock_id) => {
+  let typeCondition = ""
+  if (type !== undefined && type !== null) {
+    typeCondition = `WHERE i.type = ${type}`
+  }
+  let statusCondition = ""
+  if (status !== undefined && status !== null) {
+    statusCondition = `WHERE i.status = ${status}`
+  }
+  let stockCondition = ""
+  if (stock_id !== undefined && stock_id !== null) {
+    stockCondition = `WHERE i.stock_id = ${stock_id}`
+  }
+
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT i.id, it.name, input_time, output_time, expiry_time, i.description,
+      `SELECT i.id, product_id, i.name, i.person_in_charge, input_time, i.description,
               it.id AS type_id,
+              it.name AS type,
               s.name AS status, s.id AS status_id,
               st.name AS stock, st.id AS stock_id,
               stp.name AS stock_type, stp.id AS stock_type_id
@@ -60,7 +74,10 @@ stockDB.getAllItems = (orderby, sort_order) => {
           ON i.stock_id = st.id
         LEFT JOIN stock_types stp
           ON st.type = stp.id
-        ORDER BY ${orderby} ${sort_order}`,
+        ${typeCondition}
+        ${statusCondition}
+        ${stockCondition}
+        ORDER BY ${orderby} ${sort_order} `,
       (err, result) => {
         if (err) {
           return reject(err)
@@ -71,14 +88,20 @@ stockDB.getAllItems = (orderby, sort_order) => {
   })
 }
 
-stockDB.getAllElectricItems = (orderby, sort_order) => {
+stockDB.getAllElectricItems = (orderby, sort_order, type) => {
+  let typeCondition = ""
+  if (type !== undefined && type !== null) {
+    typeCondition = `WHERE ei.type = ${type}`
+  }
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT ei.id, eit.name,input_time, quantity, ei.description,
-        eit.id AS type_id
+      `SELECT ei.id,ei.product_id,ei.name,input_time, quantity,ei.position, ei.description,
+        eit.id AS type_id,
+        eit.name AS type
         FROM electric_items ei
         LEFT JOIN electric_item_types eit
           ON ei.type = eit.id
+        ${typeCondition} 
         ORDER BY ${orderby} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -89,14 +112,20 @@ stockDB.getAllElectricItems = (orderby, sort_order) => {
     )
   })
 }
-stockDB.getAllMechanicalItems = (orderby, sort_order) => {
+stockDB.getAllMechanicalItems = (orderby, sort_order, type) => {
+  let typeCondition = ""
+  if (type !== undefined && type !== null) {
+    typeCondition = `WHERE mi.type = ${type}`
+  }
   return new Promise((resolve, reject) => {
     pool.query(
-      `SELECT mi.id, mit.name,input_time, quantity, mi.description,
-        mit.id AS type_id
+      `SELECT mi.id,mi.product_id,mi.name,input_time, quantity,mi.position, mi.description,
+        mit.id AS type_id,
+        mit.name AS type
         FROM mechanical_items mi
         LEFT JOIN mechanical_item_types mit
           ON mi.type = mit.id
+        ${typeCondition} 
         ORDER BY ${orderby} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -271,13 +300,18 @@ stockDB.getMechanicalItemByTypeId = (type_id) => {
   })
 }
 
-stockDB.getAllItemsType = (sort_property, sort_order) => {
+stockDB.getAllItemsType = (sort_property, sort_order, category) => {
+  let categoryCondition = ""
+  if (category !== undefined && category !== null) {
+    categoryCondition = `WHERE it.category = ${category}`
+  }
   return new Promise((resolve, reject) => {
     pool.query(
       `SELECT it.id, it.name, c.name AS category,c.id AS category_id,unit,it.description
         FROM item_types it 
 		    LEFT JOIN categories c 
 			    ON it.category = c.id
+          ${categoryCondition}
         ORDER BY ${sort_property || ""} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -289,13 +323,18 @@ stockDB.getAllItemsType = (sort_property, sort_order) => {
   })
 }
 
-stockDB.getAllElectricItemsType = (sort_property, sort_order) => {
+stockDB.getAllElectricItemsType = (sort_property, sort_order, category) => {
+  let categoryCondition = ""
+  if (category !== undefined && category !== null) {
+    categoryCondition = `WHERE eit.category = ${category}`
+  }
   return new Promise((resolve, reject) => {
     pool.query(
       `SELECT eit.id, eit.name, ec.name AS category,ec.id AS category_id,unit,eit.description
         FROM electric_item_types eit 
 		    LEFT JOIN electric_categories ec 
 			    ON eit.category = ec.id
+        ${categoryCondition}
         ORDER BY ${sort_property || ""} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -307,13 +346,18 @@ stockDB.getAllElectricItemsType = (sort_property, sort_order) => {
   })
 }
 
-stockDB.getAllMechanicalItemsType = (sort_property, sort_order) => {
+stockDB.getAllMechanicalItemsType = (sort_property, sort_order, category) => {
+  let categoryCondition = ""
+  if (category !== undefined && category !== null) {
+    categoryCondition = `WHERE mit.category = ${category}`
+  }
   return new Promise((resolve, reject) => {
     pool.query(
       `SELECT mit.id, mit.name, mc.name AS category,mc.id AS category_id,unit,mit.description
         FROM mechanical_item_types mit 
 		    LEFT JOIN mechanical_categories mc 
 			    ON mit.category = mc.id
+        ${categoryCondition}
         ORDER BY ${sort_property || ""} ${sort_order}`,
       (err, result) => {
         if (err) {
@@ -427,26 +471,28 @@ stockDB.getStatuses = () => {
 
 stockDB.updateItem = ({
   id,
+  product_id,
+  name,
   type,
-  input_time,
-  output_time,
-  expiry_time,
   status,
   stock_id,
+  person_in_charge,
+  input_time,
   description,
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE items
-              SET type = ?, input_time = ?,expiry_time = ?, output_time = ?, status = ?, stock_id = ?, description = ?
+              SET product_id = ?, name = ?,type = ?, status = ?, stock_id = ?, person_in_charge = ?,input_time = ?, description = ?
               WHERE id = ?`,
       [
+        product_id,
+        name,
         type,
-        input_time,
-        expiry_time,
-        output_time,
         status,
         stock_id,
+        person_in_charge,
+        input_time,
         description,
         id,
       ],
@@ -465,17 +511,20 @@ stockDB.updateItem = ({
 }
 stockDB.updateElectricItem = ({
   id,
+  product_id,
+  name,
   type,
   input_time,
   quantity,
+  position,
   description,
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE electric_items
-              SET type = ?, input_time = ?, quantity = ?, description = ?
+              SET product_id = ? ,name = ?, type = ?, input_time = ?, quantity = ?, position = ?, description = ?
               WHERE id = ?`,
-      [type, input_time, quantity, description, id],
+      [product_id, name, type, input_time, quantity, position, description, id],
       (err, result) => {
         if (err) {
           return reject(err)
@@ -491,17 +540,20 @@ stockDB.updateElectricItem = ({
 }
 stockDB.updateMechanicalItem = ({
   id,
+  product_id,
+  name,
   type,
   input_time,
   quantity,
+  position,
   description,
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
       `UPDATE mechanical_items
-              SET type = ?, input_time = ?, quantity = ?, description = ?
+              SET product_id = ? ,name = ?, type = ?, input_time = ?, quantity = ?, position = ?, description = ?
               WHERE id = ?`,
-      [type, input_time, quantity, description, id],
+      [product_id, name, type, input_time, quantity, position, description, id],
       (err, result) => {
         if (err) {
           return reject(err)
@@ -517,25 +569,27 @@ stockDB.updateMechanicalItem = ({
 }
 
 stockDB.addItem = ({
+  product_id,
+  name,
   type,
-  input_time,
-  output_time,
-  expiry_time,
   status,
   stock_id,
+  person_in_charge,
+  input_time,
   description,
 }) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO items (type, input_time, expiry_time, output_time, status, stock_id, description) 
-        VALUES (?, ? , ? , ?, ?, ?, ?)`,
+      `INSERT INTO items ( product_id,name,type,status,stock_id,person_in_charge,input_time,description) 
+        VALUES (?, ? , ? , ?, ?, ?, ?,?)`,
       [
+        product_id,
+        name,
         type,
-        input_time,
-        expiry_time,
-        output_time,
         status,
         stock_id,
+        person_in_charge,
+        input_time,
         description,
       ],
       (err, result) => {
@@ -551,12 +605,21 @@ stockDB.addItem = ({
     )
   })
 }
-stockDB.addMechanicalItem = ({ type, input_time, quantity, description }) => {
+
+stockDB.addElectricItem = ({
+  product_id,
+  name,
+  type,
+  input_time,
+  quantity,
+  position,
+  description,
+}) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO mechanical_items (type, input_time, quantity, description) 
-        VALUES ( ?, ?, ?, ?)`,
-      [type, input_time, quantity, description],
+      `INSERT INTO electric_items (product_id, name, type, input_time, quantity, position, description) 
+        VALUES ( ?, ?, ?, ?,?,?,?)`,
+      [product_id, name, type, input_time, quantity, position, description],
       (err, result) => {
         if (err) {
           return reject(err)
@@ -570,12 +633,21 @@ stockDB.addMechanicalItem = ({ type, input_time, quantity, description }) => {
     )
   })
 }
-stockDB.addElectricItem = ({ type, input_time, quantity, description }) => {
+
+stockDB.addMechanicalItem = ({
+  product_id,
+  name,
+  type,
+  input_time,
+  quantity,
+  position,
+  description,
+}) => {
   return new Promise((resolve, reject) => {
     pool.query(
-      `INSERT INTO electric_items (type, input_time, quantity, description) 
-        VALUES ( ?, ?, ?, ?)`,
-      [type, input_time, quantity, description],
+      `INSERT INTO mechanical_items (product_id, name, type, input_time, quantity, position, description) 
+        VALUES ( ?, ?, ?, ?,?,?,?)`,
+      [product_id, name, type, input_time, quantity, position, description],
       (err, result) => {
         if (err) {
           return reject(err)

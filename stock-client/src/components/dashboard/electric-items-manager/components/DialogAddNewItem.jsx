@@ -13,63 +13,80 @@ import {
 } from "@material-ui/pickers"
 import { format } from "date-fns"
 import React, { useEffect, useState } from "react"
-import { addMechanicalItem } from "../../../../api/stock-manager"
-import { getMechanicalItemTypes } from "../../../../meta-data/mechanical-item-types"
-import { statuses } from "../../../../meta-data/statuses"
-import { stocks } from "../../../../meta-data/stocks"
+import { addElectricItem } from "../../../../api/stock-manager"
+import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
+import { TextField } from "@material-ui/core"
 
-export default function DialogAddNewElectricItem({
+export default function DialogAddNewItem({
   open,
   handleClose,
   onUpdateSuccess,
 }) {
   // modal value
   const [typeId, setTypeId] = useState("1")
-  const [statusId, setStatusId] = useState("1")
-  const [stockId, setStockId] = useState("1")
   const [description, setDescription] = useState("")
   const [inputTime, setInputTime] = useState(new Date())
-  const [expiryTime, setExpiryTime] = useState(null)
-  const [outputTime, setOutputTime] = useState(null)
-
+  const [quantity, setQuantity] = useState(1)
+  const [name, setName] = useState("")
+  const [productId, setProductId] = useState("")
+  const [position, setPosition] = useState("")
   // list options
-  const [statusOptions, setStatusOptions] = useState([])
-  const [stockOptions, setStockOptions] = useState([])
+
   const [itemTypes, setItemTypes] = useState([])
-  const [mechanicalItemsTypes, setMechanicalItemsTypes] = useState([])
+
+  // error state
+
+  const [nameErr, setNameErr] = useState(null)
+  const [productIdErr, setProductIdErr] = useState(null)
+  const [positionErr, setPositionErr] = useState(null)
 
   useEffect(() => {
-    // const getStatuses = async () => {
-    //   const listStt = await statuses()
-    //   setStatusOptions(listStt)
-    // }
-    // const getStocks = async () => {
-    //   const listStocks = await stocks()
-    //   setStockOptions(listStocks)
-    // }
-    // const getListItemTypes = async () => {
-    //   const itemTypes = await getItemTypes()
-    //   setItemTypes(itemTypes)
-    // }
-    // getStatuses()
-    // getStocks()
-    // getListItemTypes()
-
-    const getListMechanicalItemsTypes = async () => {
-      const electricItemsType = await getMechanicalItemTypes()
-      setMechanicalItemsTypes(electricItemsType)
+    const getListItemsTypes = async () => {
+      const electricItemsType = await getElectricItemTypes()
+      setItemTypes(electricItemsType)
     }
-    getListMechanicalItemsTypes()
+    getListItemsTypes()
   }, [])
 
-  const handleStatusChange = (event) => {
+  const handleNameChange = (event) => {
     const { value } = event.target
-    setStatusId(value)
+    setName(value)
   }
 
-  const handleStockChange = (event) => {
+  const handleCheckValidateName = (event) => {
+    if (!event || !event.target.value) {
+      setNameErr("Không được bỏ trống tên")
+      return
+    }
+    setNameErr(null)
+  }
+  const handleProductIdChange = (event) => {
     const { value } = event.target
-    setStockId(value)
+    setProductId(value)
+  }
+
+  const handleCheckValidateProductId = (event) => {
+    if (!event || !event.target.value) {
+      setProductIdErr("Không được bỏ trống tên")
+      return
+    }
+    setProductIdErr(null)
+  }
+  const handlePositionChange = (event) => {
+    const { value } = event.target
+    setPosition(value)
+  }
+
+  const handleCheckValidatePosition = (event) => {
+    if (!event || !event.target.value) {
+      setPositionErr("Không được bỏ trống tên")
+      return
+    }
+    setPositionErr(null)
+  }
+  const handleQuantity = (event) => {
+    const { value } = event.target
+    setQuantity(value)
   }
 
   const handleTypeIdChange = (event) => {
@@ -79,15 +96,15 @@ export default function DialogAddNewElectricItem({
 
   const handleSubmitForm = () => {
     const payload = {
+      product_id: productId,
+      name,
       type: typeId,
       input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-
-      name: typeId,
-      quantity: 1,
+      quantity: parseInt(quantity),
+      position: position,
       description: description,
     }
-    console.log(payload)
-    addMechanicalItem(payload)
+    addElectricItem(payload)
       .then((res) => {
         console.log("pl: ", payload)
         onUpdateSuccess()
@@ -110,14 +127,33 @@ export default function DialogAddNewElectricItem({
         <DialogTitle id="form-dialog-title">Add new Item</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
+            <TextField
+              fullWidth
+              label="Mã thiết bị"
+              value={productId}
+              onChange={handleProductIdChange}
+              onBlur={handleCheckValidateProductId}
+              error={productIdErr}
+              helperText={productIdErr}
+            />
+            <TextField
+              fullWidth
+              label="Tên thiết bị"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleCheckValidateName}
+              error={nameErr}
+              helperText={nameErr}
+            />
+
             <Select
               native
               fullWidth
-              label="Name"
+              label="Loại"
               value={typeId}
               onChange={handleTypeIdChange}
             >
-              {mechanicalItemsTypes.map((item) => (
+              {itemTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>
@@ -138,8 +174,24 @@ export default function DialogAddNewElectricItem({
                     "aria-label": "change date",
                   }}
                 />
+                <TextField
+                  inputProps={{ type: "number" }}
+                  fullWidth
+                  label="Số lượng"
+                  value={quantity}
+                  onChange={handleQuantity}
+                />
               </Grid>
             </MuiPickersUtilsProvider>
+            <TextField
+              fullWidth
+              label="Vị trí"
+              value={position}
+              onChange={handlePositionChange}
+              onBlur={handleCheckValidatePosition}
+              error={positionErr}
+              helperText={positionErr}
+            />
             <TextareaAutosize
               value={description}
               className="textArea"

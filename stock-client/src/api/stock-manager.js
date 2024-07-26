@@ -21,10 +21,20 @@ export const adminLogin = (email, password, isAdmin) => {
   })
 }
 
-export const getItems = (orderby, sort_order) => {
+export const getItems = (orderby, sort_order, type, status, stock) => {
   return new Promise((resolve, reject) => {
+    let url = `items?orderby=${orderby}&sort_order=${sort_order}`
+    if (type !== undefined && type !== null) {
+      url += `&type=${type}`
+    }
+    if (status !== undefined && status !== null) {
+      url += `&status=${status}`
+    }
+    if (stock !== undefined && stock !== null) {
+      url += `&stock_id=${stock}`
+    }
     apiInstance
-      .get(`items?orderby=${orderby}&sort_order=${sort_order}`)
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -33,10 +43,15 @@ export const getItems = (orderby, sort_order) => {
       })
   })
 }
-export const getElectricItems = (orderby, sort_order) => {
+
+export const getElectricItems = (orderby, sort_order, type) => {
   return new Promise((resolve, reject) => {
+    let url = `electric-items?orderby=${orderby}&sort_order=${sort_order}`
+    if (type !== undefined && type !== null) {
+      url += `&type=${type}`
+    }
     apiInstance
-      .get(`electric-items?orderby=${orderby}&sort_order=${sort_order}`)
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -45,10 +60,14 @@ export const getElectricItems = (orderby, sort_order) => {
       })
   })
 }
-export const getMechanicalItems = (orderby, sort_order) => {
+export const getMechanicalItems = (orderby, sort_order, type) => {
   return new Promise((resolve, reject) => {
+    let url = `mechanical-items?orderby=${orderby}&sort_order=${sort_order}`
+    if (type !== undefined && type !== null) {
+      url += `&type=${type}`
+    }
     apiInstance
-      .get(`mechanical-items?orderby=${orderby}&sort_order=${sort_order}`)
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -84,10 +103,14 @@ export const getItemsByType = (type_id) => {
   })
 }
 
-export const getItemsType = (sortProperty, sortOrder) => {
+export const getItemsType = (sortProperty, sortOrder, category) => {
+  let url = `items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
+  if (category !== undefined && category !== null) {
+    url += `&category=${category}`
+  }
   return new Promise((resolve, reject) => {
     apiInstance
-      .get(`items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`)
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -96,12 +119,15 @@ export const getItemsType = (sortProperty, sortOrder) => {
       })
   })
 }
-export const getElectricItemsType = (sortProperty, sortOrder) => {
+
+export const getElectricItemsType = (sortProperty, sortOrder, category) => {
+  let url = `electric-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
+  if (category !== undefined && category !== null) {
+    url += `&category=${category}`
+  }
   return new Promise((resolve, reject) => {
     apiInstance
-      .get(
-        `electric-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
-      )
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -110,12 +136,15 @@ export const getElectricItemsType = (sortProperty, sortOrder) => {
       })
   })
 }
-export const getMechanicalItemsType = (sortProperty, sortOrder) => {
+
+export const getMechanicalItemsType = (sortProperty, sortOrder, category) => {
+  let url = `mechanical-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
+  if (category !== undefined && category !== null) {
+    url += `&category=${category}`
+  }
   return new Promise((resolve, reject) => {
     apiInstance
-      .get(
-        `mechanical-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
-      )
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })

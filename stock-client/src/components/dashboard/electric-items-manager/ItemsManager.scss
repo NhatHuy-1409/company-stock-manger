@@ -12,4 +12,8 @@
 
 .selectSort {
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 0.5rem;
 }

@@ -11,12 +11,17 @@ import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import React, { useEffect, useState } from "react"
-import { getMechanicalItemsType } from "../../../api/stock-manager"
+import {
+  getMechanicalCategories,
+  getMechanicalItems,
+  getMechanicalItemsType,
+} from "../../../api/stock-manager"
 import "./ItemsTypeManager.scss"
 import DialogAddNewItemType from "./components/DialogAddNewItemType"
 import DialogEditItemType from "./components/DialogEditItemType"
 import DialogAlertRemoveItemType from "./components/DialogAlertRemoveItemType"
 import { TextField } from "@material-ui/core"
+import SubMenu from "../../SubMenuType"
 
 function createData(id, name, category, unit, description, category_id) {
   return { id, name, category, unit, description, category_id }
@@ -41,6 +46,10 @@ const SORT_ORDER_OPTIONS = [
 
 function MechanicalItemsTypeManager(props) {
   const [list, setList] = useState([])
+  const [allItems, setAllItems] = useState([])
+  const [allItemTypes, setAllItemTypes] = useState([])
+  const [categories, setCategories] = useState([])
+
   const classes = useStyles()
   const [selectedItem, setSelectedItem] = useState(null)
 
@@ -49,6 +58,9 @@ function MechanicalItemsTypeManager(props) {
   const [openAlertRemove, setOpenAlertRemove] = useState(false)
   const [sortProperty, setSortProperty] = useState("id")
   const [sortOrder, setSortOrder] = useState("ASC")
+
+  const [nameFilter, setNameFilter] = useState("Tất cả")
+  const [categoryFilter, setCategoryFilter] = useState(null)
 
   const handleClickOpen = (item) => {
     setOpenEditItem(true)
@@ -60,8 +72,21 @@ function MechanicalItemsTypeManager(props) {
     setSelectedItem(null)
   }
 
-  const getData = async (sortProperty, sortOrder) => {
+  const getAllItemTypes = async (sortProperty, sortOrder) => {
     const data = await getMechanicalItemsType(sortProperty, sortOrder)
+    setAllItemTypes(data)
+  }
+
+  const getAllItems = async (sortProperty, sortOrder) => {
+    const data = await getMechanicalItems(sortProperty, sortOrder)
+    setAllItems(data)
+  }
+  const getIninitalData = async () => {
+    const categories = await getMechanicalCategories()
+    setCategories(categories)
+  }
+  const getData = async (sortProperty, sortOrder, category) => {
+    const data = await getMechanicalItemsType(sortProperty, sortOrder, category)
     console.log(data)
     setList(data)
   }
@@ -82,8 +107,14 @@ function MechanicalItemsTypeManager(props) {
   }
 
   useEffect(() => {
-    getData(sortProperty, sortOrder)
-  }, [sortProperty, sortOrder])
+    getData(sortProperty, sortOrder, categoryFilter)
+    getAllItems(sortProperty, sortOrder)
+    getAllItemTypes(sortProperty, sortOrder)
+  }, [sortProperty, sortOrder, categoryFilter])
+
+  useEffect(() => {
+    getIninitalData()
+  }, [])
 
   const rows = [
     ...list.map((item) =>
@@ -99,8 +130,90 @@ function MechanicalItemsTypeManager(props) {
     ),
   ]
 
+  const FILTER_OPTIONS = [
+    {
+      value: "Tất cả",
+      menuLevel: 0,
+    },
+    {
+      value: "Danh mục",
+      menuLevel: 0,
+      nestedOptions: categories?.map((item) => {
+        return {
+          value: item?.name,
+          menuLevel: 1,
+        }
+      }),
+    },
+  ]
+
+  // Hàm chuyển đổi chuỗi sang dạng không dấu
+  const removeVietnameseTones = (str) => {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i")
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+    str = str.replace(/đ/g, "d")
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A")
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E")
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I")
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O")
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
+    str = str.replace(/Đ/g, "D")
+    // Some system encode vietnamese combining accent as individual utf-8 characters
+    // Một vài bộ encode coi các dấu mũ, dấu chữ như một kí tự riêng biệt nên thêm hai dòng này
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "") // ̀ ́ ̃ ̉ ̣  huyền, sắc, ngã, hỏi, nặng
+    str = str.replace(/\u02C6|\u0306|\u031B/g, "") // ˆ ̆ ̛  Â, Ê, Ă, Ơ, Ư
+    // Remove extra spaces
+    // Bỏ các khoảng trắng liền nhau
+    str = str.replace(/ + /g, " ")
+    str = str.trim()
+    // Remove punctuations
+    // Bỏ dấu câu, kí tự đặc biệt
+    str = str.replace(
+      /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+      " "
+    )
+    return str
+  }
+
   const selectSort = (
     <div className="selectSort">
+      Lọc theo:&nbsp;
+      <SubMenu
+        nameFilter={nameFilter}
+        setNameFilter={setNameFilter}
+        menu={FILTER_OPTIONS}
+        list={allItemTypes}
+        setList={setList}
+        setCategoryFilter={setCategoryFilter}
+        categories={categories}
+      />
+      <TextField
+        id="outlined-basic"
+        label="Search"
+        variant="outlined"
+        onChange={(e) => {
+          const searchValue = removeVietnameseTones(
+            e.target.value.toLowerCase()
+          )
+
+          if (searchValue !== "") {
+            setList(
+              rows.filter((item) =>
+                removeVietnameseTones(item?.name?.toLowerCase())?.includes(
+                  searchValue.toLowerCase()
+                )
+              ) || ""
+            )
+          } else {
+            getData(sortProperty, sortOrder, categoryFilter)
+          }
+        }}
+      />
       Sắp xếp theo:&nbsp;
       <Select
         native
@@ -164,6 +277,17 @@ function MechanicalItemsTypeManager(props) {
     />
   ) : null
 
+  const totals = allItems.reduce((accumulator, currentValue) => {
+    // Kiểm tra nếu accumulator đã có type này hay chưa
+    if (!accumulator[currentValue.type]) {
+      accumulator[currentValue.type] = 0
+    }
+    // Cộng quantity vào type tương ứng
+    accumulator[currentValue.type] += currentValue.quantity
+
+    return accumulator
+  }, {})
+
   return (
     <div className="itemsTypeManager">
       <Button color="primary" onClick={() => setOpenAddNewItem(true)}>
@@ -174,22 +298,24 @@ function MechanicalItemsTypeManager(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Mã</TableCell>
+              <TableCell>STT</TableCell>
               <TableCell>Tên</TableCell>
               <TableCell>Danh mục</TableCell>
+              <TableCell>Số lượng</TableCell>
               <TableCell>Đơn vị</TableCell>
               <TableCell>Mô tả</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
-                  {row.id}
+                  {i}
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.category}</TableCell>
+                <TableCell>{totals[row.name] || 0}</TableCell>
                 <TableCell>{row.unit}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{actionsBlock(row)}</TableCell>

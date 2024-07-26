@@ -17,6 +17,7 @@ import { addItem } from "../../../../api/stock-manager"
 import { getItemTypes } from "../../../../meta-data/item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
+import { TextField } from "@material-ui/core"
 
 export default function DialogAddNewItem({
   open,
@@ -29,13 +30,20 @@ export default function DialogAddNewItem({
   const [stockId, setStockId] = useState("1")
   const [description, setDescription] = useState("")
   const [inputTime, setInputTime] = useState(new Date())
-  const [expiryTime, setExpiryTime] = useState(null)
-  const [outputTime, setOutputTime] = useState(null)
+  const [name, setName] = useState("")
+  const [productId, setProductId] = useState("")
+  const [personInCharge, setPersonInCharge] = useState("")
 
   // list options
   const [statusOptions, setStatusOptions] = useState([])
   const [stockOptions, setStockOptions] = useState([])
   const [itemTypes, setItemTypes] = useState([])
+
+  // error state
+
+  const [nameErr, setNameErr] = useState(null)
+  const [productIdErr, setProductIdErr] = useState(null)
+  const [personInChargeErr, setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -56,6 +64,43 @@ export default function DialogAddNewItem({
     getListItemTypes()
   }, [])
 
+  const handleNameChange = (event) => {
+    const { value } = event.target
+    setName(value)
+  }
+
+  const handleCheckValidateName = (event) => {
+    if (!event || !event.target.value) {
+      setNameErr("Không được bỏ trống tên")
+      return
+    }
+    setNameErr(null)
+  }
+  const handleProductIdChange = (event) => {
+    const { value } = event.target
+    setProductId(value)
+  }
+
+  const handleCheckValidateProductId = (event) => {
+    if (!event || !event.target.value) {
+      setProductIdErr("Không được bỏ trống tên")
+      return
+    }
+    setProductIdErr(null)
+  }
+  const handlePersonInChargeChange = (event) => {
+    const { value } = event.target
+    setPersonInCharge(value)
+  }
+
+  const handleCheckValidatePersonInCharge = (event) => {
+    if (!event || !event.target.value) {
+      setPersonInChargeErr("Không được bỏ trống tên")
+      return
+    }
+    setPersonInChargeErr(null)
+  }
+
   const handleStatusChange = (event) => {
     const { value } = event.target
     setStatusId(value)
@@ -73,12 +118,13 @@ export default function DialogAddNewItem({
 
   const handleSubmitForm = () => {
     const payload = {
+      product_id: productId,
+      name,
       type: typeId,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-      output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
-      expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
       status: statusId,
       stock_id: stockId,
+      person_in_charge: personInCharge,
+      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
       description: description,
     }
     console.log(payload)
@@ -105,10 +151,28 @@ export default function DialogAddNewItem({
         <DialogTitle id="form-dialog-title">Add new Item</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
+            <TextField
+              fullWidth
+              label="Mã thiết bị"
+              value={productId}
+              onChange={handleProductIdChange}
+              onBlur={handleCheckValidateProductId}
+              error={productIdErr}
+              helperText={productIdErr}
+            />
+            <TextField
+              fullWidth
+              label="Tên thiết bị"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleCheckValidateName}
+              error={nameErr}
+              helperText={nameErr}
+            />
             <Select
               native
               fullWidth
-              label="Name"
+              label="Type"
               value={typeId}
               onChange={handleTypeIdChange}
             >
@@ -145,6 +209,15 @@ export default function DialogAddNewItem({
                 </option>
               ))}
             </Select>
+            <TextField
+              fullWidth
+              label="Người phụ trách"
+              value={personInCharge}
+              onChange={handlePersonInChargeChange}
+              onBlur={handleCheckValidatePersonInCharge}
+              error={personInChargeErr}
+              helperText={personInChargeErr}
+            />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
                 <KeyboardDatePicker

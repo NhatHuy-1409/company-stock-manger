@@ -36,7 +36,7 @@ export default function ButtonAppBar() {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className="header">
           <IconButton
             edge="start"
             className={classes.menuButton}
@@ -50,11 +50,11 @@ export default function ButtonAppBar() {
             className={classes.title}
             onClick={onLogoClick}
           >
-            Pyramid Technical Vietnam Stock Manager
+            Pyramid Technical Vietnam - Stock Manager
           </Typography>
-          <Button onClick={onLoginBtnClick}>
+          {/* <Button onClick={onLoginBtnClick}>
             <span style={{ color: "#fff" }}>Login</span>
-          </Button>
+          </Button> */}
         </Toolbar>
       </AppBar>
     </div>

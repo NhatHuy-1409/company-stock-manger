@@ -7,10 +7,11 @@ const router = express.Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    const { sort_property, sort_order } = req.query
+    const { sort_property, sort_order, category } = req.query
     let results = await dbLogin.getAllElectricItemsType(
       sort_property,
-      sort_order
+      sort_order,
+      category
     )
     res.json(results)
   } catch (err) {

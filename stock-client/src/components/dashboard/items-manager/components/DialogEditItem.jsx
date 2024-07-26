@@ -21,6 +21,7 @@ import { updateItem } from "../../../../api/stock-manager"
 import FormControl from "@material-ui/core/FormControl"
 import InputLabel from "@material-ui/core/InputLabel"
 import { connect } from "react-redux"
+import { TextField } from "@material-ui/core"
 
 function DialogEditItem({
   open,
@@ -37,17 +38,22 @@ function DialogEditItem({
   const [inputTime, setInputTime] = useState(
     selectedItem.input_time ? new Date(selectedItem.input_time) : null
   )
-  // const [expiryTime, setExpiryTime] = useState(
-  //   selectedItem.expiry_time ? new Date(selectedItem.expiry_time) : null
-  // )
-  // const [outputTime, setOutputTime] = useState(
-  //   selectedItem.output_time ? new Date(selectedItem.output_time) : null
-  // )
+  const [name, setName] = useState(selectedItem.name)
+  const [productId, setProductId] = useState(selectedItem.product_id)
+  const [personInCharge, setPersonInCharge] = useState(
+    selectedItem.person_in_charge
+  )
 
   // list options
   const [statusOptions, setStatusOptions] = useState([])
   const [stockOptions, setStockOptions] = useState([])
   const [itemTypes, setItemTypes] = useState([])
+
+  // error state
+
+  const [nameErr, setNameErr] = useState(null)
+  const [productIdErr, setProductIdErr] = useState(null)
+  const [personInChargeErr, setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -69,6 +75,43 @@ function DialogEditItem({
     getListItemTypes()
   }, [])
 
+  const handleNameChange = (event) => {
+    const { value } = event.target
+    setName(value)
+  }
+
+  const handleCheckValidateName = (event) => {
+    if (!event || !event.target.value) {
+      setNameErr("Không được bỏ trống tên")
+      return
+    }
+    setNameErr(null)
+  }
+  const handleProductIdChange = (event) => {
+    const { value } = event.target
+    setProductId(value)
+  }
+
+  const handleCheckValidateProductId = (event) => {
+    if (!event || !event.target.value) {
+      setProductIdErr("Không được bỏ trống tên")
+      return
+    }
+    setProductIdErr(null)
+  }
+  const handlePersonInChargeChange = (event) => {
+    const { value } = event.target
+    setPersonInCharge(value)
+  }
+
+  const handleCheckValidatePersonInCharge = (event) => {
+    if (!event || !event.target.value) {
+      setPersonInChargeErr("Không được bỏ trống tên")
+      return
+    }
+    setPersonInChargeErr(null)
+  }
+
   const handleStatusChange = (event) => {
     const { value } = event.target
     setStatusId(value)
@@ -87,12 +130,13 @@ function DialogEditItem({
   const handleSubmitForm = () => {
     const payload = {
       id: selectedItem.id,
+      product_id: productId,
+      name,
       type: typeId,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-      // output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
-      // expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
       status: statusId,
       stock_id: stockId,
+      person_in_charge: personInCharge,
+      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
       description: description,
     }
     updateItem(payload)
@@ -119,8 +163,26 @@ function DialogEditItem({
         </DialogTitle>
         <DialogContent>
           <form className="formEditItem">
+            <TextField
+              fullWidth
+              label="Mã thiết bị"
+              value={productId}
+              onChange={handleProductIdChange}
+              onBlur={handleCheckValidateProductId}
+              error={productIdErr}
+              helperText={productIdErr}
+            />
+            <TextField
+              fullWidth
+              label="Tên thiết bị"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleCheckValidateName}
+              error={nameErr}
+              helperText={nameErr}
+            />
             <FormControl fullWidth>
-              <InputLabel>Tên</InputLabel>
+              <InputLabel>Loại</InputLabel>
               <Select fullWidth value={typeId} onChange={handleTypeIdChange}>
                 {itemTypes.map((item) => (
                   <option key={item.value} value={item.value}>
@@ -162,6 +224,15 @@ function DialogEditItem({
                 ))}
               </Select>
             </FormControl>
+            <TextField
+              fullWidth
+              label="Người phụ trách"
+              value={personInCharge}
+              onChange={handlePersonInChargeChange}
+              onBlur={handleCheckValidatePersonInCharge}
+              error={personInChargeErr}
+              helperText={personInChargeErr}
+            />
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
                 <KeyboardDatePicker

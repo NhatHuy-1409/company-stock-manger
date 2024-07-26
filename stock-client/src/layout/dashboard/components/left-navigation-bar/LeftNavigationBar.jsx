@@ -2,6 +2,14 @@ import React from "react"
 import "./leftNavigationBar.scss"
 import { connect } from "react-redux"
 
+const NAV_USER = [
+  {
+    name: "Tất cả user",
+    component: "UsersManager",
+    accessRights: ["admin"],
+  },
+]
+
 const NAV_ITEM = [
   {
     name: "Danh sách thiết bị",
@@ -76,6 +84,10 @@ const NAV_MENU = [
   {
     title: "Quản lý kho cơ khí",
     items: NAV_MECHANICAL_ITEM,
+  },
+  {
+    title: "Quản lý user",
+    items: NAV_USER,
   },
 ]
 

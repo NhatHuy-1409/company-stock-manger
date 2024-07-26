@@ -1,23 +1,23 @@
-import React from "react";
-import { alpha, makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import InputBase from "@material-ui/core/InputBase";
-import Badge from "@material-ui/core/Badge";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
-import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import MoreIcon from "@material-ui/icons/MoreVert";
-import { useHistory } from "react-router-dom";
-import "./header.scss";
-import { connect } from "react-redux";
-import { logOut } from "../../../../redux/auth/auth.actions";
+import React from "react"
+import { alpha, makeStyles } from "@material-ui/core/styles"
+import AppBar from "@material-ui/core/AppBar"
+import Toolbar from "@material-ui/core/Toolbar"
+import IconButton from "@material-ui/core/IconButton"
+import Typography from "@material-ui/core/Typography"
+import InputBase from "@material-ui/core/InputBase"
+import Badge from "@material-ui/core/Badge"
+import MenuItem from "@material-ui/core/MenuItem"
+import Menu from "@material-ui/core/Menu"
+import MenuIcon from "@material-ui/icons/Menu"
+import SearchIcon from "@material-ui/icons/Search"
+import AccountCircle from "@material-ui/icons/AccountCircle"
+import MailIcon from "@material-ui/icons/Mail"
+import NotificationsIcon from "@material-ui/icons/Notifications"
+import MoreIcon from "@material-ui/icons/MoreVert"
+import { useHistory } from "react-router-dom"
+import "./header.scss"
+import { connect } from "react-redux"
+import { logOut } from "../../../../redux/auth/auth.actions"
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -81,46 +81,46 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-}));
+}))
 
 function PrimarySearchAppBar(props) {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const history = useHistory();
+  const classes = useStyles()
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const history = useHistory()
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMenuOpen = Boolean(anchorEl)
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+    setMobileMoreAnchorEl(null)
+  }
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+    setAnchorEl(null)
+    handleMobileMenuClose()
+  }
 
   const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+    setMobileMoreAnchorEl(event.currentTarget)
+  }
 
   const onToggleMenuClick = (event) => {
-    props.onHambugerClick();
-  };
+    props.onHambugerClick()
+  }
 
   const handleLogout = () => {
-    props.logOut();
-    setAnchorEl(null);
-    handleMobileMenuClose();
-    history.push("/login");
-  };
+    props.logOut()
+    setAnchorEl(null)
+    handleMobileMenuClose()
+    history.push("/login")
+  }
 
-  const menuId = "primary-search-account-menu";
+  const menuId = "primary-search-account-menu"
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -133,9 +133,9 @@ function PrimarySearchAppBar(props) {
     >
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
-  );
+  )
 
-  const mobileMenuId = "primary-search-account-menu-mobile";
+  const mobileMenuId = "primary-search-account-menu-mobile"
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -174,7 +174,7 @@ function PrimarySearchAppBar(props) {
         <p>Profile</p>
       </MenuItem>
     </Menu>
-  );
+  )
 
   return (
     <div className={classes.grow}>
@@ -190,9 +190,9 @@ function PrimarySearchAppBar(props) {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Stock-Manager
+            Pyramid Technical Vietnam - Stock Manager
           </Typography>
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -204,7 +204,7 @@ function PrimarySearchAppBar(props) {
               }}
               inputProps={{ "aria-label": "search" }}
             />
-          </div>
+          </div> */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton
@@ -234,13 +234,13 @@ function PrimarySearchAppBar(props) {
       {renderMobileMenu}
       {renderMenu}
     </div>
-  );
+  )
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     logOut: () => dispatch(logOut()),
-  };
-};
+  }
+}
 
-export default connect(null, mapDispatchToProps)(PrimarySearchAppBar);
+export default connect(null, mapDispatchToProps)(PrimarySearchAppBar)

@@ -1,29 +1,29 @@
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import React, { useEffect, useState } from "react";
-import { getUsers } from "../../../api/stock-manager";
-import DialogAddNewUser from "./components/DialogAddNewUser";
-import DialogAlertRemoveUser from "./components/DialogAlertRemoveUser";
-import DialogEditUser from "./components/DialogEditUser";
-import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined";
-import DialogAlertResetPassword from "./components/DialogAlertResetPassword";
-import ToastServive from "react-material-toast";
-import "./UsersManager.scss";
+import Button from "@material-ui/core/Button"
+import Paper from "@material-ui/core/Paper"
+import { makeStyles } from "@material-ui/core/styles"
+import Table from "@material-ui/core/Table"
+import TableBody from "@material-ui/core/TableBody"
+import TableCell from "@material-ui/core/TableCell"
+import TableContainer from "@material-ui/core/TableContainer"
+import TableHead from "@material-ui/core/TableHead"
+import TableRow from "@material-ui/core/TableRow"
+import DeleteIcon from "@material-ui/icons/Delete"
+import EditIcon from "@material-ui/icons/Edit"
+import React, { useEffect, useState } from "react"
+import { getUsers } from "../../../api/stock-manager"
+import DialogAddNewUser from "./components/DialogAddNewUser"
+import DialogAlertRemoveUser from "./components/DialogAlertRemoveUser"
+import DialogEditUser from "./components/DialogEditUser"
+import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined"
+import DialogAlertResetPassword from "./components/DialogAlertResetPassword"
+import ToastServive from "react-material-toast"
+import "./UsersManager.scss"
 
 const toast = ToastServive.new({
   place: "bottomRight",
   duration: 2,
   maxCount: 8,
-});
+})
 
 function createData(
   id,
@@ -44,34 +44,34 @@ function createData(
     permission,
     permission_id,
     status,
-  };
+  }
 }
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
-});
+})
 
 function UsersManager(props) {
-  const [list, setList] = useState([]);
-  const classes = useStyles();
+  const [list, setList] = useState([])
+  const classes = useStyles()
 
-  const [selectedUser, setSelectedUser] = useState();
+  const [selectedUser, setSelectedUser] = useState()
 
-  const [openAddNewUser, setOpenAddNewUser] = useState(false);
-  const [openAlertRemove, setOpenAlertRemove] = useState(false);
-  const [openEditUser, setOpenEditUser] = useState(false);
-  const [openResetPassword, setOpenResetPassword] = useState(false);
+  const [openAddNewUser, setOpenAddNewUser] = useState(false)
+  const [openAlertRemove, setOpenAlertRemove] = useState(false)
+  const [openEditUser, setOpenEditUser] = useState(false)
+  const [openResetPassword, setOpenResetPassword] = useState(false)
 
   const getData = async () => {
-    const data = await getUsers();
-    setList(data);
-  };
+    const data = await getUsers()
+    setList(data)
+  }
 
   useEffect(() => {
-    getData();
-  }, []);
+    getData()
+  }, [])
 
   const rows = [
     ...list.map((item) =>
@@ -86,38 +86,38 @@ function UsersManager(props) {
         item.status
       )
     ),
-  ];
+  ]
 
   const handleUpdateData = () => {
-    getData();
-  };
+    getData()
+  }
 
   const handleClose = () => {
-    setOpenEditUser(false);
-    setOpenResetPassword(false);
-    setSelectedUser(null);
-  };
+    setOpenEditUser(false)
+    setOpenResetPassword(false)
+    setSelectedUser(null)
+  }
 
   const handleDeleteItem = (item) => {
-    setSelectedUser(item);
-    setOpenAlertRemove(true);
-  };
+    setSelectedUser(item)
+    setOpenAlertRemove(true)
+  }
 
   const handleEditUser = (user) => {
-    setSelectedUser(user);
-    setOpenEditUser(true);
-  };
+    setSelectedUser(user)
+    setOpenEditUser(true)
+  }
 
   const handleResetPassword = (user) => {
-    setSelectedUser(user);
-    setOpenResetPassword(true);
-  };
+    setSelectedUser(user)
+    setOpenResetPassword(true)
+  }
 
   const handleResetPasswordSuccess = () => {
-    handleClose();
-    getData();
-    toast.info("reset password success!");
-  };
+    handleClose()
+    getData()
+    toast.info("reset password success!")
+  }
 
   const actionsBlock = (item) => {
     return (
@@ -126,8 +126,8 @@ function UsersManager(props) {
         <VpnKeyOutlinedIcon onClick={() => handleResetPassword(item)} />
         <DeleteIcon onClick={() => handleDeleteItem(item)} />
       </div>
-    );
-  };
+    )
+  }
 
   const dialogAddNewUser = openAddNewUser ? (
     <DialogAddNewUser
@@ -135,7 +135,7 @@ function UsersManager(props) {
       handleClose={() => setOpenAddNewUser(false)}
       onAddNewSuccess={handleUpdateData}
     />
-  ) : null;
+  ) : null
 
   const dialogAlertRemove = openAlertRemove ? (
     <DialogAlertRemoveUser
@@ -144,7 +144,7 @@ function UsersManager(props) {
       selectedItem={selectedUser}
       onSuccess={() => getData()}
     />
-  ) : null;
+  ) : null
 
   const dialogEditUser = openEditUser ? (
     <DialogEditUser
@@ -153,7 +153,7 @@ function UsersManager(props) {
       handleClose={handleClose}
       onEditSuccess={handleUpdateData}
     />
-  ) : null;
+  ) : null
 
   const dialogResetPassword = openResetPassword ? (
     <DialogAlertResetPassword
@@ -162,7 +162,7 @@ function UsersManager(props) {
       selectedItem={selectedUser}
       onSuccess={handleResetPasswordSuccess}
     />
-  ) : null;
+  ) : null
 
   return (
     <div className="usersManager">
@@ -173,7 +173,7 @@ function UsersManager(props) {
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Mã</TableCell>
+              <TableCell>STT</TableCell>
               <TableCell>Họ và tên</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Chức năng</TableCell>
@@ -182,10 +182,10 @@ function UsersManager(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
-                  {row.id}
+                  {i}
                 </TableCell>
                 <TableCell>{row.full_name}</TableCell>
                 <TableCell>{row.email}</TableCell>
@@ -204,7 +204,7 @@ function UsersManager(props) {
       {dialogEditUser}
       {dialogResetPassword}
     </div>
-  );
+  )
 }
 
-export default UsersManager;
+export default UsersManager

@@ -13,14 +13,11 @@ import {
 } from "@material-ui/pickers"
 import React, { useEffect, useState } from "react"
 import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
-import { statuses } from "../../../../meta-data/statuses"
-import { stocks } from "../../../../meta-data/stocks"
 import "./DialogEditItem.scss"
 import { format } from "date-fns"
 import { updateElectricItem } from "../../../../api/stock-manager"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
 import { connect } from "react-redux"
+import { TextField } from "@material-ui/core"
 
 function DialogEditItem({
   open,
@@ -31,58 +28,72 @@ function DialogEditItem({
 }) {
   // modal value
   const [typeId, setTypeId] = useState(selectedItem.type_id)
-  const [statusId, setStatusId] = useState(selectedItem.status_id)
-  const [stockId, setStockId] = useState(selectedItem.stock_id)
   const [description, setDescription] = useState(selectedItem.description || "")
   const [inputTime, setInputTime] = useState(
     selectedItem.input_time ? new Date(selectedItem.input_time) : null
   )
-  const [expiryTime, setExpiryTime] = useState(
-    selectedItem.expiry_time ? new Date(selectedItem.expiry_time) : null
-  )
-  const [outputTime, setOutputTime] = useState(
-    selectedItem.output_time ? new Date(selectedItem.output_time) : null
-  )
+  const [name, setName] = useState(selectedItem.name)
+  const [productId, setProductId] = useState(selectedItem.product_id)
+  const [position, setPosition] = useState(selectedItem.position)
+  const [quantity, setQuantity] = useState(1)
 
   // list options
-  const [statusOptions, setStatusOptions] = useState([])
-  const [stockOptions, setStockOptions] = useState([])
-  const [electricItemsTypes, setElectricItemsTypes] = useState([])
+  const [itemTypes, setItemTypes] = useState([])
+
+  // error state
+
+  const [nameErr, setNameErr] = useState(null)
+  const [productIdErr, setProductIdErr] = useState(null)
+  const [positionErr, setPositionErr] = useState(null)
 
   useEffect(() => {
-    // const getStatuses = async () => {
-    //   const listStt = await statuses()
-    //   console.log(listStt)
-    //   setStatusOptions(listStt)
-    // }
-    // const getStocks = async () => {
-    //   const listStocks = await stocks()
-    //   setStockOptions(listStocks)
-    // }
-    // const getListItemTypes = async () => {
-    //   const itemTypes = await getItemTypes()
-    //   setItemTypes(itemTypes)
-    // }
-
-    // getStatuses()
-    // getStocks()
-    // getListItemTypes()
-
-    const getListElectricItemsTypes = async () => {
-      const electricItemsType = await getElectricItemTypes()
-      setElectricItemsTypes(electricItemsType)
+    const getListItemTypes = async () => {
+      const itemTypes = await getElectricItemTypes()
+      setItemTypes(itemTypes)
     }
-    getListElectricItemsTypes()
+    getListItemTypes()
   }, [])
 
-  const handleStatusChange = (event) => {
+  const handleNameChange = (event) => {
     const { value } = event.target
-    setStatusId(value)
+    setName(value)
   }
 
-  const handleStockChange = (event) => {
+  const handleCheckValidateName = (event) => {
+    if (!event || !event.target.value) {
+      setNameErr("Không được bỏ trống tên")
+      return
+    }
+    setNameErr(null)
+  }
+  const handleProductIdChange = (event) => {
     const { value } = event.target
-    setStockId(value)
+    setProductId(value)
+  }
+
+  const handleCheckValidateProductId = (event) => {
+    if (!event || !event.target.value) {
+      setProductIdErr("Không được bỏ trống tên")
+      return
+    }
+    setProductIdErr(null)
+  }
+  const handlePositionChange = (event) => {
+    const { value } = event.target
+    setPosition(value)
+  }
+
+  const handleCheckValidatePosition = (event) => {
+    if (!event || !event.target.value) {
+      setPositionErr("Không được bỏ trống tên")
+      return
+    }
+    setPositionErr(null)
+  }
+
+  const handleQuantity = (event) => {
+    const { value } = event.target
+    setQuantity(value)
   }
 
   const handleTypeIdChange = (event) => {
@@ -93,13 +104,12 @@ function DialogEditItem({
   const handleSubmitForm = () => {
     const payload = {
       id: selectedItem.id,
+      product_id: productId,
+      name: name,
       type: typeId,
       input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
-      // output_time: outputTime ? format(outputTime, "yyyy-MM-dd") : null,
-      // expiry_time: expiryTime ? format(expiryTime, "yyyy-MM-dd") : null,
-      // status: statusId,
-      // stock_id: stockId,
-      quantity: 1,
+      quantity: quantity,
+      position: position,
       description: description,
     }
     updateElectricItem(payload)
@@ -124,14 +134,32 @@ function DialogEditItem({
         <DialogTitle id="form-dialog-title">Add new Item</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
+            <TextField
+              fullWidth
+              label="Mã thiết bị"
+              value={productId}
+              onChange={handleProductIdChange}
+              onBlur={handleCheckValidateProductId}
+              error={productIdErr}
+              helperText={productIdErr}
+            />
+            <TextField
+              fullWidth
+              label="Tên thiết bị"
+              value={name}
+              onChange={handleNameChange}
+              onBlur={handleCheckValidateName}
+              error={nameErr}
+              helperText={nameErr}
+            />
             <Select
               native
               fullWidth
-              label="Name"
+              label="Loại"
               value={typeId}
               onChange={handleTypeIdChange}
             >
-              {electricItemsTypes.map((item) => (
+              {itemTypes.map((item) => (
                 <option key={item.value} value={item.value}>
                   {item.label}
                 </option>
@@ -152,8 +180,24 @@ function DialogEditItem({
                     "aria-label": "change date",
                   }}
                 />
+                <TextField
+                  inputProps={{ type: "number" }}
+                  fullWidth
+                  label="Số lượng"
+                  value={quantity}
+                  onChange={handleQuantity}
+                />
               </Grid>
             </MuiPickersUtilsProvider>
+            <TextField
+              fullWidth
+              label="Vị trí"
+              value={position}
+              onChange={handlePositionChange}
+              onBlur={handleCheckValidatePosition}
+              error={positionErr}
+              helperText={positionErr}
+            />
             <TextareaAutosize
               value={description}
               className="textArea"

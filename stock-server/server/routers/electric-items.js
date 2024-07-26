@@ -7,8 +7,8 @@ const router = express.Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    const { orderby, sort_order } = req.query
-    let results = await dbLogin.getAllElectricItems(orderby, sort_order)
+    const { orderby, sort_order, type } = req.query
+    let results = await dbLogin.getAllElectricItems(orderby, sort_order, type)
     res.json(results)
   } catch (err) {
     console.log(err)
