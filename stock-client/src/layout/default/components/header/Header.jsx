@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography"
 import MenuIcon from "@material-ui/icons/Menu"
 import React from "react"
 import { useHistory } from "react-router-dom"
-
+import "./header.scss"
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,

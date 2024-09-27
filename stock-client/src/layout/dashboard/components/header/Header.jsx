@@ -177,7 +177,7 @@ function PrimarySearchAppBar(props) {
   )
 
   return (
-    <div className={classes.grow}>
+    <div className={`${classes.grow} header`}>
       <AppBar position="static">
         <Toolbar>
           <IconButton

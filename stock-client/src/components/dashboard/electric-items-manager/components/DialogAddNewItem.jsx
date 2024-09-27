@@ -124,7 +124,7 @@ export default function DialogAddNewItem({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add new Item</DialogTitle>
+        <DialogTitle id="form-dialog-title">Thêm thiết bị</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField

@@ -13,7 +13,18 @@
 .selectSort {
   text-align: right;
   display: flex;
-  justify-content: flex-end;
   align-items: baseline;
   gap: 0.5rem;
+  padding: 20px 0;
+  justify-content: center;
+  .MuiOutlinedInput-input {
+    width: 400px;
+  }
+}
+
+.MuiTableHead-root {
+  background-color: #ebeaea;
+  .MuiTableCell-head {
+    font-weight: 600;
+  }
 }
