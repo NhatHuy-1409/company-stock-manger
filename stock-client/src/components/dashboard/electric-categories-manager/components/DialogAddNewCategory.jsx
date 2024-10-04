@@ -7,7 +7,6 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
 import React, { useState } from "react"
 import { addElectricCategory } from "../../../../api/stock-manager"
-import "./DialogAddNewCategory.scss"
 
 export default function DialogAddNewCategory({
   open,

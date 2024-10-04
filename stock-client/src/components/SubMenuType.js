@@ -12,9 +12,6 @@ import {
   Popper,
   Typography,
 } from "@material-ui/core"
-import { getItemTypes } from "../meta-data/item-types"
-import { getStatuses, getStocks } from "../api/stock-manager"
-import { useEffect } from "react"
 
 // This function checks whether a point (x, y) is on the left or right side of a line formed by two points (px, py) and (qx, qy).
 // If the result is negative, the point is on the right side of the line. If positive, it's on the left side.
