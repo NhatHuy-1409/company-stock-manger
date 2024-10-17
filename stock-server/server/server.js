@@ -18,8 +18,11 @@ const { format } = require("date-fns")
 const stockDB = require("./db")
 const nodemailer = require("nodemailer")
 require("dotenv").config()
+const cors = require("cors")
 
 const app = express()
+
+app.use(cors())
 
 app.use(express.json())
 

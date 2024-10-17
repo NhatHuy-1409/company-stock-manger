@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const DEFAULT_TIMEOUT = 10000
-const BASE_URL = "/"
+const BASE_URL = "http://10.11.25.76:5000"
 
 const apiInstance = axios.create({
   baseURL: BASE_URL,
