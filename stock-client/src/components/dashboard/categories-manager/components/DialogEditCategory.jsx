@@ -1,13 +1,12 @@
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import TextField from "@material-ui/core/TextField";
-import React, { useState } from "react";
-import { updateCategory } from "../../../../api/stock-manager";
-import "./DialogAddNewCategory.scss";
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import TextareaAutosize from "@material-ui/core/TextareaAutosize"
+import TextField from "@material-ui/core/TextField"
+import React, { useState } from "react"
+import { updateCategory } from "../../../../api/stock-manager"
 
 export default function DialogAddNewCategory({
   open,
@@ -16,43 +15,43 @@ export default function DialogAddNewCategory({
   selectedItem,
 }) {
   // modal value
-  const [name, setName] = useState(selectedItem.name);
-  const [description, setDescription] = useState(selectedItem.description);
+  const [name, setName] = useState(selectedItem.name)
+  const [description, setDescription] = useState(selectedItem.description)
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null);
+  const [nameErr, setNameErr] = useState(null)
 
   const handleNameChange = (event) => {
-    const { value } = event.target;
-    setName(value);
-  };
+    const { value } = event.target
+    setName(value)
+  }
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên");
-      return;
+      setNameErr("Không được bỏ trống tên")
+      return
     }
-    setNameErr(null);
-  };
+    setNameErr(null)
+  }
 
   const handleSubmitForm = () => {
     const payload = {
       id: selectedItem.id,
       name,
       description,
-    };
+    }
 
     updateCategory(payload)
       .then((res) => {
-        console.log(res);
-        onUpdateSuccess();
-        handleClose();
+        console.log(res)
+        onUpdateSuccess()
+        handleClose()
       })
       .catch((err) => {
-        console.log(err);
-      });
-  };
+        console.log(err)
+      })
+  }
 
   return (
     <div className="dialogAddNewItemType">
@@ -95,5 +94,5 @@ export default function DialogAddNewCategory({
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }

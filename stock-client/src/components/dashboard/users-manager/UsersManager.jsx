@@ -16,14 +16,14 @@ import DialogAlertRemoveUser from "./components/DialogAlertRemoveUser"
 import DialogEditUser from "./components/DialogEditUser"
 import VpnKeyOutlinedIcon from "@material-ui/icons/VpnKeyOutlined"
 import DialogAlertResetPassword from "./components/DialogAlertResetPassword"
-import ToastServive from "react-material-toast"
+// import ToastServive from "react-material-toast"
 import "./UsersManager.scss"
 
-const toast = ToastServive.new({
-  place: "bottomRight",
-  duration: 2,
-  maxCount: 8,
-})
+// const toast = ToastServive.new({
+//   place: "bottomRight",
+//   duration: 2,
+//   maxCount: 8,
+// })
 
 function createData(
   id,
@@ -116,7 +116,7 @@ function UsersManager(props) {
   const handleResetPasswordSuccess = () => {
     handleClose()
     getData()
-    toast.info("reset password success!")
+    // toast.info("reset password success!")
   }
 
   const actionsBlock = (item) => {
