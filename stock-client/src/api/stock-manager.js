@@ -8,10 +8,10 @@ const apiInstance = axios.create({
   timeout: DEFAULT_TIMEOUT,
 })
 
-export const adminLogin = (email, password, isAdmin) => {
-  return new Promise((resolve, reject) => {
+export const adminLogin = (email,password,isAdmin) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("admin/login", { email, password, isAdmin })
+      .post("admin/login",{ email,password,isAdmin })
       .then((response) => {
         resolve(response.data)
       })
@@ -21,8 +21,8 @@ export const adminLogin = (email, password, isAdmin) => {
   })
 }
 
-export const getItems = (orderby, sort_order, type, status, stock) => {
-  return new Promise((resolve, reject) => {
+export const getItems = (orderby,sort_order,type,status,stock) => {
+  return new Promise((resolve,reject) => {
     let url = `items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
       url += `&type=${type}`
@@ -44,8 +44,8 @@ export const getItems = (orderby, sort_order, type, status, stock) => {
   })
 }
 
-export const getElectricItems = (orderby, sort_order, type) => {
-  return new Promise((resolve, reject) => {
+export const getElectricItems = (orderby,sort_order,type) => {
+  return new Promise((resolve,reject) => {
     let url = `electric-items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
       url += `&type=${type}`
@@ -60,8 +60,8 @@ export const getElectricItems = (orderby, sort_order, type) => {
       })
   })
 }
-export const getMechanicalItems = (orderby, sort_order, type) => {
-  return new Promise((resolve, reject) => {
+export const getMechanicalItems = (orderby,sort_order,type) => {
+  return new Promise((resolve,reject) => {
     let url = `mechanical-items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
       url += `&type=${type}`
@@ -78,7 +78,7 @@ export const getMechanicalItems = (orderby, sort_order, type) => {
 }
 
 export const getItem = (id) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(`items/${id}`)
       .then((response) => {
@@ -91,7 +91,7 @@ export const getItem = (id) => {
 }
 
 export const getItemsByType = (type_id) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(`items/type/${type_id}`)
       .then((response) => {
@@ -103,12 +103,12 @@ export const getItemsByType = (type_id) => {
   })
 }
 
-export const getItemsType = (sortProperty, sortOrder, category) => {
+export const getItemsType = (sortProperty,sortOrder,category) => {
   let url = `items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(url)
       .then((response) => {
@@ -120,12 +120,12 @@ export const getItemsType = (sortProperty, sortOrder, category) => {
   })
 }
 
-export const getElectricItemsType = (sortProperty, sortOrder, category) => {
+export const getElectricItemsType = (sortProperty,sortOrder,category) => {
   let url = `electric-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(url)
       .then((response) => {
@@ -137,12 +137,12 @@ export const getElectricItemsType = (sortProperty, sortOrder, category) => {
   })
 }
 
-export const getMechanicalItemsType = (sortProperty, sortOrder, category) => {
+export const getMechanicalItemsType = (sortProperty,sortOrder,category) => {
   let url = `mechanical-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(url)
       .then((response) => {
@@ -155,7 +155,7 @@ export const getMechanicalItemsType = (sortProperty, sortOrder, category) => {
 }
 
 export const getCategories = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("categories")
       .then((response) => {
@@ -167,7 +167,7 @@ export const getCategories = () => {
   })
 }
 export const getElectricCategories = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("electric-categories")
       .then((response) => {
@@ -179,7 +179,7 @@ export const getElectricCategories = () => {
   })
 }
 export const getMechanicalCategories = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("mechanical-categories")
       .then((response) => {
@@ -192,7 +192,7 @@ export const getMechanicalCategories = () => {
 }
 
 export const getUsers = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("users")
       .then((response) => {
@@ -205,7 +205,7 @@ export const getUsers = () => {
 }
 
 export const getStatuses = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("statuses")
       .then((response) => {
@@ -218,7 +218,7 @@ export const getStatuses = () => {
 }
 
 export const getStocks = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("stocks")
       .then((response) => {
@@ -230,10 +230,11 @@ export const getStocks = () => {
   })
 }
 
+
 export const updateItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items/update", payload)
+      .post("items/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -243,9 +244,9 @@ export const updateItem = (payload) => {
   })
 }
 export const updateElectricItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items/update", payload)
+      .post("electric-items/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -255,9 +256,9 @@ export const updateElectricItem = (payload) => {
   })
 }
 export const updateMechanicalItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items/update", payload)
+      .post("mechanical-items/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -268,9 +269,9 @@ export const updateMechanicalItem = (payload) => {
 }
 
 export const addItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items/add", payload)
+      .post("items/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -280,9 +281,9 @@ export const addItem = (payload) => {
   })
 }
 export const addElectricItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items/add", payload)
+      .post("electric-items/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -292,9 +293,9 @@ export const addElectricItem = (payload) => {
   })
 }
 export const addMechanicalItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items/add", payload)
+      .post("mechanical-items/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -305,9 +306,9 @@ export const addMechanicalItem = (payload) => {
 }
 
 export const getItemsByExpiryTime = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items/about-to-exprire", payload)
+      .post("items/about-to-exprire",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -318,9 +319,9 @@ export const getItemsByExpiryTime = (payload) => {
 }
 
 export const deleteItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items/delete", payload)
+      .post("items/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -330,9 +331,9 @@ export const deleteItem = (payload) => {
   })
 }
 export const deleteElectricItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items/delete", payload)
+      .post("electric-items/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -342,9 +343,9 @@ export const deleteElectricItem = (payload) => {
   })
 }
 export const deleteMechanicalItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items/delete", payload)
+      .post("mechanical-items/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -355,9 +356,9 @@ export const deleteMechanicalItem = (payload) => {
 }
 
 export const addItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items-type/add", payload)
+      .post("items-type/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -367,9 +368,9 @@ export const addItemType = (payload) => {
   })
 }
 export const addElectricItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items-type/add", payload)
+      .post("electric-items-type/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -379,9 +380,9 @@ export const addElectricItemType = (payload) => {
   })
 }
 export const addMechanicalItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items-type/add", payload)
+      .post("mechanical-items-type/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -392,9 +393,9 @@ export const addMechanicalItemType = (payload) => {
 }
 
 export const updateItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items-type/update", payload)
+      .post("items-type/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -404,9 +405,9 @@ export const updateItemType = (payload) => {
   })
 }
 export const updateElectricItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items-type/update", payload)
+      .post("electric-items-type/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -416,9 +417,9 @@ export const updateElectricItemType = (payload) => {
   })
 }
 export const updateMechanicalItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items-type/update", payload)
+      .post("mechanical-items-type/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -429,9 +430,9 @@ export const updateMechanicalItemType = (payload) => {
 }
 
 export const deleteItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items-type/delete", payload)
+      .post("items-type/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -441,9 +442,9 @@ export const deleteItemType = (payload) => {
   })
 }
 export const deleteElectricItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-items-type/delete", payload)
+      .post("electric-items-type/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -453,9 +454,9 @@ export const deleteElectricItemType = (payload) => {
   })
 }
 export const deleteMechanicalItemType = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-items-type/delete", payload)
+      .post("mechanical-items-type/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -466,9 +467,9 @@ export const deleteMechanicalItemType = (payload) => {
 }
 
 export const addCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("categories/add", payload)
+      .post("categories/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -478,9 +479,9 @@ export const addCategory = (payload) => {
   })
 }
 export const addElectricCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-categories/add", payload)
+      .post("electric-categories/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -490,9 +491,9 @@ export const addElectricCategory = (payload) => {
   })
 }
 export const addMechanicalCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-categories/add", payload)
+      .post("mechanical-categories/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -503,9 +504,9 @@ export const addMechanicalCategory = (payload) => {
 }
 
 export const updateCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("categories/update", payload)
+      .post("categories/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -515,9 +516,9 @@ export const updateCategory = (payload) => {
   })
 }
 export const updateElectricCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-categories/update", payload)
+      .post("electric-categories/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -527,9 +528,9 @@ export const updateElectricCategory = (payload) => {
   })
 }
 export const updateMechanicalCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-categories/update", payload)
+      .post("mechanical-categories/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -540,9 +541,9 @@ export const updateMechanicalCategory = (payload) => {
 }
 
 export const deleteCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("categories/delete", payload)
+      .post("categories/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -552,9 +553,9 @@ export const deleteCategory = (payload) => {
   })
 }
 export const deleteElectricCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("electric-categories/delete", payload)
+      .post("electric-categories/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -564,9 +565,9 @@ export const deleteElectricCategory = (payload) => {
   })
 }
 export const deleteMechanicalCategory = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("mechanical-categories/delete", payload)
+      .post("mechanical-categories/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -577,9 +578,9 @@ export const deleteMechanicalCategory = (payload) => {
 }
 
 export const addUser = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("users/add", payload)
+      .post("users/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -590,9 +591,9 @@ export const addUser = (payload) => {
 }
 
 export const updateUser = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("users/update", payload)
+      .post("users/update",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -603,9 +604,9 @@ export const updateUser = (payload) => {
 }
 
 export const deleteUser = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("users/delete", payload)
+      .post("users/delete",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -616,7 +617,7 @@ export const deleteUser = (payload) => {
 }
 
 export const getPermissions = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get("permissions")
       .then((response) => {
@@ -628,8 +629,8 @@ export const getPermissions = (payload) => {
   })
 }
 
-export const getStaffRequests = (sortProperty, sortOrder) => {
-  return new Promise((resolve, reject) => {
+export const getStaffRequests = (sortProperty,sortOrder) => {
+  return new Promise((resolve,reject) => {
     apiInstance
       .get(`staff-requests?orderby=${sortProperty}&sort_order=${sortOrder}`)
       .then((response) => {
@@ -642,9 +643,9 @@ export const getStaffRequests = (sortProperty, sortOrder) => {
 }
 
 export const addStaffRequest = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("staff-requests/add", payload)
+      .post("staff-requests/add",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -655,9 +656,9 @@ export const addStaffRequest = (payload) => {
 }
 
 export const approveItem = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("staff-requests/approve-item", payload)
+      .post("staff-requests/approve-item",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -668,9 +669,9 @@ export const approveItem = (payload) => {
 }
 
 export const resetPassword = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("users/reset-password", payload)
+      .post("users/reset-password",payload)
       .then((response) => {
         resolve(response.data)
       })
@@ -681,9 +682,9 @@ export const resetPassword = (payload) => {
 }
 
 export const mailExpiryDeviceToStaff = (payload) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     apiInstance
-      .post("items/mail-expiry-to-staff", payload)
+      .post("items/mail-expiry-to-staff",payload)
       .then((response) => {
         resolve(response.data)
       })

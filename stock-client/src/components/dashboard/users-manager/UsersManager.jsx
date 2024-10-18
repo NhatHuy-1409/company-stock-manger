@@ -9,8 +9,8 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
-import React, { useEffect, useState } from "react"
-import { getUsers } from "../../../api/stock-manager"
+import React,{ useEffect,useState } from "react"
+import { getStocks,getUsers } from "../../../api/stock-manager"
 import DialogAddNewUser from "./components/DialogAddNewUser"
 import DialogAlertRemoveUser from "./components/DialogAlertRemoveUser"
 import DialogEditUser from "./components/DialogEditUser"
@@ -33,7 +33,7 @@ function createData(
   email,
   permission,
   permission_id,
-  status
+  status,stock,stock_id
 ) {
   return {
     id,
@@ -44,6 +44,7 @@ function createData(
     permission,
     permission_id,
     status,
+    stock,stock_id
   }
 }
 
@@ -54,24 +55,31 @@ const useStyles = makeStyles({
 })
 
 function UsersManager(props) {
-  const [list, setList] = useState([])
+  const [list,setList] = useState([])
   const classes = useStyles()
 
-  const [selectedUser, setSelectedUser] = useState()
+  const [selectedUser,setSelectedUser] = useState()
 
-  const [openAddNewUser, setOpenAddNewUser] = useState(false)
-  const [openAlertRemove, setOpenAlertRemove] = useState(false)
-  const [openEditUser, setOpenEditUser] = useState(false)
-  const [openResetPassword, setOpenResetPassword] = useState(false)
+  // const [itemStocks,setItemStocks] = useState([])
+
+  const [openAddNewUser,setOpenAddNewUser] = useState(false)
+  const [openAlertRemove,setOpenAlertRemove] = useState(false)
+  const [openEditUser,setOpenEditUser] = useState(false)
+  const [openResetPassword,setOpenResetPassword] = useState(false)
 
   const getData = async () => {
     const data = await getUsers()
+    // const stocks = await getStocks()
+
     setList(data)
+    // setItemStocks(stocks)
+    console.log({ data });
+
   }
 
   useEffect(() => {
     getData()
-  }, [])
+  },[])
 
   const rows = [
     ...list.map((item) =>
@@ -83,7 +91,9 @@ function UsersManager(props) {
         item.email,
         item.permission,
         item.permission_id,
-        item.status
+        item.status,
+        item.stock,
+        item.stock_id
       )
     ),
   ]
@@ -176,19 +186,21 @@ function UsersManager(props) {
               <TableCell>STT</TableCell>
               <TableCell>Họ và tên</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Chức năng</TableCell>
+              <TableCell>Bộ phận</TableCell>
+              <TableCell>Vai trò</TableCell>
               <TableCell>Trạng thái</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
+            {rows.map((row,i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {i}
                 </TableCell>
                 <TableCell>{row.full_name}</TableCell>
                 <TableCell>{row.email}</TableCell>
+                <TableCell>{row.stock}</TableCell>
                 <TableCell>{row.permission}</TableCell>
                 <TableCell>
                   {row.status === "active" ? "Hoạt động" : "Bị Khoá"}

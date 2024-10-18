@@ -5,14 +5,15 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import { updateUser } from "../../../../api/stock-manager";
 import { listPermissions } from "../../../../meta-data/permissions";
+import { stocks } from "../../../../meta-data/stocks";
 import TextError from "../../../common/text-error/TextError";
 
 const STATUS_OPTIONS = [
-  { value: "active", label: "Hoạt động" },
-  { value: "deactive", label: "Bị Khoá" },
+  { value: "active",label: "Hoạt động" },
+  { value: "deactive",label: "Bị Khoá" },
 ];
 
 export default function DialogEditUser({
@@ -22,22 +23,24 @@ export default function DialogEditUser({
   onEditSuccess,
 }) {
   // modal value
-  const [email, setEmail] = useState(selectedUser.email);
-  const [firstName, setFirstName] = useState(selectedUser.first_name);
-  const [lastName, setLastName] = useState(selectedUser.last_name);
-  const [permission, setPermission] = useState(selectedUser.permission_id);
-  const [status, setStatus] = useState(selectedUser.status);
+  const [email,setEmail] = useState(selectedUser.email);
+  const [firstName,setFirstName] = useState(selectedUser.first_name);
+  const [lastName,setLastName] = useState(selectedUser.last_name);
+  const [permission,setPermission] = useState(selectedUser.permission_id);
+  const [status,setStatus] = useState(selectedUser.status);
+  const [stock,setStock] = useState(selectedUser.stock_id);
 
   // options state
-  const [permissions, setPermissions] = useState([]);
+  const [permissions,setPermissions] = useState([]);
+  const [listStocks,setListStocks] = useState([]);
 
   // error state
-  const [emailErr, setEmailErr] = useState(null);
-  const [firstNameErr, setFirstNameErr] = useState(null);
-  const [lastNameErr, setLastNameErr] = useState(null);
+  const [emailErr,setEmailErr] = useState(null);
+  const [firstNameErr,setFirstNameErr] = useState(null);
+  const [lastNameErr,setLastNameErr] = useState(null);
 
   // server error state
-  const [serverError, setServerError] = useState(null);
+  const [serverError,setServerError] = useState(null);
 
   const getListPermissions = async () => {
     const data = await listPermissions();
@@ -46,7 +49,16 @@ export default function DialogEditUser({
 
   useEffect(() => {
     getListPermissions();
-  }, []);
+  },[]);
+
+  const getListStocks = async () => {
+    const data = await stocks();
+    setListStocks(data);
+  };
+
+  useEffect(() => {
+    getListStocks();
+  },[]);
 
   const handleCheckValidateEmail = () => {
     if (!email) {
@@ -82,6 +94,7 @@ export default function DialogEditUser({
       last_name: lastName,
       permission,
       status,
+      stock_id: parseInt(stock)
     };
 
     updateUser(payload)
@@ -102,7 +115,7 @@ export default function DialogEditUser({
   const disabledSubmitForm = () => {
     let isDisabled = false;
 
-    const errArr = [emailErr, firstNameErr, lastNameErr];
+    const errArr = [emailErr,firstNameErr,lastNameErr];
 
     errArr.forEach((err) => {
       if (err !== null) {
@@ -153,6 +166,19 @@ export default function DialogEditUser({
               onChange={(e) => setLastName(e.target.value)}
               onBlur={handleCheckValidateLastName}
             />
+            <Select
+              native
+              fullWidth
+              label="Bộ phận"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+            >
+              {listStocks.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </Select>
             <Select
               native
               fullWidth

@@ -1,22 +1,27 @@
 .leftNavigationBar {
-  background: #dfdfdf;
-  // height: calc(100vh - 64px);
+  background: #333;
+  height: calc(100vh);
+  position: sticky;
+  top:0;
   > .wrapper {
     padding: 20px;
     border-right: 1px solid #eee;
     height: 100%;
+    h3{
+      color:#fff;
+    }
     .item {
       padding: 12px 20px;
       cursor: pointer;
       border-bottom: 1px solid #eee;
       white-space: nowrap;
 
-      &.active {
-        background-color: #eee;
-      }
+      color:#ffffff80;
 
-      &:hover {
-        background-color: #eee;
+      transition: all .33s ease-out;
+
+      &:hover,&.active {
+        color: #fff;
       }
     }
   }

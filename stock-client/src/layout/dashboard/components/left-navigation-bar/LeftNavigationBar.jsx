@@ -96,13 +96,13 @@ function LeftNavigationBar(props) {
       : items.map((item, index) => {
           return item?.accessRights[0] === "admin" &&
             !props.user.isAdmin ? null : (
-            <div
+            <p
               className={classNames(item)}
               key={index}
               onClick={() => props.onItemClick(item)}
             >
               {item.name}
-            </div>
+            </p>
           )
         })
   }

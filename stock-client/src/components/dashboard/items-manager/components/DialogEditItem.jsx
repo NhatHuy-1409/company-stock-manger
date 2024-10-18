@@ -11,10 +11,11 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { getItemTypes } from "../../../../meta-data/item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
+import { users } from "../../../../meta-data/users"
 import "./DialogEditItem.scss"
 import { format } from "date-fns"
 import { updateItem } from "../../../../api/stock-manager"
@@ -31,29 +32,31 @@ function DialogEditItem({
   user,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState(selectedItem.type_id)
-  const [statusId, setStatusId] = useState(selectedItem.status_id)
-  const [stockId, setStockId] = useState(selectedItem.stock_id)
-  const [description, setDescription] = useState(selectedItem.description || "")
-  const [inputTime, setInputTime] = useState(
+  const [typeId,setTypeId] = useState(selectedItem.type_id)
+  const [statusId,setStatusId] = useState(selectedItem.status_id)
+  const [stockId,setStockId] = useState(selectedItem.stock_id)
+  const [userId,setUserId] = useState(selectedItem.user_id)
+  const [description,setDescription] = useState(selectedItem.description || "")
+  const [inputTime,setInputTime] = useState(
     selectedItem.input_time ? new Date(selectedItem.input_time) : null
   )
-  const [name, setName] = useState(selectedItem.name)
-  const [productId, setProductId] = useState(selectedItem.product_id)
-  const [personInCharge, setPersonInCharge] = useState(
+  const [name,setName] = useState(selectedItem.name)
+  const [productId,setProductId] = useState(selectedItem.product_id)
+  const [personInCharge,setPersonInCharge] = useState(
     selectedItem.person_in_charge
   )
 
   // list options
-  const [statusOptions, setStatusOptions] = useState([])
-  const [stockOptions, setStockOptions] = useState([])
-  const [itemTypes, setItemTypes] = useState([])
+  const [statusOptions,setStatusOptions] = useState([])
+  const [stockOptions,setStockOptions] = useState([])
+  const [userOptions,setUserOptions] = useState([])
+  const [itemTypes,setItemTypes] = useState([])
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
-  const [productIdErr, setProductIdErr] = useState(null)
-  const [personInChargeErr, setPersonInChargeErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
+  const [productIdErr,setProductIdErr] = useState(null)
+  const [personInChargeErr,setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -65,6 +68,10 @@ function DialogEditItem({
       const listStocks = await stocks()
       setStockOptions(listStocks)
     }
+    const getUsers = async () => {
+      const listUsers = await users()
+      setUserOptions(listUsers)
+    }
     const getListItemTypes = async () => {
       const itemTypes = await getItemTypes()
       setItemTypes(itemTypes)
@@ -73,7 +80,8 @@ function DialogEditItem({
     getStatuses()
     getStocks()
     getListItemTypes()
-  }, [])
+    getUsers()
+  },[])
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -121,6 +129,10 @@ function DialogEditItem({
     const { value } = event.target
     setStockId(value)
   }
+  const handleUserChange = (event) => {
+    const { value } = event.target
+    setUserId(value)
+  }
 
   const handleTypeIdChange = (event) => {
     const { value } = event.target
@@ -136,12 +148,13 @@ function DialogEditItem({
       status: statusId,
       stock_id: stockId,
       person_in_charge: personInCharge,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
+      input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       description: description,
+      user_id: userId
     }
     updateItem(payload)
       .then((res) => {
-        console.log("pl: ", payload)
+        console.log("pl: ",payload)
         onUpdateSuccess()
       })
       .catch((err) => {
@@ -224,15 +237,21 @@ function DialogEditItem({
                 ))}
               </Select>
             </FormControl>
-            <TextField
-              fullWidth
-              label="Người phụ trách"
-              value={personInCharge}
-              onChange={handlePersonInChargeChange}
-              onBlur={handleCheckValidatePersonInCharge}
-              error={personInChargeErr}
-              helperText={personInChargeErr}
-            />
+            <FormControl fullWidth>
+              <InputLabel>Người phụ trách</InputLabel>
+              <Select fullWidth value={userId} onChange={handleUserChange}>
+                {userOptions.map((item) => (
+                  <option
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.permission === "admin" && !user.isAdmin}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
                 <KeyboardDatePicker
@@ -278,4 +297,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, null)(DialogEditItem)
+export default connect(mapStateToProps,null)(DialogEditItem)

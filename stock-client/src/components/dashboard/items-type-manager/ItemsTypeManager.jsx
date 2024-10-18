@@ -169,10 +169,8 @@ function ItemsTypeManager(props) {
     str = str.trim()
     // Remove punctuations
     // Bỏ dấu câu, kí tự đặc biệt
-    str = str.replace(
-      /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
-      " "
-    )
+  str = str.replace(/[!@%^*()+=<>,.:;'\"&#[\]~$_`{}|\\]/g, " "); // Removed unnecessary escape for "
+
     return str
   }
   const selectSort = (
