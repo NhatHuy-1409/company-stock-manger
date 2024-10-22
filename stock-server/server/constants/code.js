@@ -1,11 +1,11 @@
 const ERROR = {
   invalid: {
     code: 1,
-    message: "user and password invalid",
+    message: "Username or password invalid",
   },
   incorect: {
     code: 2,
-    message: "user and password incorect",
+    message: "Username or password incorect",
   },
 };
 

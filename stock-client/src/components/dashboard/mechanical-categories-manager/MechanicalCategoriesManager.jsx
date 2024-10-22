@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import { makeStyles } from "@material-ui/core/styles"
 import Table from "@material-ui/core/Table"
@@ -9,15 +8,17 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { getMechanicalCategories } from "../../../api/stock-manager"
 import "./CategoriesManager.scss"
 import DialogAddNewCategory from "./components/DialogAddNewCategory"
 import DialogEditCategory from "./components/DialogEditCategory"
 import DialogRemoveCategory from "./components/DialogRemoveCategory"
+import AddButton from "../../common/add-button/AddButton"
+import Pagination from "../../common/pagination/Pagination"
 
-function createData(id, name, description) {
-  return { id, name, description }
+function createData(id,name,description) {
+  return { id,name,description }
 }
 
 const useStyles = makeStyles({
@@ -27,13 +28,13 @@ const useStyles = makeStyles({
 })
 
 function MechanicalCategoriesManager(props) {
-  const [list, setList] = useState([])
+  const [list,setList] = useState([])
   const classes = useStyles()
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [selectedItem,setSelectedItem] = useState(null)
 
-  const [openEditItem, setOpenEditItem] = useState(false)
-  const [openAddNewCategory, setOpenAddNewCategory] = useState(false)
-  const [openAlertRemove, setOpenAlertRemove] = useState(false)
+  const [openEditItem,setOpenEditItem] = useState(false)
+  const [openAddNewCategory,setOpenAddNewCategory] = useState(false)
+  const [openAlertRemove,setOpenAlertRemove] = useState(false)
 
   const getData = async () => {
     const data = await getMechanicalCategories()
@@ -42,10 +43,10 @@ function MechanicalCategoriesManager(props) {
 
   useEffect(() => {
     getData()
-  }, [])
+  },[])
 
   const rows = [
-    ...list.map((item) => createData(item.id, item.name, item.description)),
+    ...list.map((item) => createData(item.id,item.name,item.description)),
   ]
 
   const handleAddNewSuccess = () => {
@@ -102,11 +103,16 @@ function MechanicalCategoriesManager(props) {
     )
   }
 
+  //Pagination
+  const [page,setPage] = useState(0)
+
+  const [rowsPerPage,setRowsPerPage] = useState(10)
+
+  const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
+
   return (
     <div className="categoriesManager">
-      <Button color="primary" onClick={() => setOpenAddNewCategory(true)}>
-        Thêm danh mục thiết bị
-      </Button>
+      <AddButton onClick={() => setOpenAddNewCategory(true)}>Thêm danh mục thiết bị</AddButton>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
@@ -118,7 +124,7 @@ function MechanicalCategoriesManager(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
+            {paginateRows.map((row,i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {i}
@@ -129,6 +135,13 @@ function MechanicalCategoriesManager(props) {
               </TableRow>
             ))}
           </TableBody>
+          <Pagination
+            count={rows?.length}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+          />
         </Table>
       </TableContainer>
       {dialogAddNewCategory}

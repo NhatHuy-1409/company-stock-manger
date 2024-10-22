@@ -1,10 +1,12 @@
 import React from "react"
 import "./leftNavigationBar.scss"
 import { connect } from "react-redux"
+import { Accordion,AccordionDetails,AccordionSummary } from "@material-ui/core"
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const NAV_USER = [
   {
-    name: "Tất cả user",
+    name: "Tất cả nhân viên",
     component: "UsersManager",
     accessRights: ["admin"],
   },
@@ -14,72 +16,72 @@ const NAV_ITEM = [
   {
     name: "Danh sách thiết bị",
     component: "ItemsManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Loại thiết bị",
     component: "ItemsTypeManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Danh mục thiết bị",
     component: "CategoriesManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
 ]
 const NAV_ELECTRIC_ITEM = [
   {
     name: "Danh sách thiết bị",
     component: "ElectricItemsManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Loại thiết bị",
     component: "ElectricItemsTypeManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Danh mục thiết bị",
     component: "ElectricCategoriesManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
 ]
 const NAV_MECHANICAL_ITEM = [
   {
     name: "Danh sách thiết bị",
     component: "MechanicalItemsManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Loại thiết bị",
     component: "MechanicalItemsTypeManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
     name: "Danh mục thiết bị",
     component: "MechanicalCategoriesManager",
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
 ]
 
 const NAV_MENU = [
   {
-    title: "Quản lý danh sách thiết bị công ty",
+    title: "Thiết bị công ty",
     items: NAV_ITEM,
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
-    title: "Quản lý kho điện tử",
+    title: "Kho điện tử",
     items: NAV_ELECTRIC_ITEM,
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
-    title: "Quản lý kho cơ khí",
+    title: "Kho cơ khí",
     items: NAV_MECHANICAL_ITEM,
-    accessRights: ["user", "admin"],
+    accessRights: ["user","admin"],
   },
   {
-    title: "Quản lý user",
+    title: "Nhân viên",
     items: NAV_USER,
     accessRights: ["admin"],
   },
@@ -93,31 +95,37 @@ function LeftNavigationBar(props) {
   const listNav = (items) => {
     return !props.user
       ? null
-      : items.map((item, index) => {
-          return item?.accessRights[0] === "admin" &&
-            !props.user.isAdmin ? null : (
-            <p
-              className={classNames(item)}
-              key={index}
-              onClick={() => props.onItemClick(item)}
-            >
-              {item.name}
-            </p>
-          )
-        })
+      : items.map((item,index) => {
+        return item?.accessRights[0] === "admin" &&
+          !props.user.isAdmin ? null : (
+          <p
+            className={classNames(item)}
+            key={index}
+            onClick={() => props.onItemClick(item)}
+          >
+            {item.name}
+          </p>
+        )
+      })
   }
   return (
     <div className="leftNavigationBar">
       <div className="wrapper">
-        {NAV_MENU?.map(({ title, items, accessRights }) => {
+        {NAV_MENU?.map(({ title,items,accessRights }) => {
           return (
-            <div>
+            <Accordion>
               {((props.user.isAdmin && accessRights?.includes("admin")) ||
                 (!props.user.isAdmin && accessRights?.includes("user"))) && (
-                <h3>{title}</h3>
-              )}
-              {listNav(items)}
-            </div>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+
+                  >{title}</AccordionSummary>
+                )}
+              <AccordionDetails>
+                {listNav(items)}
+              </AccordionDetails>
+
+            </Accordion>
           )
         })}
       </div>
@@ -131,4 +139,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, null)(LeftNavigationBar)
+export default connect(mapStateToProps,null)(LeftNavigationBar)

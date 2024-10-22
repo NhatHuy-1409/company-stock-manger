@@ -43,7 +43,7 @@ stockDB.userLogin = ({ email,password }) => {
 
 // items
 
-stockDB.getAllItems = (orderby,sort_order,type,status,stock_id) => {
+stockDB.getAllItems = (orderby,sort_order,type,status,stock_id,user_id) => {
   let typeCondition = ""
   if (type !== undefined && type !== null) {
     typeCondition = `WHERE i.type = ${type}`
@@ -56,15 +56,19 @@ stockDB.getAllItems = (orderby,sort_order,type,status,stock_id) => {
   if (stock_id !== undefined && stock_id !== null) {
     stockCondition = `WHERE i.stock_id = ${stock_id}`
   }
+  let userCondition = ""
+  if (user_id !== undefined && user_id !== null) {
+    userCondition = `WHERE i.user_id = ${user_id}`
+  }
 
   return new Promise((resolve,reject) => {
     pool.query(
-      `SELECT i.id, product_id, i.name, i.person_in_charge, input_time, i.description,
+      `SELECT i.id, product_id, i.name, input_time, i.description,
               it.id AS type_id,
               it.name AS type,
               s.name AS status, s.id AS status_id,
               st.name AS stock, st.id AS stock_id,
-              u.last_name AS user,u.id AS user_id,
+              u.full_name AS user,u.id AS user_id,
               stp.name AS stock_type, stp.id AS stock_type_id
         FROM items i
         LEFT JOIN item_types it
@@ -80,6 +84,7 @@ stockDB.getAllItems = (orderby,sort_order,type,status,stock_id) => {
         ${typeCondition}
         ${statusCondition}
         ${stockCondition}
+        ${userCondition}
         ORDER BY ${orderby} ${sort_order} `,
       (err,result) => {
         if (err) {
@@ -445,7 +450,7 @@ stockDB.getStocks = () => {
 stockDB.getAllUsers = () => {
   return new Promise((resolve,reject) => {
     pool.query(
-      `SELECT u.id, first_name, last_name, CONCAT(first_name," ",last_name) AS full_name,
+      `SELECT u.id,full_name,
               email, p.name AS permission,
               p.id AS permission_id,u.status,
               st.name AS stock, st.id AS stock_id
@@ -482,14 +487,14 @@ stockDB.updateItem = ({
   type,
   status,
   stock_id,
-  person_in_charge,
+  user_id,
   input_time,
   description,
 }) => {
   return new Promise((resolve,reject) => {
     pool.query(
       `UPDATE items
-              SET product_id = ?, name = ?,type = ?, status = ?, stock_id = ?, person_in_charge = ?,input_time = ?, description = ?
+              SET product_id = ?, name = ?,type = ?, status = ?, stock_id = ?, user_id = ?,input_time = ?, description = ?
               WHERE id = ?`,
       [
         product_id,
@@ -497,7 +502,7 @@ stockDB.updateItem = ({
         type,
         status,
         stock_id,
-        person_in_charge,
+        user_id,
         input_time,
         description,
         id,
@@ -580,13 +585,13 @@ stockDB.addItem = ({
   type,
   status,
   stock_id,
-  person_in_charge,
+  user_id,
   input_time,
   description,
 }) => {
   return new Promise((resolve,reject) => {
     pool.query(
-      `INSERT INTO items ( product_id,name,type,status,stock_id,person_in_charge,input_time,description) 
+      `INSERT INTO items ( product_id,name,type,status,stock_id,user_id,input_time,description) 
         VALUES (?, ? , ? , ?, ?, ?, ?,?)`,
       [
         product_id,
@@ -594,7 +599,7 @@ stockDB.addItem = ({
         type,
         status,
         stock_id,
-        person_in_charge,
+        user_id,
         input_time,
         description,
       ],
@@ -1120,16 +1125,15 @@ stockDB.deleteMechanicalCategory = ({ id }) => {
 stockDB.addUser = ({
   email,
   password,
-  first_name,
-  last_name,
+  full_name,
   permission,
   status,
 }) => {
   return new Promise((resolve,reject) => {
     pool.query(
-      `INSERT INTO users (email, password, first_name, last_name, permission, status) 
+      `INSERT INTO users (email, password, full_name, permission, status) 
         VALUES (?, ?, ?, ?, ?, ?)`,
-      [email,password,first_name,last_name,permission,status],
+      [email,password,full_name,permission,status],
       (err,result) => {
         if (err) {
           return reject(err)
@@ -1147,8 +1151,7 @@ stockDB.addUser = ({
 stockDB.updateUser = ({
   id,
   email,
-  first_name,
-  last_name,
+  full_name,
   permission,
   status,
   stock_id,
@@ -1156,9 +1159,9 @@ stockDB.updateUser = ({
   return new Promise((resolve,reject) => {
     pool.query(
       `UPDATE users
-              SET email = ?, first_name = ?, last_name = ?, permission = ?, status = ?, stocks_id = ?
+              SET email = ?, full_name = ?, permission = ?, status = ?, stocks_id = ?
               WHERE id = ?`,
-      [email,first_name,last_name,permission,status,stock_id,id],
+      [email,full_name,permission,status,stock_id,id],
       (err,result) => {
         if (err) {
           return reject(err)

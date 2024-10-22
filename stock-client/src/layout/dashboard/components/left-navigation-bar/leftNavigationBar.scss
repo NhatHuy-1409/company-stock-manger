@@ -1,28 +1,49 @@
 .leftNavigationBar {
-  background: #333;
+  background: #fff;
   height: calc(100vh);
   position: sticky;
   top:0;
   > .wrapper {
-    padding: 20px;
+    padding: 16px;
     border-right: 1px solid #eee;
     height: 100%;
+    width: 260px;
     h3{
       color:#fff;
     }
     .item {
+      margin:0;
       padding: 12px 20px;
       cursor: pointer;
-      border-bottom: 1px solid #eee;
       white-space: nowrap;
-
-      color:#ffffff80;
 
       transition: all .33s ease-out;
 
       &:hover,&.active {
-        color: #fff;
+        background: #e9ebed;
       }
+    }
+
+    .MuiAccordion-root{
+      background: unset;
+      box-shadow: none;
+      position: unset;
+      border-bottom: 1px solid #000;
+      border-radius: unset;
+      .MuiAccordionDetails-root{
+        flex-direction: column;
+      }
+      .MuiAccordionDetails-root {
+        padding:0;
+      }
+    }
+
+    .MuiAccordionSummary-root{
+      min-height: 40px;
+
+    }
+    .MuiAccordionSummary-content.Mui-expanded{
+        margin:10px 0;
     }
   }
 }

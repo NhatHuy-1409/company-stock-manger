@@ -5,19 +5,20 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Grid from "@material-ui/core/Grid"
-import Select from "@material-ui/core/Select"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers"
 import { format } from "date-fns"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { addItem } from "../../../../api/stock-manager"
 import { getItemTypes } from "../../../../meta-data/item-types"
 import { statuses } from "../../../../meta-data/statuses"
 import { stocks } from "../../../../meta-data/stocks"
+import { users } from "../../../../meta-data/users"
 import { TextField } from "@material-ui/core"
+import FormSelect from "../../../common/form-select/FormSelect"
 
 export default function DialogAddNewItem({
   open,
@@ -25,25 +26,26 @@ export default function DialogAddNewItem({
   onUpdateSuccess,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState("1")
-  const [statusId, setStatusId] = useState("1")
-  const [stockId, setStockId] = useState("1")
-  const [description, setDescription] = useState("")
-  const [inputTime, setInputTime] = useState(new Date())
-  const [name, setName] = useState("")
-  const [productId, setProductId] = useState("")
-  const [personInCharge, setPersonInCharge] = useState("")
+  const [typeId,setTypeId] = useState("1")
+  const [statusId,setStatusId] = useState("1")
+  const [stockId,setStockId] = useState("1")
+  const [userId,setUserId] = useState("1")
+  const [description,setDescription] = useState("")
+  const [inputTime,setInputTime] = useState(new Date())
+  const [name,setName] = useState("")
+  const [productId,setProductId] = useState("")
 
   // list options
-  const [statusOptions, setStatusOptions] = useState([])
-  const [stockOptions, setStockOptions] = useState([])
-  const [itemTypes, setItemTypes] = useState([])
+  const [statusOptions,setStatusOptions] = useState([])
+  const [stockOptions,setStockOptions] = useState([])
+  const [userOptions,setUserOptions] = useState([])
+  const [itemTypes,setItemTypes] = useState([])
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
-  const [productIdErr, setProductIdErr] = useState(null)
-  const [personInChargeErr, setPersonInChargeErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
+  const [productIdErr,setProductIdErr] = useState(null)
+  const [personInChargeErr,setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -54,6 +56,10 @@ export default function DialogAddNewItem({
       const listStocks = await stocks()
       setStockOptions(listStocks)
     }
+    const getUsers = async () => {
+      const listStocks = await users()
+      setUserOptions(listStocks)
+    }
     const getListItemTypes = async () => {
       const itemTypes = await getItemTypes()
       setItemTypes(itemTypes)
@@ -62,7 +68,8 @@ export default function DialogAddNewItem({
     getStatuses()
     getStocks()
     getListItemTypes()
-  }, [])
+    getUsers()
+  },[])
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -88,10 +95,7 @@ export default function DialogAddNewItem({
     }
     setProductIdErr(null)
   }
-  const handlePersonInChargeChange = (event) => {
-    const { value } = event.target
-    setPersonInCharge(value)
-  }
+
 
   const handleCheckValidatePersonInCharge = (event) => {
     if (!event || !event.target.value) {
@@ -110,6 +114,10 @@ export default function DialogAddNewItem({
     const { value } = event.target
     setStockId(value)
   }
+  const handleUserChange = (event) => {
+    const { value } = event.target
+    setUserId(value)
+  }
 
   const handleTypeIdChange = (event) => {
     const { value } = event.target
@@ -123,14 +131,13 @@ export default function DialogAddNewItem({
       type: typeId,
       status: statusId,
       stock_id: stockId,
-      person_in_charge: personInCharge,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
+      user_id: userId,
+      input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       description: description,
     }
-    console.log(payload)
     addItem(payload)
       .then((res) => {
-        console.log("pl: ", payload)
+        console.log("pl: ",payload)
         onUpdateSuccess()
         handleClose()
       })
@@ -169,55 +176,32 @@ export default function DialogAddNewItem({
               error={nameErr}
               helperText={nameErr}
             />
-            <Select
-              native
-              fullWidth
-              label="Type"
+
+            <FormSelect
+              label="Loại thiết bị"
               value={typeId}
               onChange={handleTypeIdChange}
-            >
-              {itemTypes.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              native
-              fullWidth
-              label="Status"
+              options={itemTypes}
+            />
+            <FormSelect
+              label="Trạng thái"
               value={statusId}
               onChange={handleStatusChange}
-            >
-              {statusOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              displayEmpty
-              native
-              fullWidth
-              label="Stock"
+              options={statusOptions}
+            />
+            <FormSelect
+              label="Bộ phận"
               value={stockId}
               onChange={handleStockChange}
-            >
-              {stockOptions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <TextField
-              fullWidth
-              label="Người phụ trách"
-              value={personInCharge}
-              onChange={handlePersonInChargeChange}
-              onBlur={handleCheckValidatePersonInCharge}
-              error={personInChargeErr}
-              helperText={personInChargeErr}
+              options={stockOptions}
             />
+            <FormSelect
+              label="Người phụ trách"
+              value={userId}
+              onChange={handleUserChange}
+              options={userOptions}
+            />
+
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
                 <KeyboardDatePicker

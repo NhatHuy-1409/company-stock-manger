@@ -3,13 +3,13 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Select from "@material-ui/core/Select";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import TextField from "@material-ui/core/TextField";
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import { addItemType } from "../../../../api/stock-manager";
 import { getListCategories } from "../../../../meta-data/categories";
 import "./DialogEditItemType.scss";
+import FormSelect from "../../../common/form-select/FormSelect";
 
 export default function DialogAddNewItemType({
   open,
@@ -17,17 +17,17 @@ export default function DialogAddNewItemType({
   onAddNewSuccess,
 }) {
   // modal value
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("1");
-  const [unit, setUnit] = useState("");
-  const [description, setDescription] = useState("");
+  const [name,setName] = useState("");
+  const [category,setCategory] = useState("1");
+  const [unit,setUnit] = useState("");
+  const [description,setDescription] = useState("");
 
   // list options
-  const [categories, setCategories] = useState([]);
+  const [categories,setCategories] = useState([]);
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null);
+  const [nameErr,setNameErr] = useState(null);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -36,7 +36,7 @@ export default function DialogAddNewItemType({
     };
 
     getCategories();
-  }, []);
+  },[]);
 
   const handleNameChange = (event) => {
     const { value } = event.target;
@@ -100,19 +100,12 @@ export default function DialogAddNewItemType({
               error={nameErr}
               helperText={nameErr}
             />
-            <Select
-              native
-              fullWidth
+            <FormSelect
               label="Danh mục"
               value={category}
               onChange={handleCategoryChange}
-            >
-              {categories.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+              options={categories}
+            />
             <TextField
               fullWidth
               label="Đơn vị"

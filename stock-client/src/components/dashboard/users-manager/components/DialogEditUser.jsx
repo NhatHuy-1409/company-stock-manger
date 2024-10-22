@@ -3,13 +3,13 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import React,{ useEffect,useState } from "react";
 import { updateUser } from "../../../../api/stock-manager";
 import { listPermissions } from "../../../../meta-data/permissions";
 import { stocks } from "../../../../meta-data/stocks";
 import TextError from "../../../common/text-error/TextError";
+import FormSelect from "../../../common/form-select/FormSelect";
 
 const STATUS_OPTIONS = [
   { value: "active",label: "Hoạt động" },
@@ -24,8 +24,7 @@ export default function DialogEditUser({
 }) {
   // modal value
   const [email,setEmail] = useState(selectedUser.email);
-  const [firstName,setFirstName] = useState(selectedUser.first_name);
-  const [lastName,setLastName] = useState(selectedUser.last_name);
+  const [fullName,setFullName] = useState(selectedUser.full_name);
   const [permission,setPermission] = useState(selectedUser.permission_id);
   const [status,setStatus] = useState(selectedUser.status);
   const [stock,setStock] = useState(selectedUser.stock_id);
@@ -36,8 +35,7 @@ export default function DialogEditUser({
 
   // error state
   const [emailErr,setEmailErr] = useState(null);
-  const [firstNameErr,setFirstNameErr] = useState(null);
-  const [lastNameErr,setLastNameErr] = useState(null);
+  const [fullNameErr,setFullNameErr] = useState(null);
 
   // server error state
   const [serverError,setServerError] = useState(null);
@@ -72,26 +70,18 @@ export default function DialogEditUser({
     setEmailErr(null);
   };
 
-  const handleCheckValidateFirstName = () => {
-    if (!firstName) {
-      return setFirstNameErr("Không được bỏ trống họ");
+  const handleCheckValidateFullName = () => {
+    if (!fullName) {
+      return setFullNameErr("Không được bỏ trống họ và tên");
     }
-    setFirstNameErr(null);
-  };
-
-  const handleCheckValidateLastName = () => {
-    if (!lastName) {
-      return setLastNameErr("Không được bỏ trống tên");
-    }
-    setLastNameErr(null);
+    setFullNameErr(null);
   };
 
   const handleSubmitForm = () => {
     const payload = {
       id: selectedUser.id,
       email,
-      first_name: firstName,
-      last_name: lastName,
+      full_name: fullName,
       permission,
       status,
       stock_id: parseInt(stock)
@@ -115,7 +105,7 @@ export default function DialogEditUser({
   const disabledSubmitForm = () => {
     let isDisabled = false;
 
-    const errArr = [emailErr,firstNameErr,lastNameErr];
+    const errArr = [emailErr,fullNameErr];
 
     errArr.forEach((err) => {
       if (err !== null) {
@@ -150,61 +140,33 @@ export default function DialogEditUser({
             />
             <TextField
               fullWidth
-              label="Họ"
-              value={firstName}
-              error={firstNameErr}
-              helperText={firstNameErr}
-              onChange={(e) => setFirstName(e.target.value)}
-              onBlur={handleCheckValidateFirstName}
+              label="Họ và tên"
+              value={fullName}
+              error={fullNameErr}
+              helperText={fullNameErr}
+              onChange={(e) => setFullName(e.target.value)}
+              onBlur={handleCheckValidateFullName}
             />
-            <TextField
-              fullWidth
-              label="Tên"
-              value={lastName}
-              error={lastNameErr}
-              helperText={lastNameErr}
-              onChange={(e) => setLastName(e.target.value)}
-              onBlur={handleCheckValidateLastName}
-            />
-            <Select
-              native
-              fullWidth
+
+            <FormSelect
               label="Bộ phận"
               value={stock}
               onChange={(e) => setStock(e.target.value)}
-            >
-              {listStocks.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              native
-              fullWidth
+              options={listStocks}
+            />
+            <FormSelect
               label="Chức danh"
               value={permission}
               onChange={(e) => setPermission(e.target.value)}
-            >
-              {permissions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              native
-              fullWidth
+              options={permissions}
+            />
+            <FormSelect
               label="Trạng thái"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-            >
-              {STATUS_OPTIONS.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+              options={STATUS_OPTIONS}
+            />
+
           </form>
           {errorMessage}
         </DialogContent>

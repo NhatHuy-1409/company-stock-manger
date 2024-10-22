@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import { makeStyles } from "@material-ui/core/styles"
 import Table from "@material-ui/core/Table"
@@ -10,10 +9,9 @@ import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import Select from "@material-ui/core/Select"
-import ButtonGroup from "@material-ui/core/ButtonGroup"
 import { format } from "date-fns"
 import React,{ useEffect,useState } from "react"
-import { getItems,getStatuses,getStocks } from "../../../api/stock-manager"
+import { getItems,getStatuses,getStocks,getUsers } from "../../../api/stock-manager"
 import DialogAddNewItem from "./components/DialogAddNewItem"
 import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
@@ -25,6 +23,7 @@ import { getItemTypes } from "../../../meta-data/item-types"
 import { removeVietnameseTones } from "../../../utils/removeVietnameseTones"
 import Pagination from "../../common/pagination/Pagination"
 import { calculateDaysBetween } from "../../../utils/calculateDaysBetween"
+import AddButton from "../../common/add-button/AddButton"
 const useStyles = makeStyles({
   table: {},
 })
@@ -36,7 +35,7 @@ const SORT_OPTIONS = [
   { value: "type",label: "Loại" },
   { value: "status_id",label: "Trạng thái" },
   { value: "stock_id",label: "Bộ phận" },
-  { value: "person_in_charge",label: "Người phụ trách" },
+  { value: "user_id",label: "Người phụ trách" },
   { value: "input_time",label: "Ngày nhập kho" },
 ]
 
@@ -52,7 +51,7 @@ function ItemsManager(props) {
   const [itemTypes,setItemTypes] = useState([])
   const [itemStatuses,setItemStatuses] = useState([])
   const [itemStocks,setItemStocks] = useState([])
-  const [itemUser,setItemUser] = useState([])
+  const [itemUsers,setItemUsers] = useState([])
   const [selectedItem,setSelectedItem] = useState(null)
 
   const [openEditItem,setOpenEditItem] = useState(false)
@@ -67,6 +66,7 @@ function ItemsManager(props) {
   const [typeFilter,setTypeFilter] = useState(null)
   const [statusFilter,setStatusFilter] = useState(null)
   const [stockFilter,setStockFilter] = useState(null)
+  const [userFilter,setUserFilter] = useState(null)
 
 
   const handleClickOpen = (item) => {
@@ -84,21 +84,23 @@ function ItemsManager(props) {
     const types = await getItemTypes()
     const statuses = await getStatuses()
     const stocks = await getStocks()
+    const users = await getUsers()
+
     setAllItems(fullData)
     setItemTypes(types)
     setItemStatuses(statuses)
     setItemStocks(stocks)
-
+    setItemUsers(users)
   }
 
-  const getData = async (sortProperty,sortOrder,type,status,stock) => {
-    const data = await getItems(sortProperty,sortOrder,type,status,stock)
+  const getData = async (sortProperty,sortOrder,type,status,stock,user) => {
+    const data = await getItems(sortProperty,sortOrder,type,status,stock,user)
 
     setList(data)
   }
   useEffect(() => {
-    getData(sortProperty,sortOrder,typeFilter,statusFilter,stockFilter)
-  },[sortProperty,sortOrder,typeFilter,statusFilter,stockFilter])
+    getData(sortProperty,sortOrder,typeFilter,statusFilter,stockFilter,userFilter)
+  },[sortProperty,sortOrder,typeFilter,statusFilter,stockFilter,userFilter])
 
   useEffect(() => {
     getIninitalData()
@@ -129,7 +131,6 @@ function ItemsManager(props) {
         item.description,
         item.type_id,
         item.type,
-        item.person_in_charge,
         item.product_id,
         item.user,
         item.user_id
@@ -216,6 +217,16 @@ function ItemsManager(props) {
         }
       }),
     },
+    {
+      value: "Người phụ trách",
+      menuLevel: 0,
+      nestedOptions: itemUsers?.map((item) => {
+        return {
+          value: item?.full_name,
+          menuLevel: 1,
+        }
+      }),
+    },
   ]
 
 
@@ -231,9 +242,11 @@ function ItemsManager(props) {
         setTypeFilter={setTypeFilter}
         setStatusFilter={setStatusFilter}
         setStockFilter={setStockFilter}
+        setUserFilter={setUserFilter}
         itemTypes={itemTypes}
         itemStatuses={itemStatuses}
         itemStocks={itemStocks}
+        itemUsers={itemUsers}
       />
       <TextField
         id="outlined-basic"
@@ -258,7 +271,8 @@ function ItemsManager(props) {
               sortOrder,
               typeFilter,
               statusFilter,
-              stockFilter
+              stockFilter,
+              userFilter
             )
           }
         }}
@@ -294,17 +308,16 @@ function ItemsManager(props) {
   //Pagination
   const [page,setPage] = useState(0)
 
-  const [rowsPerPage,setRowsPerPage] = useState(5)
+  const [rowsPerPage,setRowsPerPage] = useState(10)
 
   const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
 
   return (
     <div className="itemsManager">
-      <ButtonGroup>
-        <Button color="primary" onClick={() => setOpenAddNewItem(true)}>
-          Thêm thiết bị
-        </Button>
-      </ButtonGroup>
+
+      <AddButton onClick={() => setOpenAddNewItem(true)}>
+        Thêm thiết bị
+      </AddButton>
       {selectSort}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
@@ -347,7 +360,7 @@ function ItemsManager(props) {
           </TableBody>
 
           <Pagination
-          count={rows?.length}
+            count={rows?.length}
             page={page}
             setPage={setPage}
             rowsPerPage={rowsPerPage}
@@ -382,7 +395,6 @@ const createData = (
   description,
   type_id,
   type,
-  person_in_charge,
   product_id,
   user,
   user_id
@@ -400,7 +412,6 @@ const createData = (
     description,
     type_id,
     type,
-    person_in_charge,
     product_id,
     user,
     user_id

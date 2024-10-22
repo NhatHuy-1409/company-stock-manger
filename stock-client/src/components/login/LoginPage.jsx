@@ -4,7 +4,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import TextField from "@material-ui/core/TextField";
 
-import React, { useState } from "react";
+import React,{ useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { adminLogin } from "../../api/stock-manager";
@@ -17,15 +17,15 @@ function LoginPage({ setAuth }) {
   const history = useHistory();
 
   // model
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
 
   // ui state
-  const [apiLoading, setApiLoading] = useState(false);
-  const [err, setErr] = useState("");
+  const [apiLoading,setApiLoading] = useState(false);
+  const [err,setErr] = useState("");
 
   // options state
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin,setIsAdmin] = useState(false);
 
   const onEmailChange = (e) => {
     setEmail(e.target.value);
@@ -43,7 +43,7 @@ function LoginPage({ setAuth }) {
   const onSubmit = () => {
     setApiLoading(true);
     setErr(null);
-    adminLogin(email, password, isAdmin)
+    adminLogin(email,password,isAdmin)
       .then((res) => {
         if (res.error) throw res.error;
         handleLoginSuccess(res);
@@ -63,15 +63,16 @@ function LoginPage({ setAuth }) {
   );
 
   const error = err ? (
-    <p style={{ textAlign: "center", color: "red" }}>{err}</p>
+    <p style={{ textAlign: "center",color: "red" }}>{err}</p>
   ) : null;
 
   return (
     <div className="loginPage">
+      <h1 className="title">LOGIN</h1>
       <form className="form" noValidate autoComplete="off">
         <TextField
           id="outlined-basic"
-          label="user"
+          label="Username"
           variant="outlined"
           value={email}
           onChange={onEmailChange}
@@ -118,4 +119,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps,mapDispatchToProps)(LoginPage);

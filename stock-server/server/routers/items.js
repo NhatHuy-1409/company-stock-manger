@@ -5,15 +5,16 @@ const nodemailer = require("nodemailer")
 
 const router = express.Router()
 
-router.get("/", async (req, res, next) => {
+router.get("/",async (req,res,next) => {
   try {
-    const { orderby, sort_order, type, status, stock_id } = req.query
+    const { orderby,sort_order,type,status,stock_id,user_id } = req.query
     let results = await dbLogin.getAllItems(
       orderby,
       sort_order,
       type,
       status,
-      stock_id
+      stock_id,
+      user_id
     )
     res.json(results)
   } catch (err) {
@@ -44,7 +45,7 @@ router.get("/", async (req, res, next) => {
 //   }
 // })
 
-router.post("/update", async (req, res, next) => {
+router.post("/update",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.updateItem(payload)
@@ -55,7 +56,7 @@ router.post("/update", async (req, res, next) => {
   }
 })
 
-router.post("/add", async (req, res, next) => {
+router.post("/add",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.addItem(payload)
@@ -66,7 +67,7 @@ router.post("/add", async (req, res, next) => {
   }
 })
 
-router.post("/delete", async (req, res, next) => {
+router.post("/delete",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.deleteItem(payload)
@@ -77,7 +78,7 @@ router.post("/delete", async (req, res, next) => {
   }
 })
 
-router.post("/about-to-exprire", async (req, res, next) => {
+router.post("/about-to-exprire",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.getByExpiryTime(payload)
@@ -88,7 +89,7 @@ router.post("/about-to-exprire", async (req, res, next) => {
   }
 })
 
-router.post("/mail-expiry-to-staff", async (req, res, next) => {
+router.post("/mail-expiry-to-staff",async (req,res,next) => {
   try {
     const payload = req.body
     const results = await dbLogin.getAllUsers()
@@ -123,7 +124,7 @@ const sendEmailExpiryDevice = (
   stock_email,
   stock_password
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve,reject) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -140,7 +141,7 @@ const sendEmailExpiryDevice = (
       ${html}`,
     }
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions,function (error,info) {
       if (error) {
         reject(error)
       } else {

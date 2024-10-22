@@ -1,4 +1,3 @@
-import Button from "@material-ui/core/Button"
 import Paper from "@material-ui/core/Paper"
 import { makeStyles } from "@material-ui/core/styles"
 import Table from "@material-ui/core/Table"
@@ -10,9 +9,8 @@ import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import Select from "@material-ui/core/Select"
-import ButtonGroup from "@material-ui/core/ButtonGroup"
 import { format } from "date-fns"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { getMechanicalItems } from "../../../api/stock-manager"
 import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
@@ -22,42 +20,44 @@ import { TextField } from "@material-ui/core"
 import DialogAddNewItem from "./components/DialogAddNewItem"
 import { getMechanicalItemTypes } from "../../../meta-data/mechanical-item-types"
 import SubMenu from "../../SubMenu"
+import AddButton from "../../common/add-button/AddButton"
+import Pagination from "../../common/pagination/Pagination"
 
 const useStyles = makeStyles({
   table: {},
 })
 
 const SORT_OPTIONS = [
-  { value: "product_id", label: "Mã" },
-  { value: "name", label: "Tên" },
-  { value: "type", label: "Loại" },
-  { value: "input_time", label: "Ngày nhập kho" },
-  { value: "quantity", label: "Số lượng" },
-  { value: "position", label: "Vị trí" },
+  { value: "product_id",label: "Mã" },
+  { value: "name",label: "Tên" },
+  { value: "type",label: "Loại" },
+  { value: "input_time",label: "Ngày nhập kho" },
+  { value: "quantity",label: "Số lượng" },
+  { value: "position",label: "Vị trí" },
 ]
 
 const SORT_ORDER_OPTIONS = [
-  { value: "ASC", label: "Tăng dần" },
-  { value: "DESC", label: "Giảm dần" },
+  { value: "ASC",label: "Tăng dần" },
+  { value: "DESC",label: "Giảm dần" },
 ]
 
 function MechanicalItemsManager(props) {
   const classes = useStyles()
-  const [allItems, setAllItems] = useState([])
-  const [list, setList] = useState([])
-  const [selectedItem, setSelectedItem] = useState(null)
-  const [itemTypes, setItemTypes] = useState([])
+  const [allItems,setAllItems] = useState([])
+  const [list,setList] = useState([])
+  const [selectedItem,setSelectedItem] = useState(null)
+  const [itemTypes,setItemTypes] = useState([])
 
-  const [openEditItem, setOpenEditItem] = useState(false)
-  const [openAddNewItem, setOpenAddNewItem] = useState(false)
-  const [openAlertRemove, setOpenAlertRemove] = useState(false)
-  const [openDialogAlertEmail, setOpenDialogAlertEmail] = useState(false)
+  const [openEditItem,setOpenEditItem] = useState(false)
+  const [openAddNewItem,setOpenAddNewItem] = useState(false)
+  const [openAlertRemove,setOpenAlertRemove] = useState(false)
+  const [openDialogAlertEmail,setOpenDialogAlertEmail] = useState(false)
 
-  const [sortProperty, setSortProperty] = useState("id")
-  const [sortOrder, setSortOrder] = useState("ASC")
+  const [sortProperty,setSortProperty] = useState("id")
+  const [sortOrder,setSortOrder] = useState("ASC")
 
-  const [nameFilter, setNameFilter] = useState("Tất cả")
-  const [typeFilter, setTypeFilter] = useState(null)
+  const [nameFilter,setNameFilter] = useState("Tất cả")
+  const [typeFilter,setTypeFilter] = useState(null)
 
   const handleClickOpen = (item) => {
     setOpenEditItem(true)
@@ -70,26 +70,26 @@ function MechanicalItemsManager(props) {
   }
 
   const getIninitalData = async () => {
-    const fullData = await getMechanicalItems(sortProperty, sortOrder)
+    const fullData = await getMechanicalItems(sortProperty,sortOrder)
     const types = await getMechanicalItemTypes()
     setAllItems(fullData)
     setItemTypes(types)
   }
 
-  const getData = async (sortProperty, sortOrder, type) => {
-    const data = await getMechanicalItems(sortProperty, sortOrder, type)
+  const getData = async (sortProperty,sortOrder,type) => {
+    const data = await getMechanicalItems(sortProperty,sortOrder,type)
     setList(data)
   }
   useEffect(() => {
     getIninitalData()
-  }, [])
+  },[])
 
   useEffect(() => {
-    getData(sortProperty, sortOrder, typeFilter)
-  }, [sortProperty, sortOrder, typeFilter])
+    getData(sortProperty,sortOrder,typeFilter)
+  },[sortProperty,sortOrder,typeFilter])
 
   const handleUpdateDataSuccess = () => {
-    getData(sortProperty, sortOrder)
+    getData(sortProperty,sortOrder)
     handleClose()
   }
 
@@ -146,7 +146,7 @@ function MechanicalItemsManager(props) {
       open={openAlertRemove}
       handleClose={() => setOpenAlertRemove(false)}
       selectedItem={selectedItem}
-      onSuccess={() => getData(sortProperty, sortOrder)}
+      onSuccess={() => getData(sortProperty,sortOrder)}
     />
   ) : null
 
@@ -154,7 +154,7 @@ function MechanicalItemsManager(props) {
     <DialogSendEmail
       open={openDialogAlertEmail}
       handleClose={() => setOpenDialogAlertEmail(false)}
-      onSuccess={() => getData(sortProperty, sortOrder)}
+      onSuccess={() => getData(sortProperty,sortOrder)}
     />
   ) : null
 
@@ -199,7 +199,7 @@ function MechanicalItemsManager(props) {
               ) || ""
             )
           } else {
-            getData(sortProperty, sortOrder, typeFilter)
+            getData(sortProperty,sortOrder,typeFilter)
           }
         }}
       />
@@ -230,13 +230,16 @@ function MechanicalItemsManager(props) {
       </Select>
     </div>
   )
+  //Pagination
+  const [page,setPage] = useState(0)
+
+  const [rowsPerPage,setRowsPerPage] = useState(10)
+
+  const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
+
   return (
     <div className="itemsManager">
-      <ButtonGroup>
-        <Button color="primary" onClick={() => setOpenAddNewItem(true)}>
-          Thêm thiết bị
-        </Button>
-      </ButtonGroup>
+      <AddButton onClick={() => setOpenAddNewItem(true)}>Thêm thiết bị</AddButton>
       {selectSort}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
@@ -254,7 +257,7 @@ function MechanicalItemsManager(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
+            {paginateRows.map((row,i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {i}
@@ -270,6 +273,13 @@ function MechanicalItemsManager(props) {
               </TableRow>
             ))}
           </TableBody>
+          <Pagination
+            count={rows?.length}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+          />
         </Table>
       </TableContainer>
       {dialogEditItem}
@@ -283,7 +293,7 @@ function MechanicalItemsManager(props) {
 const getDate = (stringDate) => {
   if (!stringDate) return "--"
   const cvDate = new Date(stringDate)
-  return format(cvDate, "dd/MM/yyyy")
+  return format(cvDate,"dd/MM/yyyy")
 }
 
 const createData = (

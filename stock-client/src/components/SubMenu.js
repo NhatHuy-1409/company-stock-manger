@@ -16,24 +16,24 @@ import {
 // This function checks whether a point (x, y) is on the left or right side of a line formed by two points (px, py) and (qx, qy).
 // If the result is negative, the point is on the right side of the line. If positive, it's on the left side.
 // It helps us determine if a point is on the same side as a vertex of the triangle when compared to its edges.
-function sign(px, py, qx, qy, rx, ry) {
+function sign(px,py,qx,qy,rx,ry) {
   return (px - rx) * (qy - ry) - (qx - rx) * (py - ry)
 }
 
 // This function checks if a point (x, y) is inside a triangle formed by three points (x1, y1), (x2, y2), and (x3, y3).
-function pointInTriangle(currentMouseCoordinates, triangleCoordinates) {
-  const [[x1, y1], [x2, y2], [x3, y3]] = triangleCoordinates
-  const [x, y] = currentMouseCoordinates
+function pointInTriangle(currentMouseCoordinates,triangleCoordinates) {
+  const [[x1,y1],[x2,y2],[x3,y3]] = triangleCoordinates
+  const [x,y] = currentMouseCoordinates
 
-  const b1 = sign(x, y, x1, y1, x2, y2) <= 0
-  const b2 = sign(x, y, x2, y2, x3, y3) <= 0
-  const b3 = sign(x, y, x3, y3, x1, y1) <= 0
+  const b1 = sign(x,y,x1,y1,x2,y2) <= 0
+  const b2 = sign(x,y,x2,y2,x3,y3) <= 0
+  const b3 = sign(x,y,x3,y3,x1,y1) <= 0
   // If all signs are the same (either all negative or all positive), the point is inside the triangle.
   return b1 === b2 && b2 === b3
 }
 
-function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
-  const [anchors, setAnchors] = React.useState({
+function SubMenu({ nameFilter,options,menuLevels,onOptionClick }) {
+  const [anchors,setAnchors] = React.useState({
     elements: new Array(menuLevels).fill(null),
     options: new Array(menuLevels).fill(null),
   })
@@ -43,14 +43,14 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
   const buttonRef = React.useRef(null)
   const mouseIdleTimer = React.useRef(null)
 
-  const handleOpen = (event, level = 0, nestedOptions = options) => {
+  const handleOpen = (event,level = 0,nestedOptions = options) => {
     const target = event.target
 
     setAnchors((prevAnchors) => ({
-      elements: prevAnchors.elements.map((element, index) =>
+      elements: prevAnchors.elements.map((element,index) =>
         index === level ? target : element
       ),
-      options: prevAnchors.options.map((element, index) =>
+      options: prevAnchors.options.map((element,index) =>
         index === level ? nestedOptions : element
       ),
     }))
@@ -58,10 +58,10 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
 
   const handleClose = (level) => {
     setAnchors((prevAnchors) => ({
-      elements: prevAnchors.elements.map((element, index) =>
+      elements: prevAnchors.elements.map((element,index) =>
         index >= level ? null : element
       ),
-      options: prevAnchors.options.map((element, index) =>
+      options: prevAnchors.options.map((element,index) =>
         index >= level ? null : element
       ),
     }))
@@ -89,15 +89,15 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
     }
   }
 
-  const handleMouseMove = (event, option, optIndex) => {
+  const handleMouseMove = (event,option,optIndex) => {
     let shouldComputeSubMenuOpenLogic = true
     const submenu = document.querySelector(
       `#nested-menu-${option.menuLevel + 1}`
     )
 
     function computeSubMenuLogic() {
-      if (!mouseEntered.current[getId(option, optIndex)]) {
-        mouseEntered.current[getId(option, optIndex)] = true
+      if (!mouseEntered.current[getId(option,optIndex)]) {
+        mouseEntered.current[getId(option,optIndex)] = true
         // Close all prior submenus if the mouse transitions from an option with a submenu to an option without a submenu.
         if (!option.nestedOptions) {
           handleClose(option.menuLevel + 1)
@@ -106,31 +106,31 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
           option.nestedOptions &&
           anchors.options[option.menuLevel + 1] &&
           !option.nestedOptions.every(
-            (val, i) =>
+            (val,i) =>
               val.value === anchors.options[option.menuLevel + 1]?.[i].value
           )
         ) {
           handleClose(option.menuLevel + 1)
-          handleOpen(event, option.menuLevel + 1, option.nestedOptions)
+          handleOpen(event,option.menuLevel + 1,option.nestedOptions)
         } else {
-          handleOpen(event, option.menuLevel + 1, option.nestedOptions)
+          handleOpen(event,option.menuLevel + 1,option.nestedOptions)
         }
       }
     }
 
     if (mouseLeftCordinates.current.length > 0 && submenu) {
-      const { x, y, height } = submenu.getBoundingClientRect()
+      const { x,y,height } = submenu.getBoundingClientRect()
 
       // Form a virtual triangle using the left mouse coordinates and the top-left and bottom-left coordinates of the submenu. If the current mouse coordinates fall within this triangle, skip the submenu logic computation.
       // Check https://twitter.com/diegohaz/status/1283558204178407427 for more context.
-      const currentMouseCoordinates = [event.clientX, -event.clientY]
+      const currentMouseCoordinates = [event.clientX,-event.clientY]
       const virtualTriangleCordinates = [
-        [x, -y],
-        [x, -(y + height)],
-        [mouseLeftCordinates.current[0], mouseLeftCordinates.current[1]],
+        [x,-y],
+        [x,-(y + height)],
+        [mouseLeftCordinates.current[0],mouseLeftCordinates.current[1]],
       ]
 
-      if (pointInTriangle(currentMouseCoordinates, virtualTriangleCordinates)) {
+      if (pointInTriangle(currentMouseCoordinates,virtualTriangleCordinates)) {
         shouldComputeSubMenuOpenLogic = false
         if (mouseIdleTimer.current) {
           clearTimeout(mouseIdleTimer.current)
@@ -139,7 +139,7 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
         // if mouse is inside triangle and yet hasn't moved, we need to compute submenu logic after a delay
         mouseIdleTimer.current = setTimeout(() => {
           computeSubMenuLogic()
-        }, 50)
+        },50)
       } else {
         shouldComputeSubMenuOpenLogic = true
       }
@@ -153,19 +153,19 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
     }
   }
 
-  const handleMouseLeave = (event, option, optIndex) => {
-    mouseLeftCordinates.current = [event.clientX, -event.clientY]
+  const handleMouseLeave = (event,option,optIndex) => {
+    mouseLeftCordinates.current = [event.clientX,-event.clientY]
 
     if (mouseIdleTimer.current) {
       clearInterval(mouseIdleTimer.current)
     }
-    mouseEntered.current[getId(option, optIndex)] = false
+    mouseEntered.current[getId(option,optIndex)] = false
   }
 
-  const handleKeyDown = (event, option) => {
+  const handleKeyDown = (event,option) => {
     if (option.nestedOptions) {
       if (event.key === "ArrowRight" || event.key === "Enter") {
-        handleOpen(event, option.menuLevel + 1, option.nestedOptions)
+        handleOpen(event,option.menuLevel + 1,option.nestedOptions)
       }
     }
     if (event.key === "ArrowLeft" && option.menuLevel > 0) {
@@ -178,7 +178,7 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
     }
   }
 
-  const getId = (option, index) => {
+  const getId = (option,index) => {
     return `${index}-${option.menuLevel}`
   }
 
@@ -193,7 +193,7 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
         {nameFilter}
       </Button>
 
-      {anchors.elements.map((anchorElement, index) =>
+      {anchors.elements.map((anchorElement,index) =>
         anchorElement ? (
           <Popper
             open={Boolean(anchorElement)}
@@ -218,26 +218,26 @@ function SubMenu({ nameFilter, options, menuLevels, onOptionClick }) {
                       aria-labelledby="nested-button"
                     >
                       {(anchors.options[index] ?? []).map(
-                        (option, optIndex) => (
+                        (option,optIndex) => (
                           <MenuItem
                             key={option.value}
                             aria-haspopup={!!option.nestedOptions ?? undefined}
                             aria-expanded={
                               option.nestedOptions
                                 ? anchors.elements.some(
-                                    (element) =>
-                                      element?.innerText === option.value
-                                  )
+                                  (element) =>
+                                    element?.innerText === option.value
+                                )
                                 : undefined
                             }
                             onClick={() => handleClickOption(option)}
                             onMouseMove={(event) =>
-                              handleMouseMove(event, option, optIndex)
+                              handleMouseMove(event,option,optIndex)
                             }
                             onMouseLeave={(event) =>
-                              handleMouseLeave(event, option, optIndex)
+                              handleMouseLeave(event,option,optIndex)
                             }
-                            onKeyDown={(event) => handleKeyDown(event, option)}
+                            onKeyDown={(event) => handleKeyDown(event,option)}
                           >
                             <Box
                               sx={{
@@ -288,11 +288,15 @@ export default function NestedMenu({
   setTypeFilter,
   setStatusFilter,
   setStockFilter,
+  setUserFilter,
   itemTypes,
   itemStatuses,
   itemStocks,
+  itemUsers
 }) {
-  function findAttributeByValue(array, value) {
+
+
+  function findAttributeByValue(array,value) {
     let result = null
 
     array.forEach((item) => {
@@ -314,8 +318,10 @@ export default function NestedMenu({
       setTypeFilter(null)
       setStatusFilter?.(null)
       setStockFilter?.(null)
+      setUserFilter?.(null)
     } else {
-      const attributes = findAttributeByValue(list, option.value)
+      const attributes = findAttributeByValue(list,option.value)
+      console.log({ attributes });
 
       if (attributes === "type") {
         const itemFilter = itemTypes?.filter(
@@ -324,6 +330,7 @@ export default function NestedMenu({
         setTypeFilter(itemFilter[0].value)
         setStatusFilter?.(null)
         setStockFilter?.(null)
+        setUserFilter?.(null)
       } else if (attributes === "status") {
         const itemFilter = itemStatuses?.filter(
           (item) => item.name === option.value
@@ -331,6 +338,8 @@ export default function NestedMenu({
         setStatusFilter(itemFilter[0].id)
         setTypeFilter(null)
         setStockFilter(null)
+        setUserFilter(null)
+
       } else if (attributes === "stock") {
         const itemFilter = itemStocks?.filter(
           (item) => item.name === option.value
@@ -338,7 +347,17 @@ export default function NestedMenu({
         setStockFilter(itemFilter[0].id)
         setTypeFilter(null)
         setStatusFilter(null)
-      } else {
+        setUserFilter(null)
+      } else if (attributes === "user") {
+        const itemFilter = itemUsers?.filter(
+          (item) => item.full_name === option.value
+        )
+        setUserFilter(itemFilter[0].id)
+        setTypeFilter(null)
+        setStatusFilter(null)
+        setStockFilter(null)
+      }
+      else {
         setList([])
         // setTypeFilter?.(null)
         // setStatusFilter?.(null)

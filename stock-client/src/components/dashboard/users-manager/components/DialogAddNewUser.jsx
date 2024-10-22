@@ -3,16 +3,16 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import { addUser } from "../../../../api/stock-manager";
 import { listPermissions } from "../../../../meta-data/permissions";
 import TextError from "../../../common/text-error/TextError";
+import FormSelect from "../../../common/form-select/FormSelect";
 
 const STATUS_OPTIONS = [
-  { value: "active", label: "Hoạt động" },
-  { value: "deactive", label: "Bị Khoá" },
+  { value: "active",label: "Hoạt động" },
+  { value: "deactive",label: "Bị Khoá" },
 ];
 
 export default function DialogAddNewUser({
@@ -21,24 +21,22 @@ export default function DialogAddNewUser({
   onAddNewSuccess,
 }) {
   // modal value
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [permission, setPermission] = useState("1");
-  const [status, setStatus] = useState("active");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [fullName,setFullName] = useState("");
+  const [permission,setPermission] = useState("1");
+  const [status,setStatus] = useState("active");
 
   // options state
-  const [permissions, setPermissions] = useState([]);
+  const [permissions,setPermissions] = useState([]);
 
   // error state
-  const [emailErr, setEmailErr] = useState(null);
-  const [passwordErr, setPasswordErr] = useState(null);
-  const [firstNameErr, setFirstNameErr] = useState(null);
-  const [lastNameErr, setLastNameErr] = useState(null);
+  const [emailErr,setEmailErr] = useState(null);
+  const [passwordErr,setPasswordErr] = useState(null);
+  const [fullNameErr,setFullNameErr] = useState(null);
 
   // server error state
-  const [serverError, setServerError] = useState(null);
+  const [serverError,setServerError] = useState(null);
 
   const getListPermissions = async () => {
     const data = await listPermissions();
@@ -47,7 +45,7 @@ export default function DialogAddNewUser({
 
   useEffect(() => {
     getListPermissions();
-  }, []);
+  },[]);
 
   const handleCheckValidateEmail = () => {
     if (!email) {
@@ -72,26 +70,20 @@ export default function DialogAddNewUser({
     setPasswordErr(null);
   };
 
-  const handleCheckValidateFirstName = () => {
-    if (!firstName) {
-      return setFirstNameErr("Không được bỏ trống họ");
+  const handleCheckValidateFullName = () => {
+    if (!fullName) {
+      return setFullNameErr("Không được bỏ trống tên");
     }
-    setFirstNameErr(null);
+    setFullNameErr(null);
   };
 
-  const handleCheckValidateLastName = () => {
-    if (!lastName) {
-      return setLastNameErr("Không được bỏ trống tên");
-    }
-    setLastNameErr(null);
-  };
+
 
   const handleSubmitForm = () => {
     const payload = {
       email,
       password,
-      first_name: firstName,
-      last_name: lastName,
+      full_name: fullName,
       permission,
       status,
     };
@@ -115,7 +107,7 @@ export default function DialogAddNewUser({
   const disabledSubmitForm = () => {
     let isDisabled = false;
 
-    const errArr = [emailErr, passwordErr, firstNameErr, lastNameErr];
+    const errArr = [emailErr,passwordErr,fullNameErr];
 
     errArr.forEach((err) => {
       if (err !== null) {
@@ -160,48 +152,27 @@ export default function DialogAddNewUser({
             />
             <TextField
               fullWidth
-              label="Họ"
-              value={firstName}
-              error={firstNameErr}
-              helperText={firstNameErr}
-              onChange={(e) => setFirstName(e.target.value)}
-              onBlur={handleCheckValidateFirstName}
+              label="Họ và tên"
+              value={fullName}
+              error={fullNameErr}
+              helperText={fullNameErr}
+              onChange={(e) => setFullName(e.target.value)}
+              onBlur={handleCheckValidateFullName}
             />
-            <TextField
-              fullWidth
-              label="Tên"
-              value={lastName}
-              error={lastNameErr}
-              helperText={lastNameErr}
-              onChange={(e) => setLastName(e.target.value)}
-              onBlur={handleCheckValidateLastName}
-            />
-            <Select
-              native
-              fullWidth
+
+            <FormSelect
               label="Chức danh"
               value={permission}
               onChange={(e) => setPermission(e.target.value)}
-            >
-              {permissions.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
-            <Select
-              native
-              fullWidth
+              options={permissions}
+            />
+            <FormSelect
               label="Trạng thái"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-            >
-              {STATUS_OPTIONS.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+              options={STATUS_OPTIONS}
+            />
+
           </form>
           {errorMessage}
         </DialogContent>

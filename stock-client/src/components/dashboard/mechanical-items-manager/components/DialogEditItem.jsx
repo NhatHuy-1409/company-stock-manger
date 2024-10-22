@@ -5,19 +5,19 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Grid from "@material-ui/core/Grid"
-import Select from "@material-ui/core/Select"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { getMechanicalItemTypes } from "../../../../meta-data/mechanical-item-types"
 import "./DialogEditItem.scss"
 import { format } from "date-fns"
 import { updateMechanicalItem } from "../../../../api/stock-manager"
 import { connect } from "react-redux"
 import { TextField } from "@material-ui/core"
+import FormSelect from "../../../common/form-select/FormSelect"
 
 function DialogEditItem({
   open,
@@ -27,24 +27,24 @@ function DialogEditItem({
   user,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState(selectedItem.type_id)
-  const [description, setDescription] = useState(selectedItem.description || "")
-  const [inputTime, setInputTime] = useState(
+  const [typeId,setTypeId] = useState(selectedItem.type_id)
+  const [description,setDescription] = useState(selectedItem.description || "")
+  const [inputTime,setInputTime] = useState(
     selectedItem.input_time ? new Date(selectedItem.input_time) : null
   )
-  const [name, setName] = useState(selectedItem.name)
-  const [productId, setProductId] = useState(selectedItem.product_id)
-  const [position, setPosition] = useState(selectedItem.position)
-  const [quantity, setQuantity] = useState(1)
+  const [name,setName] = useState(selectedItem.name)
+  const [productId,setProductId] = useState(selectedItem.product_id)
+  const [position,setPosition] = useState(selectedItem.position)
+  const [quantity,setQuantity] = useState(1)
 
   // list options
-  const [itemTypes, setItemTypes] = useState([])
+  const [itemTypes,setItemTypes] = useState([])
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
-  const [productIdErr, setProductIdErr] = useState(null)
-  const [positionErr, setPositionErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
+  const [productIdErr,setProductIdErr] = useState(null)
+  const [positionErr,setPositionErr] = useState(null)
 
   useEffect(() => {
     const getListItemTypes = async () => {
@@ -52,7 +52,7 @@ function DialogEditItem({
       setItemTypes(itemTypes)
     }
     getListItemTypes()
-  }, [])
+  },[])
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -107,14 +107,14 @@ function DialogEditItem({
       product_id: productId,
       name: name,
       type: typeId,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
+      input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       quantity: quantity,
       position: position,
       description: description,
     }
     updateMechanicalItem(payload)
       .then((res) => {
-        console.log("pl: ", payload)
+        console.log("pl: ",payload)
         onUpdateSuccess()
       })
       .catch((err) => {
@@ -152,19 +152,13 @@ function DialogEditItem({
               error={nameErr}
               helperText={nameErr}
             />
-            <Select
-              native
-              fullWidth
-              label="Loại"
+
+            <FormSelect
+              label="Loại thiết bị"
               value={typeId}
               onChange={handleTypeIdChange}
-            >
-              {itemTypes.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+              options={itemTypes}
+            />
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
@@ -227,4 +221,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, null)(DialogEditItem)
+export default connect(mapStateToProps,null)(DialogEditItem)

@@ -5,7 +5,6 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Grid from "@material-ui/core/Grid"
-import Select from "@material-ui/core/Select"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import {
   KeyboardDatePicker,
@@ -19,10 +18,9 @@ import { users } from "../../../../meta-data/users"
 import "./DialogEditItem.scss"
 import { format } from "date-fns"
 import { updateItem } from "../../../../api/stock-manager"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
 import { connect } from "react-redux"
 import { TextField } from "@material-ui/core"
+import FormSelect from "../../../common/form-select/FormSelect"
 
 function DialogEditItem({
   open,
@@ -31,6 +29,7 @@ function DialogEditItem({
   onUpdateSuccess,
   user,
 }) {
+
   // modal value
   const [typeId,setTypeId] = useState(selectedItem.type_id)
   const [statusId,setStatusId] = useState(selectedItem.status_id)
@@ -70,6 +69,7 @@ function DialogEditItem({
     }
     const getUsers = async () => {
       const listUsers = await users()
+
       setUserOptions(listUsers)
     }
     const getListItemTypes = async () => {
@@ -172,7 +172,7 @@ function DialogEditItem({
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          Edit: {selectedItem && `${selectedItem.name} (${selectedItem.id})`}
+          Edit: {selectedItem && `${selectedItem.name}`}
         </DialogTitle>
         <DialogContent>
           <form className="formEditItem">
@@ -194,63 +194,31 @@ function DialogEditItem({
               error={nameErr}
               helperText={nameErr}
             />
-            <FormControl fullWidth>
-              <InputLabel>Loại</InputLabel>
-              <Select fullWidth value={typeId} onChange={handleTypeIdChange}>
-                {itemTypes.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.label}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Trạng thái</InputLabel>
-              <Select
-                fullWidth
-                label="Status"
-                value={statusId}
-                onChange={handleStatusChange}
-              >
-                {statusOptions.map((item) => (
-                  <option
-                    key={item.value}
-                    value={item.value}
-                    disabled={item.permission === "admin" && !user.isAdmin}
-                  >
-                    {item.label}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Kho</InputLabel>
-              <Select fullWidth value={stockId} onChange={handleStockChange}>
-                {stockOptions.map((item) => (
-                  <option
-                    key={item.value}
-                    value={item.value}
-                    disabled={item.permission === "admin" && !user.isAdmin}
-                  >
-                    {item.label}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Người phụ trách</InputLabel>
-              <Select fullWidth value={userId} onChange={handleUserChange}>
-                {userOptions.map((item) => (
-                  <option
-                    key={item.value}
-                    value={item.value}
-                    disabled={item.permission === "admin" && !user.isAdmin}
-                  >
-                    {item.label}
-                  </option>
-                ))}
-              </Select>
-            </FormControl>
+
+            <FormSelect
+              label="Loại thiết bị"
+              value={typeId}
+              onChange={handleTypeIdChange}
+              options={itemTypes}
+            />
+            <FormSelect
+              label="Trạng thái"
+              value={statusId}
+              onChange={handleStatusChange}
+              options={statusOptions}
+            />
+            <FormSelect
+              label="Bộ phận"
+              value={stockId}
+              onChange={handleStockChange}
+              options={stockOptions}
+            />
+            <FormSelect
+              label="Người phụ trách"
+              value={userId}
+              onChange={handleUserChange}
+              options={userOptions}
+            />
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">

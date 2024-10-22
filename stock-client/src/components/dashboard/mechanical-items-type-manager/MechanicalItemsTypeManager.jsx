@@ -2,7 +2,6 @@ import Paper from "@material-ui/core/Paper"
 import { makeStyles } from "@material-ui/core/styles"
 import Table from "@material-ui/core/Table"
 import Select from "@material-ui/core/Select"
-import Button from "@material-ui/core/Button"
 import TableBody from "@material-ui/core/TableBody"
 import TableCell from "@material-ui/core/TableCell"
 import TableContainer from "@material-ui/core/TableContainer"
@@ -10,7 +9,7 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import {
   getMechanicalCategories,
   getMechanicalItems,
@@ -23,9 +22,11 @@ import DialogAlertRemoveItemType from "./components/DialogAlertRemoveItemType"
 import { TextField } from "@material-ui/core"
 import SubMenu from "../../SubMenuType"
 import { removeVietnameseTones } from "../../../utils/removeVietnameseTones"
+import AddButton from "../../common/add-button/AddButton"
+import Pagination from "../../common/pagination/Pagination"
 
-function createData(id, name, category, unit, description, category_id) {
-  return { id, name, category, unit, description, category_id }
+function createData(id,name,category,unit,description,category_id) {
+  return { id,name,category,unit,description,category_id }
 }
 
 const useStyles = makeStyles({
@@ -35,33 +36,33 @@ const useStyles = makeStyles({
 })
 
 const SORT_OPTIONS = [
-  { value: "id", label: "Mã" },
-  { value: "name", label: "Tên" },
-  { value: "category", label: "Danh mục" },
+  { value: "id",label: "Mã" },
+  { value: "name",label: "Tên" },
+  { value: "category",label: "Danh mục" },
 ]
 
 const SORT_ORDER_OPTIONS = [
-  { value: "ASC", label: "Tăng dần" },
-  { value: "DESC", label: "Giảm dần" },
+  { value: "ASC",label: "Tăng dần" },
+  { value: "DESC",label: "Giảm dần" },
 ]
 
 function MechanicalItemsTypeManager(props) {
-  const [list, setList] = useState([])
-  const [allItems, setAllItems] = useState([])
-  const [allItemTypes, setAllItemTypes] = useState([])
-  const [categories, setCategories] = useState([])
+  const [list,setList] = useState([])
+  const [allItems,setAllItems] = useState([])
+  const [allItemTypes,setAllItemTypes] = useState([])
+  const [categories,setCategories] = useState([])
 
   const classes = useStyles()
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [selectedItem,setSelectedItem] = useState(null)
 
-  const [openEditItem, setOpenEditItem] = useState(false)
-  const [openAddNewItem, setOpenAddNewItem] = useState(false)
-  const [openAlertRemove, setOpenAlertRemove] = useState(false)
-  const [sortProperty, setSortProperty] = useState("id")
-  const [sortOrder, setSortOrder] = useState("ASC")
+  const [openEditItem,setOpenEditItem] = useState(false)
+  const [openAddNewItem,setOpenAddNewItem] = useState(false)
+  const [openAlertRemove,setOpenAlertRemove] = useState(false)
+  const [sortProperty,setSortProperty] = useState("id")
+  const [sortOrder,setSortOrder] = useState("ASC")
 
-  const [nameFilter, setNameFilter] = useState("Tất cả")
-  const [categoryFilter, setCategoryFilter] = useState(null)
+  const [nameFilter,setNameFilter] = useState("Tất cả")
+  const [categoryFilter,setCategoryFilter] = useState(null)
 
   const handleClickOpen = (item) => {
     setOpenEditItem(true)
@@ -73,32 +74,32 @@ function MechanicalItemsTypeManager(props) {
     setSelectedItem(null)
   }
 
-  const getAllItemTypes = async (sortProperty, sortOrder) => {
-    const data = await getMechanicalItemsType(sortProperty, sortOrder)
+  const getAllItemTypes = async (sortProperty,sortOrder) => {
+    const data = await getMechanicalItemsType(sortProperty,sortOrder)
     setAllItemTypes(data)
   }
 
-  const getAllItems = async (sortProperty, sortOrder) => {
-    const data = await getMechanicalItems(sortProperty, sortOrder)
+  const getAllItems = async (sortProperty,sortOrder) => {
+    const data = await getMechanicalItems(sortProperty,sortOrder)
     setAllItems(data)
   }
   const getIninitalData = async () => {
     const categories = await getMechanicalCategories()
     setCategories(categories)
   }
-  const getData = async (sortProperty, sortOrder, category) => {
-    const data = await getMechanicalItemsType(sortProperty, sortOrder, category)
+  const getData = async (sortProperty,sortOrder,category) => {
+    const data = await getMechanicalItemsType(sortProperty,sortOrder,category)
     console.log(data)
     setList(data)
   }
 
   const handleAddNewSuccess = () => {
-    getData(sortProperty, sortOrder)
+    getData(sortProperty,sortOrder)
     setOpenAddNewItem(false)
   }
 
   const handleEditSuccess = () => {
-    getData(sortProperty, sortOrder)
+    getData(sortProperty,sortOrder)
     setOpenEditItem(false)
   }
 
@@ -108,14 +109,14 @@ function MechanicalItemsTypeManager(props) {
   }
 
   useEffect(() => {
-    getData(sortProperty, sortOrder, categoryFilter)
-    getAllItems(sortProperty, sortOrder)
-    getAllItemTypes(sortProperty, sortOrder)
-  }, [sortProperty, sortOrder, categoryFilter])
+    getData(sortProperty,sortOrder,categoryFilter)
+    getAllItems(sortProperty,sortOrder)
+    getAllItemTypes(sortProperty,sortOrder)
+  },[sortProperty,sortOrder,categoryFilter])
 
   useEffect(() => {
     getIninitalData()
-  }, [])
+  },[])
 
   const rows = [
     ...list.map((item) =>
@@ -179,7 +180,7 @@ function MechanicalItemsTypeManager(props) {
               ) || ""
             )
           } else {
-            getData(sortProperty, sortOrder, categoryFilter)
+            getData(sortProperty,sortOrder,categoryFilter)
           }
         }}
       />
@@ -242,11 +243,11 @@ function MechanicalItemsTypeManager(props) {
       open={openAlertRemove}
       handleClose={() => setOpenAlertRemove(false)}
       selectedItem={selectedItem}
-      onSuccess={() => getData(sortProperty, sortOrder)}
+      onSuccess={() => getData(sortProperty,sortOrder)}
     />
   ) : null
 
-  const totals = allItems.reduce((accumulator, currentValue) => {
+  const totals = allItems.reduce((accumulator,currentValue) => {
     // Kiểm tra nếu accumulator đã có type này hay chưa
     if (!accumulator[currentValue.type]) {
       accumulator[currentValue.type] = 0
@@ -255,13 +256,16 @@ function MechanicalItemsTypeManager(props) {
     accumulator[currentValue.type] += currentValue.quantity
 
     return accumulator
-  }, {})
+  },{})
+  //Pagination
+  const [page,setPage] = useState(0)
 
+  const [rowsPerPage,setRowsPerPage] = useState(10)
+
+  const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
   return (
     <div className="itemsTypeManager">
-      <Button color="primary" onClick={() => setOpenAddNewItem(true)}>
-        Thêm loại thiết bị
-      </Button>
+      <AddButton onClick={() => setOpenAddNewItem(true)}>Thêm loại thiết bị</AddButton>
       {selectSort}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
@@ -277,7 +281,7 @@ function MechanicalItemsTypeManager(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
+            {paginateRows.map((row,i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {i}
@@ -291,6 +295,13 @@ function MechanicalItemsTypeManager(props) {
               </TableRow>
             ))}
           </TableBody>
+          <Pagination
+            count={rows?.length}
+            page={page}
+            setPage={setPage}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
+          />
         </Table>
       </TableContainer>
       {dialogAddNewItemType}

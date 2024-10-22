@@ -21,7 +21,9 @@ export const adminLogin = (email,password,isAdmin) => {
   })
 }
 
-export const getItems = (orderby,sort_order,type,status,stock) => {
+export const getItems = (orderby,sort_order,type,status,stock,user) => {
+  console.log({ user });
+
   return new Promise((resolve,reject) => {
     let url = `items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
@@ -32,6 +34,9 @@ export const getItems = (orderby,sort_order,type,status,stock) => {
     }
     if (stock !== undefined && stock !== null) {
       url += `&stock_id=${stock}`
+    }
+    if (user !== undefined && user !== null) {
+      url += `&user_id=${user}`
     }
     apiInstance
       .get(url)
@@ -60,6 +65,7 @@ export const getElectricItems = (orderby,sort_order,type) => {
       })
   })
 }
+
 export const getMechanicalItems = (orderby,sort_order,type) => {
   return new Promise((resolve,reject) => {
     let url = `mechanical-items?orderby=${orderby}&sort_order=${sort_order}`

@@ -5,10 +5,16 @@
     > .content {
       padding: 20px;
       width: 100%;
-      background-color: #f2f2f2;
+      background-color: #fff;
     }
   }
   .makeStyles-search-4{
     display: none;
+  }
+  .MuiPaper-elevation1{
+    box-shadow: 0 0 #0000,0 0 #0000,0 1px 0.625rem 0 #353a3e0f,0 0.125rem 0.25rem 0 #353a3e14;
+  }
+  .MuiTableRow-root:hover{
+    background: rgb(248 248 248);
   }
 }

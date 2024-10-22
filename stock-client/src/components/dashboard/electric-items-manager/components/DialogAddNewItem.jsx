@@ -5,17 +5,17 @@ import DialogActions from "@material-ui/core/DialogActions"
 import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Grid from "@material-ui/core/Grid"
-import Select from "@material-ui/core/Select"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers"
 import { format } from "date-fns"
-import React, { useEffect, useState } from "react"
+import React,{ useEffect,useState } from "react"
 import { addElectricItem } from "../../../../api/stock-manager"
 import { getElectricItemTypes } from "../../../../meta-data/electric-item-types"
 import { TextField } from "@material-ui/core"
+import FormSelect from "../../../common/form-select/FormSelect"
 
 export default function DialogAddNewItem({
   open,
@@ -23,22 +23,22 @@ export default function DialogAddNewItem({
   onUpdateSuccess,
 }) {
   // modal value
-  const [typeId, setTypeId] = useState("1")
-  const [description, setDescription] = useState("")
-  const [inputTime, setInputTime] = useState(new Date())
-  const [quantity, setQuantity] = useState(1)
-  const [name, setName] = useState("")
-  const [productId, setProductId] = useState("")
-  const [position, setPosition] = useState("")
+  const [typeId,setTypeId] = useState("1")
+  const [description,setDescription] = useState("")
+  const [inputTime,setInputTime] = useState(new Date())
+  const [quantity,setQuantity] = useState(1)
+  const [name,setName] = useState("")
+  const [productId,setProductId] = useState("")
+  const [position,setPosition] = useState("")
   // list options
 
-  const [itemTypes, setItemTypes] = useState([])
+  const [itemTypes,setItemTypes] = useState([])
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
-  const [productIdErr, setProductIdErr] = useState(null)
-  const [positionErr, setPositionErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
+  const [productIdErr,setProductIdErr] = useState(null)
+  const [positionErr,setPositionErr] = useState(null)
 
   useEffect(() => {
     const getListItemsTypes = async () => {
@@ -46,7 +46,7 @@ export default function DialogAddNewItem({
       setItemTypes(electricItemsType)
     }
     getListItemsTypes()
-  }, [])
+  },[])
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -99,14 +99,14 @@ export default function DialogAddNewItem({
       product_id: productId,
       name,
       type: typeId,
-      input_time: inputTime ? format(inputTime, "yyyy-MM-dd") : null,
+      input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       quantity: parseInt(quantity),
       position: position,
       description: description,
     }
     addElectricItem(payload)
       .then((res) => {
-        console.log("pl: ", payload)
+        console.log("pl: ",payload)
         onUpdateSuccess()
         handleClose()
       })
@@ -146,19 +146,12 @@ export default function DialogAddNewItem({
               helperText={nameErr}
             />
 
-            <Select
-              native
-              fullWidth
-              label="Loại"
+            <FormSelect
+              label="Loại thiết bị"
               value={typeId}
               onChange={handleTypeIdChange}
-            >
-              {itemTypes.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+              options={itemTypes}
+            />
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <Grid container justifyContent="space-between">
