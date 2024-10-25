@@ -41,9 +41,6 @@ function DialogEditItem({
   )
   const [name,setName] = useState(selectedItem.name)
   const [productId,setProductId] = useState(selectedItem.product_id)
-  const [personInCharge,setPersonInCharge] = useState(
-    selectedItem.person_in_charge
-  )
 
   // list options
   const [statusOptions,setStatusOptions] = useState([])
@@ -55,7 +52,6 @@ function DialogEditItem({
 
   const [nameErr,setNameErr] = useState(null)
   const [productIdErr,setProductIdErr] = useState(null)
-  const [personInChargeErr,setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -107,18 +103,6 @@ function DialogEditItem({
     }
     setProductIdErr(null)
   }
-  const handlePersonInChargeChange = (event) => {
-    const { value } = event.target
-    setPersonInCharge(value)
-  }
-
-  const handleCheckValidatePersonInCharge = (event) => {
-    if (!event || !event.target.value) {
-      setPersonInChargeErr("Không được bỏ trống tên")
-      return
-    }
-    setPersonInChargeErr(null)
-  }
 
   const handleStatusChange = (event) => {
     const { value } = event.target
@@ -147,7 +131,6 @@ function DialogEditItem({
       type: typeId,
       status: statusId,
       stock_id: stockId,
-      person_in_charge: personInCharge,
       input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       description: description,
       user_id: userId
@@ -172,7 +155,7 @@ function DialogEditItem({
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          Edit: {selectedItem && `${selectedItem.name}`}
+          Chỉnh sửa: {selectedItem && `${selectedItem.name}`}
         </DialogTitle>
         <DialogContent>
           <form className="formEditItem">

@@ -378,7 +378,6 @@ stockDB.getAllMechanicalItemsType = (sort_property,sort_order,category) => {
 }
 
 stockDB.getAllStaffRequest = (sort_property,sort_order) => {
-  console.log(sort_property,sort_order)
   return new Promise((resolve,reject) => {
     pool.query(
       `SELECT 
@@ -404,9 +403,9 @@ stockDB.getAllStaffRequest = (sort_property,sort_order) => {
   })
 }
 
-stockDB.getAllCategories = () => {
+stockDB.getAllCategories = (sort_property,sort_order) => {
   return new Promise((resolve,reject) => {
-    pool.query(`SELECT * FROM categories`,(err,result) => {
+    pool.query(`SELECT * FROM categories ORDER BY ${sort_property || ""} ${sort_order}`,(err,result) => {
       if (err) {
         return reject(err)
       }
@@ -415,9 +414,9 @@ stockDB.getAllCategories = () => {
   })
 }
 
-stockDB.getAllElectricCategories = () => {
+stockDB.getAllElectricCategories = (sort_property,sort_order) => {
   return new Promise((resolve,reject) => {
-    pool.query(`SELECT * FROM electric_categories`,(err,result) => {
+    pool.query(`SELECT * FROM electric_categories ORDER BY ${sort_property || ""} ${sort_order}`,(err,result) => {
       if (err) {
         return reject(err)
       }
@@ -425,9 +424,9 @@ stockDB.getAllElectricCategories = () => {
     })
   })
 }
-stockDB.getAllMechanicalCategories = () => {
+stockDB.getAllMechanicalCategories = (sort_property,sort_order) => {
   return new Promise((resolve,reject) => {
-    pool.query(`SELECT * FROM mechanical_categories`,(err,result) => {
+    pool.query(`SELECT * FROM mechanical_categories ORDER BY ${sort_property || ""} ${sort_order}`,(err,result) => {
       if (err) {
         return reject(err)
       }
@@ -447,7 +446,24 @@ stockDB.getStocks = () => {
   })
 }
 
-stockDB.getAllUsers = () => {
+stockDB.getAllUsers = (sort_property,sort_order,permission,status,stock_id,email) => {
+  let permissionCondition = ""
+  if (permission !== undefined && permission !== null) {
+    permissionCondition = `WHERE u.permission = ${permission}`
+  }
+  let statusCondition = ""
+  if (status !== undefined && status !== null) {
+    statusCondition = `WHERE u.status = ${status}`
+  }
+  let stockCondition = ""
+  if (stock_id !== undefined && stock_id !== null) {
+    stockCondition = `WHERE u.stocks_id = ${stock_id}`
+  }
+  let emailCondition = ""
+  if (email !== undefined && email !== null) {
+    emailCondition = `WHERE u.email = ${email}`
+  }
+
   return new Promise((resolve,reject) => {
     pool.query(
       `SELECT u.id,full_name,
@@ -458,7 +474,13 @@ stockDB.getAllUsers = () => {
       LEFT JOIN permissions p
       ON u.permission = p.id
       LEFT JOIN stocks st
-      ON  u.stocks_id = st.id `,
+      ON  u.stocks_id = st.id
+      ${permissionCondition}
+      ${statusCondition}
+      ${stockCondition}
+      ${emailCondition}
+      ORDER BY ${sort_property} ${sort_order}
+      `,
       (err,result) => {
         if (err) {
           return reject(err)
@@ -1128,12 +1150,13 @@ stockDB.addUser = ({
   full_name,
   permission,
   status,
+  stock_id
 }) => {
   return new Promise((resolve,reject) => {
     pool.query(
-      `INSERT INTO users (email, password, full_name, permission, status) 
+      `INSERT INTO users (email, password, full_name, permission, status,stocks_id) 
         VALUES (?, ?, ?, ?, ?, ?)`,
-      [email,password,full_name,permission,status],
+      [email,password,full_name,permission,status,stock_id],
       (err,result) => {
         if (err) {
           return reject(err)

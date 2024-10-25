@@ -1,7 +1,6 @@
 import Paper from "@material-ui/core/Paper"
 import { makeStyles } from "@material-ui/core/styles"
 import Table from "@material-ui/core/Table"
-import Select from "@material-ui/core/Select"
 import TableBody from "@material-ui/core/TableBody"
 import TableCell from "@material-ui/core/TableCell"
 import TableContainer from "@material-ui/core/TableContainer"
@@ -19,11 +18,12 @@ import "./ItemsTypeManager.scss"
 import DialogAddNewItemType from "./components/DialogAddNewItemType"
 import DialogEditItemType from "./components/DialogEditItemType"
 import DialogAlertRemoveItemType from "./components/DialogAlertRemoveItemType"
-import { TextField } from "@material-ui/core"
 import SubMenu from "../../SubMenuType"
-import { removeVietnameseTones } from "../../../utils/removeVietnameseTones"
 import AddButton from "../../common/add-button/AddButton"
 import Pagination from "../../common/pagination/Pagination"
+import { nestedOptions } from "../../../utils/nestedOptions"
+import SearchBar from "../../common/search-bar/SearchBar"
+import SortBar from "../../common/sort-bar/SortBar"
 
 function createData(id,name,category,unit,description,category_id) {
   return { id,name,category,unit,description,category_id }
@@ -39,11 +39,6 @@ const SORT_OPTIONS = [
   // { value: "id", label: "Mã" },
   { value: "name",label: "Tên" },
   { value: "category",label: "Danh mục" },
-]
-
-const SORT_ORDER_OPTIONS = [
-  { value: "ASC",label: "Tăng dần" },
-  { value: "DESC",label: "Giảm dần" },
 ]
 
 function ItemsTypeManager(props) {
@@ -123,12 +118,7 @@ function ItemsTypeManager(props) {
     {
       value: "Danh mục",
       menuLevel: 0,
-      nestedOptions: categories?.map((item) => {
-        return {
-          value: item?.name,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(categories,"name"),
     },
   ]
 
@@ -158,53 +148,20 @@ function ItemsTypeManager(props) {
         setCategoryFilter={setCategoryFilter}
         categories={categories}
       />
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        onChange={(e) => {
-          const searchValue = removeVietnameseTones(
-            e.target.value.toLowerCase()
-          )
-
-          if (searchValue !== "") {
-            setList(
-              rows.filter((item) =>
-                removeVietnameseTones(item?.name?.toLowerCase())?.includes(
-                  searchValue.toLowerCase()
-                )
-              ) || ""
-            )
-          } else {
-            getData(sortProperty,sortOrder,categoryFilter)
-          }
+      <SearchBar
+        rows={rows}
+        setList={setList}
+        getData={() => {
+          getData(sortProperty,sortOrder,categoryFilter)
         }}
       />
-      Sắp xếp theo:&nbsp;
-      <Select
-        native
-        label="Sắp xếp"
-        value={sortProperty}
-        onChange={(e) => setSortProperty(e.target.value)}
-      >
-        {SORT_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
-      Thứ tự:&nbsp;
-      <Select
-        native
-        value={sortOrder}
-        onChange={(e) => setSortOrder(e.target.value)}
-      >
-        {SORT_ORDER_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
+      <SortBar
+        SORT_OPTIONS={SORT_OPTIONS}
+        sortProperty={sortProperty}
+        setSortProperty={setSortProperty}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
     </div>
   )
 

@@ -131,7 +131,7 @@ function DialogEditItem({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add new Item</DialogTitle>
+        <DialogTitle id="form-dialog-title">Chỉnh sửa thiết bị</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField

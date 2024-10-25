@@ -8,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
-import Select from "@material-ui/core/Select"
 import { format } from "date-fns"
 import React,{ useEffect,useState } from "react"
 import { getMechanicalItems } from "../../../api/stock-manager"
@@ -16,12 +15,14 @@ import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
 import DialogSendEmail from "./components/DialogSendEmail"
 import "./ItemsManager.scss"
-import { TextField } from "@material-ui/core"
 import DialogAddNewItem from "./components/DialogAddNewItem"
 import { getMechanicalItemTypes } from "../../../meta-data/mechanical-item-types"
 import SubMenu from "../../SubMenu"
 import AddButton from "../../common/add-button/AddButton"
 import Pagination from "../../common/pagination/Pagination"
+import SearchBar from "../../common/search-bar/SearchBar"
+import SortBar from "../../common/sort-bar/SortBar"
+import { nestedOptions } from "../../../utils/nestedOptions"
 
 const useStyles = makeStyles({
   table: {},
@@ -36,10 +37,6 @@ const SORT_OPTIONS = [
   { value: "position",label: "Vị trí" },
 ]
 
-const SORT_ORDER_OPTIONS = [
-  { value: "ASC",label: "Tăng dần" },
-  { value: "DESC",label: "Giảm dần" },
-]
 
 function MechanicalItemsManager(props) {
   const classes = useStyles()
@@ -166,12 +163,7 @@ function MechanicalItemsManager(props) {
     {
       value: "Loại",
       menuLevel: 0,
-      nestedOptions: itemTypes?.map((item) => {
-        return {
-          value: item?.label,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(itemTypes,"label")
     },
   ]
 
@@ -187,47 +179,21 @@ function MechanicalItemsManager(props) {
         setTypeFilter={setTypeFilter}
         itemTypes={itemTypes}
       />
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        onChange={(e) => {
-          if (e.target.value !== "") {
-            setList(
-              rows.filter((item) =>
-                item?.name?.toLowerCase()?.includes(e.target.value)
-              ) || ""
-            )
-          } else {
-            getData(sortProperty,sortOrder,typeFilter)
-          }
+
+      <SearchBar
+        rows={rows}
+        setList={setList}
+        getData={() => {
+          getData(sortProperty,sortOrder,typeFilter)
         }}
       />
-      Sắp xếp theo:&nbsp;
-      <Select
-        native
-        label="Sắp xếp"
-        value={sortProperty}
-        onChange={(e) => setSortProperty(e.target.value)}
-      >
-        {SORT_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
-      Thứ tự:&nbsp;
-      <Select
-        native
-        value={sortOrder}
-        onChange={(e) => setSortOrder(e.target.value)}
-      >
-        {SORT_ORDER_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
+      <SortBar
+        SORT_OPTIONS={SORT_OPTIONS}
+        sortProperty={sortProperty}
+        setSortProperty={setSortProperty}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
     </div>
   )
   //Pagination
@@ -249,7 +215,7 @@ function MechanicalItemsManager(props) {
               <TableCell>Mã</TableCell>
               <TableCell>Tên</TableCell>
               <TableCell>Loại</TableCell>
-              <TableCell>Ngày bàn giao</TableCell>
+              <TableCell>Ngày nhập kho</TableCell>
               <TableCell>Số lượng</TableCell>
               <TableCell>Vị trí</TableCell>
               <TableCell>Mô tả</TableCell>

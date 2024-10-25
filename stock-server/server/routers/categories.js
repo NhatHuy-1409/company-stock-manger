@@ -4,9 +4,10 @@ const ERROR = require("../constants/code");
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/",async (req,res,next) => {
   try {
-    let results = await dbLogin.getAllCategories();
+    const { sort_property,sort_order } = req.query
+    let results = await dbLogin.getAllCategories(sort_property,sort_order);
     res.json(results);
   } catch (err) {
     console.log(err);
@@ -14,7 +15,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/add", async (req, res, next) => {
+router.post("/add",async (req,res,next) => {
   try {
     const payload = req.body;
     let results = await dbLogin.addCategory(payload);
@@ -25,7 +26,7 @@ router.post("/add", async (req, res, next) => {
   }
 });
 
-router.post("/update", async (req, res, next) => {
+router.post("/update",async (req,res,next) => {
   try {
     const payload = req.body;
     console.log(payload);
@@ -37,7 +38,7 @@ router.post("/update", async (req, res, next) => {
   }
 });
 
-router.post("/delete", async (req, res, next) => {
+router.post("/delete",async (req,res,next) => {
   try {
     const payload = req.body;
     let results = await dbLogin.deleteCategory(payload);

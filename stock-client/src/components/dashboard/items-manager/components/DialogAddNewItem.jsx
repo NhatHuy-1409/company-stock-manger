@@ -45,7 +45,6 @@ export default function DialogAddNewItem({
 
   const [nameErr,setNameErr] = useState(null)
   const [productIdErr,setProductIdErr] = useState(null)
-  const [personInChargeErr,setPersonInChargeErr] = useState(null)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -57,8 +56,8 @@ export default function DialogAddNewItem({
       setStockOptions(listStocks)
     }
     const getUsers = async () => {
-      const listStocks = await users()
-      setUserOptions(listStocks)
+      const listUsers = await users()
+      setUserOptions(listUsers)
     }
     const getListItemTypes = async () => {
       const itemTypes = await getItemTypes()
@@ -96,14 +95,6 @@ export default function DialogAddNewItem({
     setProductIdErr(null)
   }
 
-
-  const handleCheckValidatePersonInCharge = (event) => {
-    if (!event || !event.target.value) {
-      setPersonInChargeErr("Không được bỏ trống tên")
-      return
-    }
-    setPersonInChargeErr(null)
-  }
 
   const handleStatusChange = (event) => {
     const { value } = event.target

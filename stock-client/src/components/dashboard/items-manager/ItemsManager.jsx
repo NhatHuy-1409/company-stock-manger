@@ -8,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead"
 import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
-import Select from "@material-ui/core/Select"
 import { format } from "date-fns"
 import React,{ useEffect,useState } from "react"
 import { getItems,getStatuses,getStocks,getUsers } from "../../../api/stock-manager"
@@ -17,13 +16,15 @@ import DialogEditItem from "./components/DialogEditItem"
 import DialogAlertRemove from "./components/DialogAlertRemove"
 import DialogSendEmail from "./components/DialogSendEmail"
 import "./ItemsManager.scss"
-import { TextField } from "@material-ui/core"
 import SubMenu from "../../SubMenu"
 import { getItemTypes } from "../../../meta-data/item-types"
-import { removeVietnameseTones } from "../../../utils/removeVietnameseTones"
 import Pagination from "../../common/pagination/Pagination"
 import { calculateDaysBetween } from "../../../utils/calculateDaysBetween"
 import AddButton from "../../common/add-button/AddButton"
+import SortBar from "../../common/sort-bar/SortBar"
+import SearchBar from "../../common/search-bar/SearchBar"
+import { nestedOptions } from "../../../utils/nestedOptions"
+
 const useStyles = makeStyles({
   table: {},
 })
@@ -37,11 +38,6 @@ const SORT_OPTIONS = [
   { value: "stock_id",label: "Bộ phận" },
   { value: "user_id",label: "Người phụ trách" },
   { value: "input_time",label: "Ngày nhập kho" },
-]
-
-const SORT_ORDER_OPTIONS = [
-  { value: "ASC",label: "Tăng dần" },
-  { value: "DESC",label: "Giảm dần" },
 ]
 
 function ItemsManager(props) {
@@ -84,7 +80,7 @@ function ItemsManager(props) {
     const types = await getItemTypes()
     const statuses = await getStatuses()
     const stocks = await getStocks()
-    const users = await getUsers()
+    const users = await getUsers(sortProperty,sortOrder)
 
     setAllItems(fullData)
     setItemTypes(types)
@@ -190,45 +186,24 @@ function ItemsManager(props) {
     {
       value: "Loại",
       menuLevel: 0,
-      nestedOptions: itemTypes?.map((item) => {
-        return {
-          value: item?.label,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(itemTypes),
     },
     {
       value: "Trạng thái",
       menuLevel: 0,
-      nestedOptions: itemStatuses?.map((item) => {
-        return {
-          value: item?.name,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(itemStatuses,"name"),
     },
     {
       value: "Bộ phận",
       menuLevel: 0,
-      nestedOptions: itemStocks?.map((item) => {
-        return {
-          value: item?.name,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(itemStocks,"name"),
     },
     {
       value: "Người phụ trách",
       menuLevel: 0,
-      nestedOptions: itemUsers?.map((item) => {
-        return {
-          value: item?.full_name,
-          menuLevel: 1,
-        }
-      }),
+      nestedOptions: nestedOptions(itemUsers,"full_name"),
     },
   ]
-
 
   const selectSort = (
     <div className="selectSort">
@@ -248,62 +223,30 @@ function ItemsManager(props) {
         itemStocks={itemStocks}
         itemUsers={itemUsers}
       />
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        onChange={(e) => {
-          const searchValue = removeVietnameseTones(
-            e.target.value.toLowerCase()
+      <SearchBar
+        rows={rows}
+        setList={setList}
+        getData={() => {
+          getData(
+            sortProperty,
+            sortOrder,
+            typeFilter,
+            statusFilter,
+            stockFilter,
+            userFilter
           )
-
-          if (searchValue !== "") {
-            setList(
-              rows.filter((item) =>
-                removeVietnameseTones(item?.name?.toLowerCase())?.includes(
-                  searchValue.toLowerCase()
-                )
-              ) || ""
-            )
-          } else {
-            getData(
-              sortProperty,
-              sortOrder,
-              typeFilter,
-              statusFilter,
-              stockFilter,
-              userFilter
-            )
-          }
         }}
       />
-      Sắp xếp theo:&nbsp;
-      <Select
-        native
-        label="Sắp xếp"
-        value={sortProperty}
-        onChange={(e) => setSortProperty(e.target.value)}
-      >
-        {SORT_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
-      Thứ tự:&nbsp;
-      <Select
-        native
-        value={sortOrder}
-        onChange={(e) => setSortOrder(e.target.value)}
-      >
-        {SORT_ORDER_OPTIONS.map((item) => (
-          <option key={item.value} value={item.value}>
-            {item.label}
-          </option>
-        ))}
-      </Select>
+      <SortBar
+        SORT_OPTIONS={SORT_OPTIONS}
+        sortProperty={sortProperty}
+        setSortProperty={setSortProperty}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
     </div>
   )
+
 
   //Pagination
   const [page,setPage] = useState(0)

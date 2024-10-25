@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const DEFAULT_TIMEOUT = 10000
-const BASE_URL = "http://10.11.25.76:5000"
+const BASE_URL = "http://10.11.25.76:5001"
 
 const apiInstance = axios.create({
   baseURL: BASE_URL,
@@ -21,8 +21,7 @@ export const adminLogin = (email,password,isAdmin) => {
   })
 }
 
-export const getItems = (orderby,sort_order,type,status,stock,user) => {
-  console.log({ user });
+export const getItems = (orderby="id",sort_order="ASC",type,status,stock,user) => {
 
   return new Promise((resolve,reject) => {
     let url = `items?orderby=${orderby}&sort_order=${sort_order}`
@@ -49,7 +48,7 @@ export const getItems = (orderby,sort_order,type,status,stock,user) => {
   })
 }
 
-export const getElectricItems = (orderby,sort_order,type) => {
+export const getElectricItems = (orderby="id",sort_order="ASC",type) => {
   return new Promise((resolve,reject) => {
     let url = `electric-items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
@@ -66,7 +65,7 @@ export const getElectricItems = (orderby,sort_order,type) => {
   })
 }
 
-export const getMechanicalItems = (orderby,sort_order,type) => {
+export const getMechanicalItems = (orderby="id",sort_order="ASC",type) => {
   return new Promise((resolve,reject) => {
     let url = `mechanical-items?orderby=${orderby}&sort_order=${sort_order}`
     if (type !== undefined && type !== null) {
@@ -109,7 +108,7 @@ export const getItemsByType = (type_id) => {
   })
 }
 
-export const getItemsType = (sortProperty,sortOrder,category) => {
+export const getItemsType = (sortProperty="id",sortOrder="ASC",category) => {
   let url = `items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
@@ -126,7 +125,7 @@ export const getItemsType = (sortProperty,sortOrder,category) => {
   })
 }
 
-export const getElectricItemsType = (sortProperty,sortOrder,category) => {
+export const getElectricItemsType = (sortProperty="id",sortOrder="ASC",category) => {
   let url = `electric-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
@@ -143,7 +142,7 @@ export const getElectricItemsType = (sortProperty,sortOrder,category) => {
   })
 }
 
-export const getMechanicalItemsType = (sortProperty,sortOrder,category) => {
+export const getMechanicalItemsType = (sortProperty="id",sortOrder="ASC",category) => {
   let url = `mechanical-items-type?sort_property=${sortProperty}&sort_order=${sortOrder}`
   if (category !== undefined && category !== null) {
     url += `&category=${category}`
@@ -160,10 +159,11 @@ export const getMechanicalItemsType = (sortProperty,sortOrder,category) => {
   })
 }
 
-export const getCategories = () => {
+export const getCategories = (sortProperty="id",sortOrder="ASC") => {
+  let url = `categories?sort_property=${sortProperty}&sort_order=${sortOrder}`
   return new Promise((resolve,reject) => {
     apiInstance
-      .get("categories")
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -172,10 +172,11 @@ export const getCategories = () => {
       })
   })
 }
-export const getElectricCategories = () => {
+export const getElectricCategories = (sortProperty="id",sortOrder="ASC") => {
+  let url = `electric-categories?sort_property=${sortProperty}&sort_order=${sortOrder}`
   return new Promise((resolve,reject) => {
     apiInstance
-      .get("electric-categories")
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -184,10 +185,12 @@ export const getElectricCategories = () => {
       })
   })
 }
-export const getMechanicalCategories = () => {
+export const getMechanicalCategories = (sortProperty="id",sortOrder="ASC") => {
+  let url = `mechanical-categories?sort_property=${sortProperty}&sort_order=${sortOrder}`
+
   return new Promise((resolve,reject) => {
     apiInstance
-      .get("mechanical-categories")
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })
@@ -197,10 +200,24 @@ export const getMechanicalCategories = () => {
   })
 }
 
-export const getUsers = () => {
+export const getUsers = (sortProperty="id",sortOrder="ASC",permission,status,stock,email) => {
+
+  let url = `users?sort_property=${sortProperty}&sort_order=${sortOrder}`
+  if (permission !== undefined && permission !== null) {
+    url += `&permission=${permission}`
+  }
+  if (status !== undefined && status !== null) {
+    url += `&status=${status}`
+  }
+  if (stock !== undefined && stock !== null) {
+    url += `&stock_id=${stock}`
+  }
+  if (email !== undefined && email !== null) {
+    url += `&email=${email}`
+  }
   return new Promise((resolve,reject) => {
     apiInstance
-      .get("users")
+      .get(url)
       .then((response) => {
         resolve(response.data)
       })

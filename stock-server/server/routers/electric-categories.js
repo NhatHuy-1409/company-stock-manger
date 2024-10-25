@@ -4,9 +4,11 @@ const ERROR = require("../constants/code")
 
 const router = express.Router()
 
-router.get("/", async (req, res, next) => {
+router.get("/",async (req,res,next) => {
   try {
-    let results = await dbLogin.getAllElectricCategories()
+    const { sort_property,sort_order } = req.query
+
+    let results = await dbLogin.getAllElectricCategories(sort_property,sort_order)
     res.json(results)
   } catch (err) {
     console.log(err)
@@ -14,7 +16,7 @@ router.get("/", async (req, res, next) => {
   }
 })
 
-router.post("/add", async (req, res, next) => {
+router.post("/add",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.addElectricCategory(payload)
@@ -25,7 +27,7 @@ router.post("/add", async (req, res, next) => {
   }
 })
 
-router.post("/update", async (req, res, next) => {
+router.post("/update",async (req,res,next) => {
   try {
     const payload = req.body
     console.log(payload)
@@ -37,7 +39,7 @@ router.post("/update", async (req, res, next) => {
   }
 })
 
-router.post("/delete", async (req, res, next) => {
+router.post("/delete",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.deleteElectricCategory(payload)

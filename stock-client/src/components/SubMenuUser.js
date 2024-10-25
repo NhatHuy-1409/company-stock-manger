@@ -285,14 +285,12 @@ export default function NestedMenu({
   menu,
   list = [],
   setList,
-  setTypeFilter,
+  setPermissionFilter,
   setStatusFilter,
   setStockFilter,
-  setUserFilter,
-  itemTypes,
+  itemPermissions,
   itemStatuses,
   itemStocks,
-  itemUsers
 }) {
 
 
@@ -315,53 +313,38 @@ export default function NestedMenu({
 
     if (option.value === "Tất cả") {
       setList(list)
-      setTypeFilter?.(null)
+      setPermissionFilter?.(null)
       setStatusFilter?.(null)
       setStockFilter?.(null)
-      setUserFilter?.(null)
     } else {
       const attributes = findAttributeByValue(list,option.value)
       console.log({ attributes });
 
-      if (attributes === "type") {
-        const itemFilter = itemTypes?.filter(
-          (item) => item.label === option.value
+      if (attributes === "permission") {
+        const itemFilter = itemPermissions?.filter(
+          (item) => item.name === option.value
         )
-        setTypeFilter(itemFilter[0].value)
+        setPermissionFilter(itemFilter[0].id)
         setStatusFilter?.(null)
         setStockFilter?.(null)
-        setUserFilter?.(null)
       } else if (attributes === "status") {
         const itemFilter = itemStatuses?.filter(
           (item) => item.name === option.value
         )
         setStatusFilter(itemFilter[0].id)
-        setTypeFilter(null)
+        setPermissionFilter(null)
         setStockFilter(null)
-        setUserFilter(null)
 
       } else if (attributes === "stock") {
         const itemFilter = itemStocks?.filter(
           (item) => item.name === option.value
         )
         setStockFilter(itemFilter[0].id)
-        setTypeFilter(null)
+        setPermissionFilter(null)
         setStatusFilter(null)
-        setUserFilter(null)
-      } else if (attributes === "user") {
-        const itemFilter = itemUsers?.filter(
-          (item) => item.full_name === option.value
-        )
-        setUserFilter(itemFilter[0].id)
-        setTypeFilter(null)
-        setStatusFilter(null)
-        setStockFilter(null)
-      }
+      } 
       else {
         setList([])
-        // setTypeFilter?.(null)
-        // setStatusFilter?.(null)
-        // setStockFilter?.(null)
       }
     }
   }

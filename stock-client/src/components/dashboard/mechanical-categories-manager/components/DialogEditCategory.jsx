@@ -5,7 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
-import React, { useState } from "react"
+import React,{ useState } from "react"
 import { updateMechanicalCategory } from "../../../../api/stock-manager"
 
 export default function DialogAddNewCategory({
@@ -15,12 +15,12 @@ export default function DialogAddNewCategory({
   selectedItem,
 }) {
   // modal value
-  const [name, setName] = useState(selectedItem.name)
-  const [description, setDescription] = useState(selectedItem.description)
+  const [name,setName] = useState(selectedItem.name)
+  const [description,setDescription] = useState(selectedItem.description)
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -62,7 +62,7 @@ export default function DialogAddNewCategory({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Thêm danh mục</DialogTitle>
+        <DialogTitle id="form-dialog-title">Chỉnh sửa danh mục</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField

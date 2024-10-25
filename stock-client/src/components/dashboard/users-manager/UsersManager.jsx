@@ -9,7 +9,7 @@ import TableRow from "@material-ui/core/TableRow"
 import DeleteIcon from "@material-ui/icons/Delete"
 import EditIcon from "@material-ui/icons/Edit"
 import React,{ useEffect,useState } from "react"
-import { getUsers } from "../../../api/stock-manager"
+import { getPermissions,getStatuses,getStocks,getUsers } from "../../../api/stock-manager"
 import DialogAddNewUser from "./components/DialogAddNewUser"
 import DialogAlertRemoveUser from "./components/DialogAlertRemoveUser"
 import DialogEditUser from "./components/DialogEditUser"
@@ -18,6 +18,10 @@ import DialogAlertResetPassword from "./components/DialogAlertResetPassword"
 import "./UsersManager.scss"
 import AddButton from "../../common/add-button/AddButton"
 import Pagination from "../../common/pagination/Pagination"
+import SortBar from "../../common/sort-bar/SortBar"
+import SearchBar from "../../common/search-bar/SearchBar"
+import { nestedOptions } from "../../../utils/nestedOptions"
+import SubMenu from "../../SubMenuUser"
 
 // const toast = ToastServive.new({
 //   place: "bottomRight",
@@ -50,9 +54,24 @@ const useStyles = makeStyles({
   },
 })
 
+const SORT_OPTIONS = [
+  // { value: "id", label: "Mã" },
+  { value: "full_name",label: "Tên" },
+  { value: "email",label: "Email" },
+  { value: "stock_id",label: "Bộ phận" },
+  { value: "permission",label: "Vai trò" },
+  { value: "status",label: "Trạng thái" },
+]
+
 function UsersManager(props) {
+  const [allItems,setAllItems] = useState([])
+
   const [list,setList] = useState([])
   const classes = useStyles()
+
+  const [itemPermissions,setItemPermissions] = useState([])
+  const [itemStatuses,setItemStatuses] = useState([{ name: "Hoạt Động" },{ name: "Bị Khóa" }])
+  const [itemStocks,setItemStocks] = useState([])
 
   const [selectedUser,setSelectedUser] = useState()
 
@@ -63,8 +82,30 @@ function UsersManager(props) {
   const [openEditUser,setOpenEditUser] = useState(false)
   const [openResetPassword,setOpenResetPassword] = useState(false)
 
-  const getData = async () => {
-    const data = await getUsers()
+  const [sortProperty,setSortProperty] = useState("id")
+  const [sortOrder,setSortOrder] = useState("ASC")
+
+  const [nameFilter,setNameFilter] = useState("Tất cả")
+  const [permissionFilter,setPermissionFilter] = useState(null)
+  const [statusFilter,setStatusFilter] = useState(null)
+  const [stockFilter,setStockFilter] = useState(null)
+  const [emailFilter,setEmailFilter] = useState(null)
+
+
+  const getIninitalData = async () => {
+    const fullData = await getUsers(sortProperty,sortOrder)
+    const permissions = await getPermissions()
+    const statuses = await getStatuses()
+    const stocks = await getStocks()
+
+    setAllItems(fullData)
+    // setItemStatuses(statuses)
+    setItemStocks(stocks)
+    setItemPermissions(permissions)
+  }
+
+  const getData = async (sortProperty,sortOrder,permission,status,stock,email) => {
+    const data = await getUsers(sortProperty,sortOrder,permission,status,stock,email)
     // const stocks = await getStocks()
 
     setList(data)
@@ -74,7 +115,11 @@ function UsersManager(props) {
   }
 
   useEffect(() => {
-    getData()
+    getData(sortProperty,sortOrder,permissionFilter,statusFilter,stockFilter,emailFilter)
+  },[sortProperty,sortOrder,permissionFilter,statusFilter,stockFilter,emailFilter])
+
+  useEffect(() => {
+    getIninitalData()
   },[])
 
   const rows = [
@@ -168,6 +213,69 @@ function UsersManager(props) {
     />
   ) : null
 
+  const FILTER_OPTIONS = [
+    {
+      value: "Tất cả",
+      menuLevel: 0,
+    },
+    {
+      value: "Bộ phận",
+      menuLevel: 0,
+      nestedOptions: nestedOptions(itemStocks,"name"),
+    },
+    {
+      value: "Loại",
+      menuLevel: 0,
+      nestedOptions: nestedOptions(itemPermissions,"name"),
+    },
+    // {
+    //   value: "Trạng thái",
+    //   menuLevel: 0,
+    //   nestedOptions: nestedOptions(itemStatuses,"name"),
+    // },
+  ]
+
+  const selectSort = (
+    <div className="selectSort">
+      Lọc theo:&nbsp;
+      <SubMenu
+        nameFilter={nameFilter}
+        setNameFilter={setNameFilter}
+        menu={FILTER_OPTIONS}
+        list={allItems}
+        setList={setList}
+        setPermissionFilter={setPermissionFilter}
+        setStatusFilter={setStatusFilter}
+        setStockFilter={setStockFilter}
+        // setEmailFilter={setEmailFilter}
+        itemPermissions={itemPermissions}
+        itemStatuses={itemStatuses}
+        itemStocks={itemStocks}
+      />
+      <SearchBar
+        rows={rows}
+        setList={setList}
+        getData={() => {
+          getData(
+            sortProperty,
+            sortOrder,
+            permissionFilter,
+            statusFilter,
+            stockFilter,
+            emailFilter
+          )
+        }}
+      />
+      <SortBar
+        SORT_OPTIONS={SORT_OPTIONS}
+        sortProperty={sortProperty}
+        setSortProperty={setSortProperty}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
+    </div>
+  )
+
   //Pagination
   const [page,setPage] = useState(0)
 
@@ -180,6 +288,7 @@ function UsersManager(props) {
       <AddButton onClick={() => setOpenAddNewUser(true)}>
         Thêm tài khoản nhân viên
       </AddButton>
+      {selectSort}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>

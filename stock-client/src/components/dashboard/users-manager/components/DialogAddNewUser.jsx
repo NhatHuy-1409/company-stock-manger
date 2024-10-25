@@ -9,6 +9,7 @@ import { addUser } from "../../../../api/stock-manager";
 import { listPermissions } from "../../../../meta-data/permissions";
 import TextError from "../../../common/text-error/TextError";
 import FormSelect from "../../../common/form-select/FormSelect";
+import { stocks } from "../../../../meta-data/stocks";
 
 const STATUS_OPTIONS = [
   { value: "active",label: "Hoạt động" },
@@ -26,9 +27,11 @@ export default function DialogAddNewUser({
   const [fullName,setFullName] = useState("");
   const [permission,setPermission] = useState("1");
   const [status,setStatus] = useState("active");
+  const [stockId,setStockId] = useState("1")
 
   // options state
   const [permissions,setPermissions] = useState([]);
+  const [listStocks,setListStocks] = useState([]);
 
   // error state
   const [emailErr,setEmailErr] = useState(null);
@@ -42,9 +45,14 @@ export default function DialogAddNewUser({
     const data = await listPermissions();
     setPermissions(data);
   };
+  const getListStocks = async () => {
+    const data = await stocks();
+    setListStocks(data);
+  };
 
   useEffect(() => {
     getListPermissions();
+    getListStocks()
   },[]);
 
   const handleCheckValidateEmail = () => {
@@ -86,6 +94,7 @@ export default function DialogAddNewUser({
       full_name: fullName,
       permission,
       status,
+      stock_id: stockId
     };
 
     addUser(payload)
@@ -128,7 +137,7 @@ export default function DialogAddNewUser({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Thêm danh mục</DialogTitle>
+        <DialogTitle id="form-dialog-title">Thêm tài khoản nhân viên</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField
@@ -161,7 +170,13 @@ export default function DialogAddNewUser({
             />
 
             <FormSelect
-              label="Chức danh"
+              label="Bộ phận"
+              value={stockId}
+              onChange={(e) => setStockId(e.target.value)}
+              options={listStocks}
+            />
+            <FormSelect
+              label="Vai trò"
               value={permission}
               onChange={(e) => setPermission(e.target.value)}
               options={permissions}

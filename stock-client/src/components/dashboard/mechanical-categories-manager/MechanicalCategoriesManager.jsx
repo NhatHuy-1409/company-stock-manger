@@ -16,6 +16,9 @@ import DialogEditCategory from "./components/DialogEditCategory"
 import DialogRemoveCategory from "./components/DialogRemoveCategory"
 import AddButton from "../../common/add-button/AddButton"
 import Pagination from "../../common/pagination/Pagination"
+import SearchBar from "../../common/search-bar/SearchBar"
+import SortBar from "../../common/sort-bar/SortBar"
+import SubMenu from "../../SubMenu"
 
 function createData(id,name,description) {
   return { id,name,description }
@@ -26,8 +29,12 @@ const useStyles = makeStyles({
     minWidth: 650,
   },
 })
-
+const SORT_OPTIONS = [
+  // { value: "id", label: "Mã" },
+  { value: "name",label: "Tên" },
+]
 function MechanicalCategoriesManager(props) {
+  const [allItems,setAllItems] = useState([])
   const [list,setList] = useState([])
   const classes = useStyles()
   const [selectedItem,setSelectedItem] = useState(null)
@@ -36,13 +43,29 @@ function MechanicalCategoriesManager(props) {
   const [openAddNewCategory,setOpenAddNewCategory] = useState(false)
   const [openAlertRemove,setOpenAlertRemove] = useState(false)
 
-  const getData = async () => {
-    const data = await getMechanicalCategories()
+  const [sortProperty,setSortProperty] = useState("id")
+  const [sortOrder,setSortOrder] = useState("ASC")
+
+  const [nameFilter,setNameFilter] = useState("Tất cả")
+
+  const getIninitalData = async () => {
+    const fullData = await getMechanicalCategories(sortProperty,sortOrder)
+
+    setAllItems(fullData)
+  }
+
+
+  const getData = async (sortProperty,sortOrder) => {
+    const data = await getMechanicalCategories(sortProperty,sortOrder)
     setList(data)
   }
 
   useEffect(() => {
-    getData()
+    getData(sortProperty,sortOrder)
+  },[sortProperty,sortOrder])
+
+  useEffect(() => {
+    getIninitalData()
   },[])
 
   const rows = [
@@ -103,6 +126,45 @@ function MechanicalCategoriesManager(props) {
     )
   }
 
+  const FILTER_OPTIONS = [
+    {
+      value: "Tất cả",
+      menuLevel: 0,
+    }
+  ]
+
+
+  const selectSort = (
+    <div className="selectSort">
+      Lọc theo:&nbsp;
+      <SubMenu
+        nameFilter={nameFilter}
+        setNameFilter={setNameFilter}
+        menu={FILTER_OPTIONS}
+        list={allItems}
+        setList={setList}
+      />
+      <SearchBar
+        rows={rows}
+        setList={setList}
+        getData={() => {
+          getData(
+            sortProperty,
+            sortOrder
+          )
+        }}
+      />
+      <SortBar
+        SORT_OPTIONS={SORT_OPTIONS}
+        sortProperty={sortProperty}
+        setSortProperty={setSortProperty}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+      />
+    </div>
+  )
+
+
   //Pagination
   const [page,setPage] = useState(0)
 
@@ -113,6 +175,7 @@ function MechanicalCategoriesManager(props) {
   return (
     <div className="categoriesManager">
       <AddButton onClick={() => setOpenAddNewCategory(true)}>Thêm danh mục thiết bị</AddButton>
+      {selectSort}
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>

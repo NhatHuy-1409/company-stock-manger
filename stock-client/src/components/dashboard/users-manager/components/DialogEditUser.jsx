@@ -45,16 +45,13 @@ export default function DialogEditUser({
     setPermissions(data);
   };
 
-  useEffect(() => {
-    getListPermissions();
-  },[]);
-
   const getListStocks = async () => {
     const data = await stocks();
     setListStocks(data);
   };
 
   useEffect(() => {
+    getListPermissions();
     getListStocks();
   },[]);
 
@@ -126,7 +123,7 @@ export default function DialogEditUser({
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Sửa thông tin</DialogTitle>
+        <DialogTitle id="form-dialog-title">Chỉnh sửa thông tin</DialogTitle>
         <DialogContent>
           <form className="formEditItem">
             <TextField

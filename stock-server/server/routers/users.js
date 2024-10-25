@@ -6,9 +6,11 @@ const generator = require("generate-password");
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/",async (req,res,next) => {
   try {
-    let results = await dbLogin.getAllUsers();
+    const { sort_property,sort_order,permission,status,stock_id,email } = req.query
+
+    let results = await dbLogin.getAllUsers(sort_property,sort_order,permission,status,stock_id,email);
     res.json(results);
   } catch (err) {
     console.log(err);
@@ -16,7 +18,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/update", async (req, res, next) => {
+router.post("/update",async (req,res,next) => {
   try {
     const payload = req.body;
     console.log(payload);
@@ -28,19 +30,19 @@ router.post("/update", async (req, res, next) => {
   }
 });
 
-router.post("/add", async (req, res, next) => {
+router.post("/add",async (req,res,next) => {
   try {
     const payload = req.body;
     let results = await dbLogin.addUser(payload);
     res.json(results);
   } catch (error) {
     if (error.sqlMessage)
-      return res.json({ error: "error", message: error.sqlMessage });
+      return res.json({ error: "error",message: error.sqlMessage });
     res.sendStatus(500);
   }
 });
 
-router.post("/delete", async (req, res, next) => {
+router.post("/delete",async (req,res,next) => {
   try {
     const payload = req.body;
     let results = await dbLogin.deleteUser(payload);
@@ -51,19 +53,19 @@ router.post("/delete", async (req, res, next) => {
   }
 });
 
-router.post("/reset-password", async (req, res, next) => {
+router.post("/reset-password",async (req,res,next) => {
   try {
     const password = generator.generate({
       length: 10,
       numbers: true,
     });
     const payload = req.body;
-    let results = await dbLogin.resetPassword({ ...payload, password });
+    let results = await dbLogin.resetPassword({ ...payload,password });
     const auth = {
       user: payload.stock_email,
       pass: payload.stock_password,
     };
-    sendResetPasswordEmail(payload.email, password, auth);
+    sendResetPasswordEmail(payload.email,password,auth);
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -71,7 +73,7 @@ router.post("/reset-password", async (req, res, next) => {
   }
 });
 
-const sendResetPasswordEmail = (email, password, auth) => {
+const sendResetPasswordEmail = (email,password,auth) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth,
@@ -84,7 +86,7 @@ const sendResetPasswordEmail = (email, password, auth) => {
     text: `password reset: ${password}`,
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
+  transporter.sendMail(mailOptions,function (error,info) {
     if (error) {
       console.log(error);
     } else {
