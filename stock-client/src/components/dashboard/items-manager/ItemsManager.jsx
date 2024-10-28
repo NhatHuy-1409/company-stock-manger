@@ -253,7 +253,12 @@ function ItemsManager(props) {
 
   const [rowsPerPage,setRowsPerPage] = useState(10)
 
-  const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
+  const rowsWithOrders = rows.map((item,i) => {
+    return { ...item,stt: i }
+  })
+
+  const paginateRows = rowsWithOrders.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
+
 
   return (
     <div className="itemsManager">
@@ -276,7 +281,7 @@ function ItemsManager(props) {
               <TableCell>Ngày nhập kho</TableCell>
               <TableCell>Thời gian sử dụng (ngày)</TableCell>
               <TableCell>Mô tả</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Chỉnh sửa / Xóa</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -284,7 +289,7 @@ function ItemsManager(props) {
               const date1 = getDate(row.input_time)
               return (
                 <TableRow key={row.id}>
-                  <TableCell>{i}</TableCell>
+                  <TableCell>{row.stt}</TableCell>
                   <TableCell component="th" scope="row">
                     {row.product_id}
                   </TableCell>

@@ -43,8 +43,10 @@ export default function DialogAddNewItem({
 
   // error state
 
-  const [nameErr,setNameErr] = useState(null)
-  const [productIdErr,setProductIdErr] = useState(null)
+  const [nameErr,setNameErr] = useState("")
+  const [productIdErr,setProductIdErr] = useState("")
+
+  const [isValidation,setIsValidation] = useState(false)
 
   useEffect(() => {
     const getStatuses = async () => {
@@ -77,7 +79,7 @@ export default function DialogAddNewItem({
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên")
+      setNameErr("Không được bỏ trống")
       return
     }
     setNameErr(null)
@@ -89,7 +91,7 @@ export default function DialogAddNewItem({
 
   const handleCheckValidateProductId = (event) => {
     if (!event || !event.target.value) {
-      setProductIdErr("Không được bỏ trống tên")
+      setProductIdErr("Không được bỏ trống")
       return
     }
     setProductIdErr(null)
@@ -115,7 +117,7 @@ export default function DialogAddNewItem({
     setTypeId(value)
   }
 
-  const handleSubmitForm = () => {
+  const handleSubmitForm = (e) => {
     const payload = {
       product_id: productId,
       name,
@@ -126,6 +128,7 @@ export default function DialogAddNewItem({
       input_time: inputTime ? format(inputTime,"yyyy-MM-dd") : null,
       description: description,
     }
+
     addItem(payload)
       .then((res) => {
         console.log("pl: ",payload)
@@ -135,6 +138,8 @@ export default function DialogAddNewItem({
       .catch((err) => {
         console.log(err)
       })
+
+
   }
 
   return (
@@ -169,6 +174,7 @@ export default function DialogAddNewItem({
             />
 
             <FormSelect
+              id="type"
               label="Loại thiết bị"
               value={typeId}
               onChange={handleTypeIdChange}
@@ -223,7 +229,7 @@ export default function DialogAddNewItem({
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleSubmitForm} color="primary">
+          <Button onClick={handleSubmitForm} color="primary" disabled={!(name && productId)}>
             Submit
           </Button>
         </DialogActions>

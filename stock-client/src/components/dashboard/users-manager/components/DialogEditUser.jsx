@@ -100,7 +100,7 @@ export default function DialogEditUser({
   ) : null;
 
   const disabledSubmitForm = () => {
-    let isDisabled = false;
+    let isDisabled = !(email && fullName);
 
     const errArr = [emailErr,fullNameErr];
 

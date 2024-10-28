@@ -1,20 +1,21 @@
-import { FormControl, InputLabel, Select } from '@material-ui/core'
+import { FormControl,InputLabel,Select } from '@material-ui/core'
 import React from 'react'
 
-function FormSelect({label,value,onChange,options,user}) {
+function FormSelect({ id,label,value,onChange,options,user }) {
     return (
         <FormControl fullWidth>
-            <InputLabel>{label}</InputLabel>
+            <InputLabel id={id}>{label}</InputLabel>
             <Select
+                labelId={id}
                 displayEmpty
                 native
                 fullWidth
-                // label="Stock"
                 value={value}
                 onChange={onChange}
+
             >
                 {options.map((item) => (
-                    <option key={item.value} value={item.value}  disabled={item.permission === "admin" && !user?.isAdmin}>
+                    <option key={item.value} value={item.value} disabled={item.permission === "admin" && !user?.isAdmin}>
                         {item.label}
                     </option>
                 ))}

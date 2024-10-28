@@ -45,7 +45,7 @@ export default function DialogAddNewItemType({
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên");
+      setNameErr("Không được bỏ trống");
       return;
     }
     setNameErr(null);

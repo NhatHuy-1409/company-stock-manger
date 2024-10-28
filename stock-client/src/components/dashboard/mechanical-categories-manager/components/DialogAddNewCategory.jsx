@@ -5,7 +5,7 @@ import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 import TextField from "@material-ui/core/TextField"
-import React, { useState } from "react"
+import React,{ useState } from "react"
 import { addMechanicalCategory } from "../../../../api/stock-manager"
 
 export default function DialogAddNewCategory({
@@ -14,12 +14,12 @@ export default function DialogAddNewCategory({
   onAddNewSuccess,
 }) {
   // modal value
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
+  const [name,setName] = useState("")
+  const [description,setDescription] = useState("")
 
   // error state
 
-  const [nameErr, setNameErr] = useState(null)
+  const [nameErr,setNameErr] = useState(null)
 
   const handleNameChange = (event) => {
     const { value } = event.target
@@ -28,7 +28,7 @@ export default function DialogAddNewCategory({
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên")
+      setNameErr("Không được bỏ trống")
       return
     }
     setNameErr(null)

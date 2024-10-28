@@ -10,7 +10,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import DescriptionIcon from "@material-ui/icons/Description";
-import React, { useEffect, useState } from "react";
+import React,{ useEffect,useState } from "react";
 import { getStaffRequests } from "../../../api/stock-manager";
 import { statuses } from "../../../meta-data/statuses";
 import { stocks } from "../../../meta-data/stocks";
@@ -59,24 +59,24 @@ const useStyles = makeStyles({
 });
 
 function RequestsBrowsingManager(props) {
-  const [list, setList] = useState([]);
+  const [list,setList] = useState([]);
   const classes = useStyles();
 
-  const [openCreateRequest, setOpenCreateRequest] = useState(false);
-  const [openDialogEditRequest, setOpenDialogEditRequest] = useState(false);
+  const [openCreateRequest,setOpenCreateRequest] = useState(false);
+  const [openDialogEditRequest,setOpenDialogEditRequest] = useState(false);
 
   // options data
-  const [statusOptions, setStatusOptions] = useState([]);
-  const [stockOptions, setStockOptions] = useState([]);
+  const [statusOptions,setStatusOptions] = useState([]);
+  const [stockOptions,setStockOptions] = useState([]);
 
   // state
-  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedRequest,setSelectedRequest] = useState(null);
 
-  const [sortProperty, setSortProperty] = useState("id");
-  const [sortOrder, setSortOrder] = useState("ASC");
+  const [sortProperty,setSortProperty] = useState("id");
+  const [sortOrder,setSortOrder] = useState("ASC");
 
-  const getData = async (sortProperty, sortOrder) => {
-    const data = await getStaffRequests(sortProperty, sortOrder);
+  const getData = async (sortProperty,sortOrder) => {
+    const data = await getStaffRequests(sortProperty,sortOrder);
     console.log(data);
     setList(data);
   };
@@ -93,11 +93,11 @@ function RequestsBrowsingManager(props) {
     };
     getStatuses();
     getStocks();
-    getData(sortProperty, sortOrder);
-  }, [sortProperty, sortOrder]);
+    getData(sortProperty,sortOrder);
+  },[sortProperty,sortOrder]);
 
   const handleUpdateData = () => {
-    getData(sortProperty, sortOrder);
+    getData(sortProperty,sortOrder);
   };
 
   const handleClose = () => {
@@ -132,7 +132,7 @@ function RequestsBrowsingManager(props) {
   ];
 
   const renderDeleteIcon = props.user.isAdmin ? (
-    <DeleteIcon onClick={() => {}} />
+    <DeleteIcon onClick={() => { }} />
   ) : null;
 
   const actionsBlock = (item) => {
@@ -178,7 +178,7 @@ function RequestsBrowsingManager(props) {
               <TableCell>Trạng thái sau khi duyệt</TableCell>
               <TableCell>Kho sau khi duyệt</TableCell>
               <TableCell>Trạng thái báo cáo</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Chỉnh sửa / Xóa</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -231,8 +231,8 @@ function RequestsBrowsingManager(props) {
                       row.status === "waiting"
                         ? ""
                         : row.status === "not_approved"
-                        ? "secondary"
-                        : "primary"
+                          ? "secondary"
+                          : "primary"
                     }
                     label={REQUEST_STATUS_STATE[row.status]}
                   />
@@ -255,4 +255,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(RequestsBrowsingManager);
+export default connect(mapStateToProps,null)(RequestsBrowsingManager);

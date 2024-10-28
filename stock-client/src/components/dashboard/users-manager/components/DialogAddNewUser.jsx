@@ -80,7 +80,7 @@ export default function DialogAddNewUser({
 
   const handleCheckValidateFullName = () => {
     if (!fullName) {
-      return setFullNameErr("Không được bỏ trống tên");
+      return setFullNameErr("Không được bỏ trống");
     }
     setFullNameErr(null);
   };
@@ -114,7 +114,7 @@ export default function DialogAddNewUser({
   ) : null;
 
   const disabledSubmitForm = () => {
-    let isDisabled = false;
+    let isDisabled = !(email && password && fullName);
 
     const errArr = [emailErr,passwordErr,fullNameErr];
 

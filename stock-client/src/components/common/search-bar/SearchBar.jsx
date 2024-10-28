@@ -6,7 +6,7 @@ function SearchBar({ rows,setList,getData }) {
     return (
         <TextField
             id="outlined-basic"
-            label="Search"
+            label="Tìm kiếm"
             variant="outlined"
             onChange={(e) => {
                 const searchValue = removeVietnameseTones(

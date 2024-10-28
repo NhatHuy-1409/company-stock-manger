@@ -163,14 +163,16 @@ function MechanicalCategoriesManager(props) {
       />
     </div>
   )
-
+  const rowsWithOrders = rows.map((item,i) => {
+    return { ...item,stt: i }
+  })
 
   //Pagination
   const [page,setPage] = useState(0)
 
   const [rowsPerPage,setRowsPerPage] = useState(10)
 
-  const paginateRows = rows.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
+  const paginateRows = rowsWithOrders.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage)
 
   return (
     <div className="categoriesManager">
@@ -183,14 +185,14 @@ function MechanicalCategoriesManager(props) {
               <TableCell>STT</TableCell>
               <TableCell>Tên</TableCell>
               <TableCell>Mô tả</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Chỉnh sửa / Xóa</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paginateRows.map((row,i) => (
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
-                  {i}
+                  {row.stt}
                 </TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.description}</TableCell>

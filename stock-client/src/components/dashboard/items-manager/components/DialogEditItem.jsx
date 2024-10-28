@@ -86,7 +86,7 @@ function DialogEditItem({
 
   const handleCheckValidateName = (event) => {
     if (!event || !event.target.value) {
-      setNameErr("Không được bỏ trống tên")
+      setNameErr("Không được bỏ trống")
       return
     }
     setNameErr(null)
@@ -98,7 +98,7 @@ function DialogEditItem({
 
   const handleCheckValidateProductId = (event) => {
     if (!event || !event.target.value) {
-      setProductIdErr("Không được bỏ trống tên")
+      setProductIdErr("Không được bỏ trống")
       return
     }
     setProductIdErr(null)
@@ -233,7 +233,7 @@ function DialogEditItem({
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleSubmitForm} color="primary">
+          <Button onClick={handleSubmitForm} color="primary" disabled={!(name && productId)}>
             Submit
           </Button>
         </DialogActions>

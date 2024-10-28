@@ -41,3 +41,9 @@
     margin: 0;
   }
 }
+
+.MuiDialog-container{
+  .MuiInputLabel-formControl {
+    transform: translate(0) scale(0.75) !important;
+}
+}
