@@ -5,10 +5,10 @@ const nodemailer = require("nodemailer")
 
 const router = express.Router()
 
-router.get("/", async (req, res, next) => {
+router.get("/",async (req,res,next) => {
   try {
-    const { orderby, sort_order, type } = req.query
-    let results = await dbLogin.getAllElectricItems(orderby, sort_order, type)
+    const { orderby,sort_order,type } = req.query
+    let results = await dbLogin.getAllElectricItems(orderby,sort_order,type)
     res.json(results)
   } catch (err) {
     console.log(err)
@@ -16,7 +16,7 @@ router.get("/", async (req, res, next) => {
   }
 })
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id",async (req,res,next) => {
   try {
     const { id } = req.params
     let results = await dbLogin.getElectricItem(id)
@@ -27,7 +27,7 @@ router.get("/:id", async (req, res, next) => {
   }
 })
 
-router.get("/type/:type_id", async (req, res, next) => {
+router.get("/type/:type_id",async (req,res,next) => {
   try {
     const { type_id } = req.params
     let results = await dbLogin.getElectricItemByTypeId(type_id)
@@ -38,7 +38,7 @@ router.get("/type/:type_id", async (req, res, next) => {
   }
 })
 
-router.post("/update", async (req, res, next) => {
+router.post("/update",async (req,res,next) => {
   try {
     const payload = req.body
     let results = await dbLogin.updateElectricItem(payload)
@@ -49,7 +49,7 @@ router.post("/update", async (req, res, next) => {
   }
 })
 
-router.post("/add", async (req, res, next) => {
+router.post("/add",async (req,res,next) => {
   try {
     const payload = req.body
     console.log({ payload })
@@ -61,9 +61,10 @@ router.post("/add", async (req, res, next) => {
   }
 })
 
-router.post("/delete", async (req, res, next) => {
+router.post("/delete",async (req,res,next) => {
   try {
     const payload = req.body
+
     let results = await dbLogin.deleteElectricItem(payload)
     res.json(results)
   } catch (error) {

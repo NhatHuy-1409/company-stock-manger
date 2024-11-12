@@ -1,0 +1,16 @@
+.MuiPaper-root.MuiDialog-paper{
+    max-width: 600px;
+}
+.Mui-TableHeadCell-Content-Wrapper{
+    display: -webkit-box;       
+    -webkit-box-orient: vertical; 
+    -webkit-line-clamp: 2;        
+    overflow: hidden;             
+    text-overflow: ellipsis;      
+}
+.MuiTableCell-root{
+    .box-actions{
+
+    }
+    
+}

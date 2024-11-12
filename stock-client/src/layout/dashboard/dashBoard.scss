@@ -4,8 +4,11 @@
     display: flex;
     > .content {
       padding: 20px;
-      width: 100%;
+      width: 88%;
       background-color: #fff;
+    }
+    .leftNavigationBar{
+      width: 12%;
     }
   }
   .makeStyles-search-4{

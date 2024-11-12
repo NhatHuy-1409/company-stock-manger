@@ -11,6 +11,179 @@ const pool = mysql.createPool({
 
 let stockDB = {}
 
+// Company items
+
+stockDB.addCompanyItems = (items) => {
+  if (items?.length > 0) {
+    const placeHolders = items?.map(() => `(?, ? , ? , ?, ?, ? , ? , ? , ? , ? , ? , ?)`).join(", ")
+
+    const values = items?.flatMap((item) => [
+      item.name,
+      item.code_asset,
+      item.code_software,
+      item.location,
+      item.user,
+      item.price,
+      item.quantity_book,
+      item.quantity_check,
+      item.supplier,
+      item.buying_date,
+      item.document_no,
+      item.note,
+    ])
+
+    return new Promise((resolve,reject) => {
+      pool.query(
+        `INSERT INTO company_items ( name,code_asset,code_software,location,user,price,quantity_book,quantity_check,supplier,buying_date,document_no,note) 
+            VALUES ${placeHolders}`,
+        values,
+        (err,result) => {
+          if (err) {
+            return reject(err)
+          }
+          return resolve({
+            success: {
+              message: "update success",
+            },
+          })
+        }
+      )
+    })
+  }
+}
+
+stockDB.getAllCompanyItems = () => {
+  return new Promise((resolve,reject) => {
+    pool.query(
+      `SELECT * FROM company_items`,
+      (err,result) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(result)
+      }
+    )
+  })
+}
+
+stockDB.addCompanyItem = ({
+  name,
+  code_asset,
+  code_software,
+  location,
+  user,
+  price,
+  quantity_book,
+  quantity_check,
+  supplier,
+  buying_date,
+  document_no,
+  note,
+}) => {
+
+  return new Promise((resolve,reject) => {
+    pool.query(
+      `INSERT INTO company_items ( name,code_asset,code_software,location,user,price,quantity_book,quantity_check,supplier,buying_date,document_no,note) 
+        VALUES (?, ? , ? , ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        name,
+        code_asset,
+        code_software,
+        location,
+        user,
+        price,
+        quantity_book,
+        quantity_check,
+        supplier,
+        buying_date,
+        document_no,
+        note,
+      ],
+      (err,result) => {
+        if (err) {
+          console.log("error");
+
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+stockDB.updateCompanyItem = ({
+  name,
+  code_asset,
+  code_software,
+  location,
+  user,
+  price,
+  quantity_book,
+  quantity_check,
+  supplier,
+  buying_date,
+  document_no,
+  note,
+  id,
+}) => {
+
+  return new Promise((resolve,reject) => {
+    pool.query(
+      `UPDATE company_items
+              SET name = ?,code_asset = ?,code_software = ?,location = ?,user = ?,price = ?,quantity_book = ?,quantity_check = ?,supplier = ?,buying_date = ?,document_no = ?,note = ?
+              WHERE id = ?`,
+      [
+        name,
+        code_asset,
+        code_software,
+        location,
+        user,
+        price,
+        quantity_book,
+        quantity_check,
+        supplier,
+        buying_date,
+        document_no,
+        note,
+        id,
+      ],
+      (err,result) => {
+        if (err) {
+          console.log("error");
+
+          return reject(err)
+        }
+        return resolve({
+          success: {
+            message: "update success",
+          },
+        })
+      }
+    )
+  })
+}
+
+stockDB.deleteCompanyItem = ({ id }) => {
+  console.log("id to database",{ id });
+
+  return new Promise((resolve,reject) => {
+    pool.query(`DELETE FROM company_items WHERE id = ?`,[id],(err,result) => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve({
+        success: {
+          message: "delete success",
+        },
+      })
+    })
+  })
+}
+
+
 stockDB.adminLogin = ({ email,password }) => {
   return new Promise((resolve,reject) => {
     pool.query(
@@ -40,6 +213,7 @@ stockDB.userLogin = ({ email,password }) => {
     )
   })
 }
+
 
 // items
 

@@ -20,42 +20,46 @@ const nodemailer = require("nodemailer")
 require("dotenv").config()
 const cors = require("cors")
 
+const companyItems = require("./routers/company-items/company-items")
+
 const app = express()
 
 app.use(cors())
 
 app.use(express.json())
 
-app.use("/admin/login", login)
-app.use("/items", items)
-app.use("/items-type", itemsType)
-app.use("/categories", categories)
+app.use("/admin/login",login)
+app.use("/items",items)
+app.use("/items-type",itemsType)
+app.use("/categories",categories)
 
-app.use("/electric-items", electricItems)
-app.use("/electric-items-type", electricItemstype)
-app.use("/electric-categories", electricCategories)
+app.use("/electric-items",electricItems)
+app.use("/electric-items-type",electricItemstype)
+app.use("/electric-categories",electricCategories)
 
-app.use("/mechanical-items", mechanicalItems)
-app.use("/mechanical-items-type", mechanicalItemstype)
-app.use("/mechanical-categories", mechanicalCategories)
+app.use("/mechanical-items",mechanicalItems)
+app.use("/mechanical-items-type",mechanicalItemstype)
+app.use("/mechanical-categories",mechanicalCategories)
 
-app.use("/users", users)
-app.use("/statuses", statuses)
-app.use("/stocks", stocks)
-app.use("/permissions", permissions)
-app.use("/staff-requests", staffRequests)
+app.use("/company-items",companyItems)
 
-const port = process.env.PORT || 5001
+app.use("/users",users)
+app.use("/statuses",statuses)
+app.use("/stocks",stocks)
+app.use("/permissions",permissions)
+app.use("/staff-requests",staffRequests)
+
+const port = process.env.PORT || 5000
 
 const DAY_DURATION = 1000 * 60 * 60 * 24
 
-app.listen(port, () => {
+app.listen(port,() => {
   console.log(`server run on port: ${port}`)
 })
 
 const sendExpiryItemsToStaff = async () => {
   const payload = {
-    expiry_time: format(getTomorrow(), "yyyy-MM-dd"),
+    expiry_time: format(getTomorrow(),"yyyy-MM-dd"),
   }
   const items = await stockDB.getByExpiryTime(payload)
   const users = await stockDB.getAllUsers()
@@ -68,7 +72,7 @@ const sendExpiryItemsToStaff = async () => {
   const html = buildHtmlTable(items)
 
   const listPromise = emails.map((email) => {
-    return sendEmailExpiryDevice(email, html, payload.expiry_time)
+    return sendEmailExpiryDevice(email,html,payload.expiry_time)
   })
 
   Promise.all(listPromise)
@@ -80,8 +84,8 @@ const sendExpiryItemsToStaff = async () => {
     })
 }
 
-const sendEmailExpiryDevice = (email, html, expiry_time) => {
-  return new Promise((resolve, reject) => {
+const sendEmailExpiryDevice = (email,html,expiry_time) => {
+  return new Promise((resolve,reject) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -98,7 +102,7 @@ const sendEmailExpiryDevice = (email, html, expiry_time) => {
       ${html}`,
     }
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions,function (error,info) {
       if (error) {
         reject(error)
       } else {
@@ -139,7 +143,7 @@ const buildHtmlTable = (items) => {
 const getDate = (stringDate) => {
   if (!stringDate) return "--"
   const cvDate = new Date(stringDate)
-  return format(cvDate, "dd/MM/yyyy")
+  return format(cvDate,"dd/MM/yyyy")
 }
 
 const buildHtmlRow = (row) => {
@@ -154,13 +158,13 @@ const buildHtmlRow = (row) => {
        ${row.stock}
       </td>
       <td style="border: 1px solid black; padding: 8px">${getDate(
-        row.input_time
-      )}</td>
+    row.input_time
+  )}</td>
       <td style="border: 1px solid black; padding: 8px">${getDate(
-        row.expiry_time
-      )}</td>
+    row.expiry_time
+  )}</td>
       <td style="border: 1px solid black; padding: 8px">${row.description}</td>
     </tr>`
 }
 
-setInterval(sendExpiryItemsToStaff, DAY_DURATION)
+setInterval(sendExpiryItemsToStaff,DAY_DURATION)
